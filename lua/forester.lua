@@ -5,14 +5,62 @@ local _config = {}
 function M.setup(config)
   vim.filetype.add({ extension = { tree = "tree" } })
   vim.cmd([[
-    if exists('b:current_syntax')
-      finish
-    endif
-    echom "custom syntax highlighting"
     let b:current_syntax = 'tree'
   ]])
   require("notify")("forester.nvim loaded")
 end
+
+local attach_to_buffer = function(bufnr, command)
+  vim.api.nvim_create_autocmd("BufWritePost", {
+    group = vim.api.nvim_create_augroup("forester", { clear = true }),
+    pattern = "*.tree",
+    callback = function()
+      local append_data = function(_, data)
+        if data then
+          vim.api.nvim_buf_set_lines(output_bufnr, -1, -1, false, data)
+        end
+      end
+      vim.api.nvim_buf_set_lines(output_bufnr, 0, -1, false, { "output: " })
+      vim.fn.jobstart(command, {
+        stdout_buffered = true,
+        on_stdout = append_data,
+        on_stderr = append_data,
+      })
+    end,
+  })
+end
+
+vim.api.nvim_create_user_command("Forest", function()
+  local prefixes = {}
+  vim.fn.jobstart({ "dune", "exec", "forester", "--", "query", "prefix", "trees" }, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        print(vim.inspect(data))
+        vim.ui.select(data, {
+          prompt = "prefix of new tree",
+          format_item = function(item)
+            return item
+          end,
+        }, function(choice)
+          vim.fn.jobstart({ "dune", "exec", "forester", "--", "new", "--prefix", choice, "--dir", "trees" }, {
+            on_stderr = function(_, res)
+              print(vim.inspect(res))
+            end,
+            on_stdout = function(_, res)
+              print(vim.inspect(res))
+            end,
+          })
+        end)
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        print(vim.inspect(data))
+      end
+    end,
+  })
+end, {})
 
 --vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 --  pattern = "*.tree",
