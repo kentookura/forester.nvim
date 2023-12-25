@@ -1,7 +1,7 @@
 {
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    forester = { url = "/home/kento/projects/ocaml-forester"; };
+    forester = { url = "sourcehut:~kentookura/ocaml-forester/query"; };
   };
   outputs = { self, flake-utils, nixpkgs, forester }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
