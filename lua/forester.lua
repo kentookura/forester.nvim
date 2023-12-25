@@ -81,7 +81,6 @@ function M.setup(config)
 
   keymap("n", "<leader>nn", new_tree, default_opts)
   keymap("n", "<leader>n.", open_tree, default_opts)
-  require("notify")("forester.nvim loaded")
 end
 
 return M

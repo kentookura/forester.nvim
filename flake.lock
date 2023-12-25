@@ -79,16 +79,16 @@
         "opam-repository": "opam-repository_2"
       },
       "locked": {
-        "lastModified": 1703264568,
-        "narHash": "sha256-eYHg2UvAuD79b5ZimHi5k4vNVE6KT6ozKB/zngoBvss=",
+        "lastModified": 1703467654,
+        "narHash": "sha256-I4A+0TYxE4lP8CdtKS7cxRK+L7HuBETcyACSOidL5co=",
         "owner": "~kentookura",
         "repo": "ocaml-forester",
-        "rev": "8eacbad1c0825b85530070c225aeeca479e04d84",
+        "rev": "0096c8c36e4d1b89b1051a5438989df2a8fa52fa",
         "type": "sourcehut"
       },
       "original": {
         "owner": "~kentookura",
-        "ref": "query",
+        "ref": "nvim-support",
         "repo": "ocaml-forester",
         "type": "sourcehut"
       }
