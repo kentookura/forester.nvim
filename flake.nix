@@ -13,7 +13,12 @@
             asciinema
             asciinema-agg
             nodePackages.livedown
+            nodePackages.katex
+            nodejs
+            gcc
+            tree-sitter
           ];
+          shellHook = "export PATH=$PATH:./node_modules/.bin";
         };
       });
 }
