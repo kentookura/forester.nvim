@@ -18,7 +18,7 @@ Currently assumes that trees are located in `./trees`.
 
 ![Screen Recording showing the following of forester links in vim](doc/link.gif)
 
-### following links using `<leader>n.`
+### searching titles using `<leader>n.`
 
 ![Screen Recording showing the browsing trees by title](doc/search.gif)
 
