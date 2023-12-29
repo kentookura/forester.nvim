@@ -35,7 +35,7 @@ local function select_from_title(data)
     local addr = choice:match("[^,%s]+")
     -- match until :    [^,]+(?=,)
     --get after:          [^, ]*$
-    local path = tree_dir .. "/" .. addr .. ".tree"
+    local path = vim.fn.findfile(addr .. ".tree", tree_dir .. "/**")
     vim.cmd("edit " .. path)
   end)
 end
@@ -67,7 +67,7 @@ local function open_tree()
 end
 
 vim.api.nvim_create_user_command("ForestNew", new_tree, {})
-vim.api.nvim_create_user_command("Forestpen", open_tree, {})
+vim.api.nvim_create_user_command("ForestOpen", open_tree, {})
 
 function M.setup(config)
   vim.filetype.add({ extension = { tree = "tree" } })
