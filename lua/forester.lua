@@ -40,6 +40,38 @@ local function select_from_title(data)
   end)
 end
 
+local function select_template(data)
+  vim.ui.select(
+    data,
+    {
+      prompt = "Templates",
+    },
+    vim.schedule_wrap(function(template)
+      local tmpl_addr = template:match("^([^.]+)")
+      print(tmpl_addr)
+      job
+        :new({
+          command = "forester",
+          args = { "query", "prefix", tree_dir },
+          on_exit = vim.schedule_wrap(function(j, _)
+            vim.ui.select(j:result(), {}, function(pfx)
+              job
+                :new({
+                  command = "forester",
+                  args = { "new", "--prefix", pfx, "--dir", tree_dir, "--dest", tree_dir, "--template", tmpl_addr },
+                  on_exit = vim.schedule_wrap(function(data, return_val)
+                    vim.cmd("edit " .. data:result()[1])
+                  end),
+                })
+                :sync()
+            end)
+          end),
+        })
+        :sync()
+    end)
+  )
+end
+
 local function new_tree()
   job
     :new({
@@ -47,6 +79,18 @@ local function new_tree()
       args = { "query", "prefix", tree_dir },
       on_exit = vim.schedule_wrap(function(j, _)
         select_prefixes(j:result())
+      end),
+    })
+    :sync()
+end
+
+local function new_from_template()
+  job
+    :new({
+      command = "ls",
+      args = { "templates" },
+      on_exit = vim.schedule_wrap(function(j, _)
+        select_template(j:result())
       end),
     })
     :sync()
@@ -67,6 +111,7 @@ local function open_tree()
 end
 
 vim.api.nvim_create_user_command("ForestNew", new_tree, {})
+vim.api.nvim_create_user_command("ForestTemplate", new_from_template, {})
 vim.api.nvim_create_user_command("ForestOpen", open_tree, {})
 
 function M.setup(config)
@@ -80,6 +125,7 @@ function M.setup(config)
   vim.opt.suffixesadd:prepend(".tree")
 
   keymap("n", "<leader>nn", new_tree, default_opts)
+  keymap("n", "<leader>nt", new_from_template, default_opts)
   keymap("n", "<leader>n.", open_tree, default_opts)
 end
 
