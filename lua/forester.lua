@@ -14,7 +14,7 @@ local function select_prefixes(pfx)
     job
       :new({
         command = "forester",
-        args = { "new", "--prefix", choice, "--dir", tree_dir },
+        args = { "new", "--prefix", choice, "--dir", tree_dir, "--dest", tree_dir },
         on_exit = function(data, return_val)
           vim.schedule(function()
             vim.cmd("edit " .. data:result()[1])
