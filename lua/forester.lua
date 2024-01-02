@@ -1,90 +1,57 @@
 local M = {}
+local forester = require("forester.bindings")
 local job = require("plenary.job")
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local conf = require("telescope.config").values
-local tree_dir = "trees"
 local keymap = vim.keymap.set
 local default_opts = { noremap = true, silent = true }
 
 local _config = {}
 
-local function select_prefixes(pfx)
-  vim.ui.select(pfx, {}, function(choice)
-    job
-      :new({
-        command = "forester",
-        args = { "new", "--prefix", choice, "--dir", tree_dir, "--dest", tree_dir },
-        on_exit = function(data, return_val)
-          vim.schedule(function()
-            vim.cmd("edit " .. data:result()[1])
-          end)
-        end,
-      })
-      :sync()
-  end)
-end
+local forest = {}
+forest.tree_dir = "trees"
 
-local function select_from_title(data)
-  vim.ui.select(data, {
-    prompt = "Titles",
-    format_item = function(item)
-      return item:match("[^,]+$")
-    end,
-  }, function(choice)
-    local addr = choice:match("[^,%s]+")
-    -- match until :    [^,]+(?=,)
-    --get after:          [^, ]*$
-    local path = vim.fn.findfile(addr .. ".tree", tree_dir .. "/**")
-    vim.cmd("edit " .. path)
-  end)
-end
-
-local function select_template(data)
-  vim.ui.select(
-    data,
-    {
-      prompt = "Templates",
-    },
-    vim.schedule_wrap(function(template)
-      local tmpl_addr = template:match("^([^.]+)")
-      print(tmpl_addr)
-      job
-        :new({
-          command = "forester",
-          args = { "query", "prefix", tree_dir },
-          on_exit = vim.schedule_wrap(function(j, _)
-            vim.ui.select(j:result(), {}, function(pfx)
-              job
-                :new({
-                  command = "forester",
-                  args = { "new", "--prefix", pfx, "--dir", tree_dir, "--dest", tree_dir, "--template", tmpl_addr },
-                  on_exit = vim.schedule_wrap(function(data, return_val)
-                    vim.cmd("edit " .. data:result()[1])
-                  end),
-                })
-                :sync()
-            end)
-          end),
-        })
-        :sync()
-    end)
-  )
-end
+local tree_dir = forest.tree_dir
 
 local function new_tree()
-  job
-    :new({
-      command = "forester",
-      args = { "query", "prefix", tree_dir },
-      on_exit = vim.schedule_wrap(function(j, _)
-        select_prefixes(j:result())
-      end),
-    })
-    :sync()
+  local function edit_callback(res)
+    vim.cmd("edit " .. res:result()[1]) -- ugh
+  end
+
+  local function select(prefixes)
+    vim.ui.select(prefixes:result(), {}, function(prefix)
+      forester.new(prefix, tree_dir, edit_callback)
+    end)
+  end
+
+  forester.query("prefix", tree_dir, select)
 end
 
 local function new_from_template()
+  local function select_prefix(template_addr)
+    return function(prefixes)
+      vim.ui.select(
+        prefixes,
+        { prompt = "select a prefix" },
+        vim.schedule_wrap(function(prefix)
+          forester.template(prefix, template_addr, tree_dir)
+        end)
+      )
+    end
+  end
+
+  local function select_template(templates)
+    vim.ui.select(
+      templates,
+      { prompt = "select a emplate" },
+      vim.schedule_wrap(function(template)
+        local tmpl_addr = template:match("^([^.]+)")
+        forester.query("prefix", tree_dir, select_prefix(tmpl_addr))
+      end)
+    )
+  end
+
   job
     :new({
       command = "ls",
@@ -97,17 +64,22 @@ local function new_from_template()
 end
 
 local function open_tree()
-  job
-    :new({
-      command = "forester",
-      args = { "complete", tree_dir },
-      on_exit = vim.schedule_wrap(function(j, _)
-        select_from_title(j:result())
-      end),
-    })
-    :sync()
-  opts = opts or {}
-  --
+  local function select(data)
+    vim.ui.select(data:result(), {
+      prompt = "Titles",
+      format_item = function(item)
+        local addr = item:match("[^, ]*$")
+        local title = item:match("[^,]+$")
+        return title
+      end,
+    }, function(choice)
+      local addr = choice:match("[^,%s]+")
+      local path = vim.fn.findfile(addr .. ".tree", tree_dir .. "/**")
+      vim.cmd("edit " .. path)
+    end)
+  end
+
+  forester.complete(tree_dir, select)
 end
 
 vim.api.nvim_create_user_command("ForestNew", new_tree, {})
