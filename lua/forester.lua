@@ -20,7 +20,8 @@ local function new_tree()
   end
 
   local function select(prefixes)
-    vim.ui.select(prefixes:result(), {}, function(prefix)
+    vim.ui.select(prefixes, {}, function(prefix)
+      --vim.ui.select(prefixes:result(), {}, function(prefix)
       forester.new(prefix, tree_dir, edit_callback)
     end)
   end
@@ -82,12 +83,12 @@ local function open_tree()
   forester.complete(tree_dir, select)
 end
 
-local function transclude_selection()
-  local function split_path(path)
-    -- Returns the Path, Filename, and Extension as 3 values
-    return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
-  end
+local function split_path(path)
+  -- Returns the Path, Filename, and Extension as 3 values
+  return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
+end
 
+local function transclude_selection()
   local function callback(data)
     local path = data:result()[1]
     local _, addr, _ = split_path(path)
@@ -115,10 +116,43 @@ local function transclude_selection()
   forester.query("prefix", tree_dir, select_prefix())
 end
 
+local function transclude_new()
+  local function put(content)
+    local pos = vim.api.nvim_win_get_cursor(0)[2]
+    local line = vim.api.nvim_get_current_line()
+    local nline = line:sub(0, pos) .. content .. line:sub(pos + 1)
+    vim.api.nvim_set_current_line(nline)
+  end
+
+  local function callback(data)
+    local path = data:result()[1]
+    local _, addr, _ = split_path(path)
+    local content = "\\transclude{" .. addr .. "}"
+
+    put(content)
+    vim.cmd("edit " .. path)
+    --vim.api.nvim_feedkeys("Go", "n", false)
+    --vim.api.nvim_feedkeys(content, "i", false)
+  end
+  local function select_prefix()
+    return function(prefixes)
+      vim.ui.select(
+        prefixes,
+        { prompt = "select a prefix" },
+        vim.schedule_wrap(function(prefix)
+          forester.new(prefix, tree_dir, callback)
+        end)
+      )
+    end
+  end
+  forester.query("prefix", tree_dir, select_prefix())
+end
+
 vim.api.nvim_create_user_command("ForestNew", new_tree, {})
 vim.api.nvim_create_user_command("ForestTemplate", new_from_template, {})
 vim.api.nvim_create_user_command("ForestOpen", open_tree, {})
-vim.api.nvim_create_user_command("ForestTransclude", transclude_selection, {})
+vim.api.nvim_create_user_command("ForestTranscludeNew", transclude_new, {})
+vim.api.nvim_create_user_command("ForestTranscludeSelection", transclude_selection, {})
 
 function M.setup(config)
   vim.filetype.add({ extension = { tree = "tree" } })
@@ -133,6 +167,7 @@ function M.setup(config)
   keymap("n", "<leader>nn", new_tree, default_opts)
   keymap("n", "<leader>nt", new_from_template, default_opts)
   keymap("n", "<leader>n.", open_tree, default_opts)
+  keymap("n", "<leader>nh", transclude_new, default_opts)
   keymap("v", "<leader>t", transclude_selection, { noremap = true, silent = true })
 end
 

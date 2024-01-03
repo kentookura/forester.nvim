@@ -27,5 +27,4 @@ configs.forester = {
     root_dir = lspconfig.util.root_pattern(".git"),
   },
 }
-
 require("forester").setup()
