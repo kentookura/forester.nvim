@@ -1,13 +1,20 @@
 [
- "{"
- "}"
  "("
  ")"
  "["
  "]"
- "\\"
+ "[["
+ "]]"
 ]
 @punctuation.delimiter
+
+[
+ "\\"
+ "{"
+ "}"
+]
+@punctuation.special
+
 
 [
   "transclude" 
@@ -25,7 +32,6 @@
 [
 "ul" 
 "ol"
-"li"
 "p"
 "code"
 ]@function.builtin
@@ -40,12 +46,17 @@
 "query" @keyword
 
 (ident) @function
-;;(identifier) @field
-;;(arg) @variable
+;(identifier) @field
+;(arg) @variable
 (em (text)) @text.emphasis
-(addr) @underline 
-(label) @text.uri
-(title (_)* @text.title)
-(date (_)* @text.title)
+(addr) @comment
+;(label) @label
+(title (_)+ @text.title)
+(date (_)+ @text.title)
 (link_dest dest: (_) @variable)
-(external_link) @text.underline
+(external_link) @text.uri
+
+("li" @operator (#set! conceal "•"))
+(li ("{") @punctuation.delimiter (#set! conceal ""))
+(li ("}") @punctuation (#set! conceal ""))
+(li ("\\") @conceal (#set! conceal ""))
