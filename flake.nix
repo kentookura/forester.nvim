@@ -10,6 +10,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             forester.packages.${system}.default
+            tree-sitter
             asciinema
             asciinema-agg
             nodePackages.livedown

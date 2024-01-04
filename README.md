@@ -7,12 +7,16 @@ for writing mathematical hypertext
 
 Note: This plugin makes use of some features that I implemented on some
 branches which are currently only part of the
-[ `neovim-support` ](https://git.sr.ht/~kentookura/ocaml-forester/tree/nvim-support)
+[`neovim-support`](https://git.sr.ht/~kentookura/ocaml-forester/tree/nvim-support)
 branch of my fork of forester on sourcehut
 
 Currently assumes that trees are located in `./trees`.
 
 ## Features
+
+### Tree-sitter syntax highlighting
+
+![Screenshot showcasing the syntax highlighting](doc/syntax.png)
 
 ### following links using `gf`
 
