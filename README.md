@@ -12,7 +12,7 @@ Currently assumes that trees are located in `./trees`.
 ### Tree-sitter syntax highlighting and concealing
 
 ![Screenshot showcasing the syntax highlighting](doc/syntax.png)
-![Screen recording showcasing the conceal feature](doc/conceal.gif)
+![Screenshot showcasing the concealing](doc/conceal.png)
 
 ### following links using `gf`
 
