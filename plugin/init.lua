@@ -16,15 +16,24 @@ parser_config.forester = {
 
 vim.treesitter.language.register("tree", "forester")
 
-configs.forester = {
-  default_config = {
-    cmd = {
-      "dune",
-      "exec",
-      "forester-lsp",
+local on_attach = function(client, bufnr) end
+
+if not configs.forester then
+  configs.forester = {
+    default_config = {
+      cmd = {
+        "forester-lsp",
+      },
+      filetypes = { "tree", "forester" },
+      root_dir = lspconfig.util.root_pattern(".git"),
     },
-    filetypes = { "tree" },
-    root_dir = lspconfig.util.root_pattern(".git"),
-  },
-}
+    on_attach = on_attach,
+    setup = function()
+      print("setup")
+    end,
+  }
+end
+
+lspconfig.forester.setup({})
+
 require("forester").setup()
