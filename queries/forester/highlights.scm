@@ -71,11 +71,8 @@
 (meta (_)+ @number)
 
 
-("scope" @function.builtin (#set! conceal "🎯"))
+("scope" @function.builtin (#set! conceal "⦾"))
 (scope ("\\") @conceal (#set! conceal ""))
-(scope ("{") @conceal (#set! conceal " "))
-(scope ("}") @conceal (#set! conceal ""))
-(scope (_)+ @number)
 
 (external_link) @text.uri
 
@@ -89,14 +86,14 @@
 (unlabeled_link "[[" @conceal (#set! conceal ""))
 (unlabeled_link "]]" @conceal (#set! conceal ""))
 
-(put ("put") @keyword @conceal(#set! conceal "!"))
+(put ("put") @keyword (#set! conceal "!"))
 (put ("\\") @conceal (#set! conceal ""))
-((put identifier: (ident) @id @text.title) (#eq? @id "\\transclude/title") (#set! conceal "T"))
+;;((put identifier: (ident) @identifier) (#eq? @identifier "\\transclude/title") (#set! conceal "T"))
 
 ;"title"
 ("title" @text.title (#set! conceal ""))
 (title ("\\") @conceal (#set! conceal ""))
-(title ("{") @punctuation.delimiter (#set! conceal " "))
+(title ("{") @punctuation.delimiter (#set! conceal ""))
 (title ("}") @punctuation (#set! conceal ""))
 
 ("tag" @tag (#set! conceal "🏷️"))
@@ -104,10 +101,20 @@
 (tag ("{") @punctuation.delimiter (#set! conceal ""))
 (tag ("}") @punctuation (#set! conceal ""))
 
-("transclude" @keyword (#set! conceal "↪"))
+("import" @keyword (#set! conceal "↪"))
+(import ("\\") @conceal (#set! conceal ""))
+(import ("{") @punctuation.delimiter (#set! conceal " "))
+(import ("}") @punctuation (#set! conceal ""))
+
+("transclude" @keyword (#set! conceal "⨝"))
 (transclude ("\\") @conceal (#set! conceal ""))
 (transclude ("{") @punctuation.delimiter (#set! conceal " "))
 (transclude ("}") @punctuation (#set! conceal ""))
+
+("query" @keyword (#set! conceal "🔍"))
+(query_tree ("\\") @conceal (#set! conceal ""))
+(query_tree ("{") @punctuation.delimiter (#set! conceal " "))
+(query_tree ("}") @punctuation (#set! conceal ""))
 
 ("li" @operator (#set! conceal "▸"))
 (li ("\\") @conceal (#set! conceal ""))
@@ -130,4 +137,5 @@
 ("code" @operator (#set! conceal " "))
 (code ("\\") @conceal (#set! conceal ""))
 (code ("{") @punctuation.delimiter (#set! conceal " "))
-(code ("}") @punctuation (#set! conceal ""))
+(code ("}") @punctuation.delimiter (#set! conceal ""))
+(code (_)+ @comment) 

@@ -9,9 +9,10 @@ Currently assumes that trees are located in `./trees`.
 
 ## Features
 
-### Tree-sitter syntax highlighting
+### Tree-sitter syntax highlighting and concealing
 
 ![Screenshot showcasing the syntax highlighting](doc/syntax.png)
+![Screen recording showcasing the conceal feature](doc/conceal.gif)
 
 ### following links using `gf`
 
