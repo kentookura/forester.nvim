@@ -5,7 +5,7 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=stable",
     lazypath,
   })
 end
@@ -13,7 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    dir = "/home/kento/glade/forester.nvim",
+    dir = "./",
     config = function()
       local forester = require("forester")
       vim.g.mapleader = " "
@@ -26,7 +26,7 @@ require("lazy").setup({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
-      --{ "nvim-treesitter/playground" },
+      { "nvim-treesitter/playground" },
       --{ "ziontee113/SelectEase" },
       --{ "nvim-telescope/telescope.nvim" },
     },

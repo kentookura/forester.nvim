@@ -8,9 +8,29 @@ for writing mathematical hypertext
 Install [forester](https://git.sr.ht/~jonsterling/ocaml-forester) either via
 opam or nix.
 
-See the example configs
+With lazy:
 
-- [lazy.lua](./lazy.lua).
+```lua
+  {
+    "kentookura/forester.nvim",
+    config = function()
+      local forester = require("forester")
+      vim.g.mapleader = " "
+      vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
+      vim.keymap.set("n", "<leader>nt", forester.new_from_template, { silent = true })
+      vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
+      vim.keymap.set("n", "<leader>nh", forester.transclude_new, { silent = true })
+      vim.keymap.set("n", "<leader>nl", forester.link_new, { silent = true })
+    end,
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+      { "nvim-lua/plenary.nvim" },
+    },
+  },
+```
+
+See the example [init.lua](./init.lua)
+
 
 ## [Contributing/Roadmap](https://kentookura.srht.site/gld-000B.xml)
 
