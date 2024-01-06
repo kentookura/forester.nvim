@@ -8,12 +8,12 @@
 ]
 @punctuation.delimiter
 
-[
- "\\"
- "{"
- "}"
-]
-@punctuation.special
+;[
+; "\\"
+; "{"
+; "}"
+;]
+;@punctuation.special
 
 
 [
@@ -87,20 +87,20 @@
 
 ("taxon" @function.builtin (#set! conceal "🧬"))
 (taxon ("\\") @conceal (#set! conceal ""))
-(taxon ("{") @conceal (#set! conceal " "))
-(taxon ("}") @conceal (#set! conceal ""))
+(taxon ("{") @punctuation.delimiter (#set! conceal " "))
+(taxon ("}") @punctuation.delimiter (#set! conceal ""))
 (taxon (_)+ @number)
 
 ("date" @function.builtin (#set! conceal "📅"))
 (date ("\\") @conceal (#set! conceal ""))
-(date ("{") @conceal (#set! conceal " ")) ;; space to hack font
-(date ("}") @conceal (#set! conceal ""))
+(date ("{") @punctuation.delimiter (#set! conceal " ")) ;; space to hack font
+(date ("}") @punctuation.delimiter (#set! conceal ""))
 (date (_)+ @number)
 
 ("meta" @function.builtin (#set! conceal "🌐"))
 (meta ("\\") @conceal (#set! conceal ""))
-(meta ("{") @conceal (#set! conceal " ")) ;; space to hack font
-(meta ("}") @conceal (#set! conceal ""))
+(meta ("{") @punctuation.delimiter (#set! conceal " ")) ;; space to hack font
+(meta ("}") @punctuation.delimiter (#set! conceal ""))
 (meta (_)+ @number)
 
 

@@ -1,12 +1,60 @@
-\title{Representations of Weil groups}
-\date{2024-01-11}
-\taxon{talk}
-\meta{due}{2024-01-11}
+\title{Highlighting}
+\export{foo-0002}
+\import{foo-0001}
 
-\scope {
-  \put\transclude/title{Outline}
-  \transclude{llc-0020}
+\taxon{demo}
+\meta{external}{https://github.com/kentookura/forester.nvim}
+
+\tag{neovim}
+\tag{treesitter}
+
+\transclude{nvm-0001} 
+
+\p{
+  \ul{
+  \li{list}
+  \li{items}
+  \li{Todo: show surrounding braces when inside list}
+  }
+  \ol{
+  \li{ordered list items would be awesome. Need to compute stuff in lua}
+  \li{Querying section numbering via forester 👀 }
   }
 
-\p{ Nice! [link to addr](llc-0005), [[https://extern.com]], \code{def foo} }
+  [Install the plugin](foo-0001) and try it out! See the example [neovim config](./init.lua)
+
+
+  Embedded  syntax highlighting would be awesome. Requires syntax change in forester.
+  \code{
+    def function()
+    end
+  }
+
+  #{a = b} 
+
+  This code partially breaks syntax highlighting:
+  %##{
+  %  \f\relax{x} = \int_{-\infty}^\infty%
+  %  \f\hat\xi\,e^{2 \pi i \xi x}
+  %  \,d\xi
+  %}
+}
+
+\scope{
+  \put\transclude/tag{feature}
+  \query{\query/author{kentookura}}
+}
+
+\def\my-object{
+  \object[self]{
+    [method1]{
+      the implementation of this method \em{asdf} \strong{asdf}
+    }
+    [method2]{
+      the implementation of another method
+      \self#method1
+    }
+  }
+}
+
 

@@ -20,7 +20,6 @@ Currently assumes that trees are located in `./trees`.
 
 - Tree-sitter syntax highlighting and concealing
 
-![Screenshot showcasing the syntax highlighting](doc/syntax.png)
 ![Screenshot showcasing the conceal feature](doc/conceal.png)
 
 - following links with `gf`

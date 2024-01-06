@@ -1,0 +1,5 @@
+\title{Installation}
+
+\tag{documentation}
+
+\p{See the example [[init.lua]] for installing with [lazy.vim](https://github.com/folke/lazy.nvim).}

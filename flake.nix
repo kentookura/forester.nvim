@@ -17,6 +17,9 @@
             nodePackages.livedown
             nodePackages.katex
             nodejs
+            scrot
+            gh-markdown-preview
+            imagemagick
             gcc
             tree-sitter
           ];
