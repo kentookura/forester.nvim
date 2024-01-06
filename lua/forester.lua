@@ -19,10 +19,11 @@ local function new_tree()
     cmd("edit " .. res:result()[1])
   end
 
-  local function select(prefixes)
-    ui.select(prefixes:result(), {}, function(prefix)
-      vim.print(prefix)
-      --vim.ui.select(prefixes:result(), {}, function(prefix)
+  local function select(prefixes) -- currently unused until I figure out a way to use custom completion func
+    ui.input({ prompt = "Enter a prefix: " }, function(prefix)
+      if prefix == nil then
+        return
+      end
       forester.new(prefix, tree_dir, edit_callback)
     end)
   end
@@ -46,7 +47,7 @@ local function new_from_template()
   local function select_template(templates)
     ui.select(
       templates,
-      { prompt = "select a emplate" },
+      { prompt = "select a template" },
       vim.schedule_wrap(function(template)
         local tmpl_addr = template:match("^([^.]+)")
         forester.query("prefix", tree_dir, select_prefix(tmpl_addr))
