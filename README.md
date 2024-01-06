@@ -20,16 +20,16 @@ Currently assumes that trees are located in `./trees`.
 
 - Tree-sitter syntax highlighting and concealing
 
-![Screenshot showcasing the conceal feature](doc/conceal.png)
+![Screenshot showcasing the conceal feature](./doc/conceal.png)
 
 - following links with `gf`
 
-![Screen Recording showing the following of forester links in vim](doc/link.gif)
+![Screen Recording showing the following of forester links in vim](./doc/link.gif)
 
 - Open trees by searching for their title
 
-![Screen Recording showing the browsing trees by title](doc/search.gif)
+![Screen Recording showing the browsing trees by title](./doc/search.gif)
 
 - Creating new trees
 
-![Screen Recording showing the creation of new trees](doc/new.gif)
+![Screen Recording showing the creation of new trees](./doc/new.gif)
