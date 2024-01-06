@@ -27,30 +27,63 @@
 "taxon"
 ] @field
 
-[
-"ul" 
-"ol"
-"p"
-"code"
-]@function.builtin
+;; Prim
+
+(p "p" @operator (#set! conceal "¶"))
+(p ("\\") @conceal (#set! conceal ""))
+(p ("{") @punctuation.delimiter) 
+(p ("}") @punctuation.delimiter)
+
+(li "li" @operator (#set! conceal "▸"))
+(li ("\\") @conceal (#set! conceal ""))
+(li ("{") @punctuation (#set! conceal " "))
+(li ("}") @punctuation (#set! conceal ""))
+
+(ul "ul" @operator (#set! conceal "⬤")) ;; Find better symbol
+(ul ("\\") @conceal (#set! conceal ""))
+(ul ("{") @punctuation (#set! conceal " "))
+(ul ("}") @punctuation (#set! conceal ""))
+
+(ol "ol" @operator (#set! conceal "1")) ;; Find better symbol
+(ol ("\\") @conceal (#set! conceal ""))
+(ol ("{") @punctuation (#set! conceal " "))
+(ol ("}") @punctuation (#set! conceal ""))
+
+
+(code "code" @operator (#set! conceal " "))
+(code ("\\") @conceal (#set! conceal ""))
+(code ("{") @punctuation.delimiter)
+(code ("}") @punctuation.delimiter)
+(code (_)* @text) 
 
 
 ((let) @define)
 (method key: (text) @method)
-
+ 
 "tag" @tag
 "def" @define
 "object" @lsp.type.class
 "scope" @field
 "query" @keyword
-(ident) @function
+;(ident) @function
 (comment) @comment
 ;(identifier) @field
 ;(arg) @variable
-(em (text)) @text.emphasis
 (addr) @text.emphasis 
 (link_label) @label
 (title (_)+ @text.title)
+
+("strong" @conceal (#set! conceal ""))
+(strong ("\\") @conceal (#set! conceal ""))
+(strong ("{") @conceal (#set! conceal " "))
+(strong ("}") @conceal (#set! conceal ""))
+(strong (_)+ @text.strong)
+ 
+("em" @conceal (#set! conceal ""))
+(em ("\\") @conceal (#set! conceal ""))
+(em ("{") @conceal (#set! conceal " "))
+(em ("}") @conceal (#set! conceal ""))
+(em (_)+ @text.emphasis)
 
 ("taxon" @function.builtin (#set! conceal "🧬"))
 (taxon ("\\") @conceal (#set! conceal ""))
@@ -60,13 +93,13 @@
 
 ("date" @function.builtin (#set! conceal "📅"))
 (date ("\\") @conceal (#set! conceal ""))
-(date ("{") @conceal (#set! conceal " "))
+(date ("{") @conceal (#set! conceal " ")) ;; space to hack font
 (date ("}") @conceal (#set! conceal ""))
 (date (_)+ @number)
 
 ("meta" @function.builtin (#set! conceal "🌐"))
 (meta ("\\") @conceal (#set! conceal ""))
-(meta ("{") @conceal (#set! conceal " "))
+(meta ("{") @conceal (#set! conceal " ")) ;; space to hack font
 (meta ("}") @conceal (#set! conceal ""))
 (meta (_)+ @number)
 
@@ -99,43 +132,27 @@
 ("tag" @tag (#set! conceal "🏷️"))
 (tag ("\\") @conceal (#set! conceal ""))
 (tag ("{") @punctuation.delimiter (#set! conceal ""))
-(tag ("}") @punctuation (#set! conceal ""))
+(tag ("}") @punctuation.delimiter (#set! conceal ""))
 
-("import" @keyword (#set! conceal "↪"))
+("import" @keyword (#set! conceal "↧"))
 (import ("\\") @conceal (#set! conceal ""))
 (import ("{") @punctuation.delimiter (#set! conceal " "))
-(import ("}") @punctuation (#set! conceal ""))
+(import ("}") @punctuation.delimiter (#set! conceal ""))
+
+("export" @keyword (#set! conceal "↥"))
+(export ("\\") @conceal (#set! conceal ""))
+(export ("{") @punctuation.delimiter (#set! conceal " "))
+(export ("}") @punctuation.delimiter (#set! conceal ""))
 
 ("transclude" @keyword (#set! conceal "⨝"))
 (transclude ("\\") @conceal (#set! conceal ""))
 (transclude ("{") @punctuation.delimiter (#set! conceal " "))
-(transclude ("}") @punctuation (#set! conceal ""))
+(transclude ("}") @punctuation.delimiter (#set! conceal ""))
 
 ("query" @keyword (#set! conceal "🔍"))
 (query_tree ("\\") @conceal (#set! conceal ""))
-(query_tree ("{") @punctuation.delimiter (#set! conceal " "))
-(query_tree ("}") @punctuation (#set! conceal ""))
 
-("li" @operator (#set! conceal "▸"))
-(li ("\\") @conceal (#set! conceal ""))
-(li ("{") @punctuation.delimiter (#set! conceal " "))
-(li ("}") @punctuation (#set! conceal ""))
 
-("ul" @operator (#set! conceal "⬤"))
-(ul ("\\") @conceal (#set! conceal ""))
-(ul ("{") @punctuation.delimiter (#set! conceal " "))
-(ul ("}") @punctuation (#set! conceal ""))
+(query_tree ("{") @punctuation.delimiter )
+(query_tree ("}") @punctuation.delimiter )
 
-("ol" @operator (#set! conceal "↓"))
-(ol ("\\") @conceal (#set! conceal ""))
-(ol ("{") @punctuation.delimiter (#set! conceal " "))
-(ol ("}") @punctuation (#set! conceal ""))
-
-("p" @operator (#set! conceal "¶"))
-(p ("\\") @conceal (#set! conceal ""))
-
-("code" @operator (#set! conceal " "))
-(code ("\\") @conceal (#set! conceal ""))
-(code ("{") @punctuation.delimiter (#set! conceal " "))
-(code ("}") @punctuation.delimiter (#set! conceal ""))
-(code (_)+ @comment) 

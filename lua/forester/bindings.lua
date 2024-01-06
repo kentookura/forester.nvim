@@ -24,7 +24,7 @@ local function query(arg, tree_dir, callback)
       args = { "query", arg, tree_dir },
       on_exit = function(data, _)
         vim.schedule(function()
-          callback(data:result())
+          callback(data)
         end)
       end,
     })
@@ -35,7 +35,7 @@ local function new(prefix, tree_dir, callback)
   job
     :new({
       command = "forester",
-      args = { "new", "--prefix", prefix, "--dir", tree_dir },
+      args = { "new", "--prefix", prefix, "--dir", tree_dir, "--dest", tree_dir },
       on_exit = function(data, _)
         vim.schedule(function()
           callback(data)

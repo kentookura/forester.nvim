@@ -9,6 +9,7 @@
       in {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
+            teseq
             forester.packages.${system}.default
             tree-sitter
             asciinema
