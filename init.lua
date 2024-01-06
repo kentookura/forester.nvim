@@ -13,7 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    dir = "./",
+    "kentookura/forester.nvim",
     config = function()
       local forester = require("forester")
       vim.g.mapleader = " "
