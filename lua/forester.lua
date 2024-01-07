@@ -4,39 +4,60 @@ local ui = vim.ui
 local cmd = vim.cmd
 local forester = require("forester.bindings")
 local job = require("plenary.job")
-
+local forester_ns = api.nvim_create_namespace("forester.extmarks")
 local M = {}
 
-local forester_ns = api.nvim_create_namespace("forester.extmarks")
-local forest = {}
-forest.tree_dir = "trees"
+local tree_dir = "trees" -- Goal: unset this variable
 
-local tree_dir = forest.tree_dir
+local function ensure_treesitter()
+  vim.treesitter.language.register("tree", "forester")
+  vim.filetype.add({ extension = { tree = "tree" } })
+
+  local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+  parser_config.forester = {
+    install_info = {
+      url = "https://github.com/kentookura/forester.nvim",
+      files = { "src/parser.c" },
+      branch = "main",
+      generate_requires_npm = false,
+      requires_generate_from_grammar = false,
+    },
+    filetype = "tree",
+  }
+end
+
+local setup = function(opts)
+  vim.print(vim.inspect(opts.tree_dir)) -- Getting the option here, but not used
+  ensure_treesitter()
+  vim.opt.path:append(opts.tree_dir)
+  vim.opt.suffixesadd:prepend(".tree")
+  vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
+    pattern = { "*.tree" },
+    callback = function()
+      vim.cmd(":TSBufEnable highlight")
+      vim.cmd(":set conceallevel=2")
+    end,
+  })
+end
 
 local function new_tree()
-  local function edit_callback(res)
-    --vim.print(res:result()[1])
-    cmd("edit " .. res:result()[1])
+  local function edit_callback(new_addr)
+    cmd("edit " .. new_addr[1])
   end
 
-  local function select(prefixes) -- currently unused until I figure out a way to use custom completion func
-    ui.input({ prompt = "Enter a prefix: " }, function(prefix)
-      if prefix == nil then
-        return
-      end
-      forester.new(prefix, tree_dir, edit_callback)
-    end)
-  end
-
-  forester.query("prefix", tree_dir, select)
+  ui.input({ prompt = "Enter a prefix: " }, function(prefix)
+    if prefix == nil then
+      return
+    end
+    forester.new(prefix, tree_dir, edit_callback)
+  end)
 end
 
 local function new_from_template()
   local function select_prefix(template_addr)
-    return function(prefixes)
-      ui.select(
-        prefixes,
-        { prompt = "select a prefix" },
+    return function()
+      ui.input(
+        { prompt = "Enter a prefix: " },
         vim.schedule_wrap(function(prefix)
           forester.template(prefix, template_addr, tree_dir)
         end)
@@ -49,6 +70,9 @@ local function new_from_template()
       templates,
       { prompt = "select a template" },
       vim.schedule_wrap(function(template)
+        if template == nil then
+          return
+        end
         local tmpl_addr = template:match("^([^.]+)")
         forester.query("prefix", tree_dir, select_prefix(tmpl_addr))
       end)
@@ -68,14 +92,17 @@ end
 
 local function open_tree()
   local function select(data)
-    ui.select(data:result(), {
+    ui.select(data, {
       prompt = "Select a tree title",
       format_item = function(item)
-        local addr = item:match("[^, ]*$")
-        local title = item:match("[^,]+$")
-        return title
+        -- local addr = item:match("[^, ]*$")
+        -- local title = item:match("[^,]+$")
+        return item
       end,
     }, function(choice)
+      if choice == nil then
+        return
+      end
       local addr = choice:match("[^,%s]+")
       local path = vim.fn.findfile(addr .. ".tree", tree_dir .. "/**")
       vim.cmd("edit " .. path)
@@ -126,12 +153,12 @@ end
 --        prefixes,
 --        { prompt = "select a prefix" },
 --        vim.schedule_wrap(function(prefix)
---          forester.new(prefix, tree_dir, callback)
+--          forester.new(prefix,config.tree_dir, callback)
 --        end)
 --      )
 --    end
 --  end
---  forester.query("prefix", tree_dir, select_prefix())
+--  forester.query("prefix",config.tree_dir, select_prefix())
 --end
 
 --local transclusions = vim.treesitter.query.parse("tree", [[ (transclude (addr) @id) ]])
@@ -162,7 +189,7 @@ local function put(content)
   api.nvim_buf_set_text(0, r, c, r, c, content)
 end
 
-local function link_new()
+local function link_new_tree()
   local function callback(data)
     local path = data:result()[1]
     local _, addr, _ = split_path(path)
@@ -177,7 +204,6 @@ local function link_new()
 
   local function select(prefixes)
     ui.select(prefixes:result(), {}, function(prefix)
-      vim.print(prefix)
       --ui.select(prefixes:result(), {}, function(prefix)
       forester.new(prefix, tree_dir, callback)
     end)
@@ -186,7 +212,30 @@ local function link_new()
   forester.query("prefix", tree_dir, select)
 end
 
-local function transclude_new()
+local function link_tree()
+  local function callback(data)
+    local path = data:result()[1]
+    local _, addr, _ = split_path(path)
+    local content = "[](" .. addr .. ")"
+
+    put(content)
+    vim.cmd("write")
+    vim.cmd("vsp " .. path)
+    --api.nvim_feedkeys("Go", "n", false)
+    --api.nvim_feedkeys(content, "i", false)
+  end
+
+  local function select(prefixes)
+    ui.select(prefixes:result(), {}, function(prefix)
+      --ui.select(prefixes:result(), {}, function(prefix)
+      forester.new(prefix, tree_dir, callback)
+    end)
+  end
+
+  forester.query("prefix", tree_dir, select)
+end
+
+local function transclude_tree()
   local function callback(data)
     local path = data:result()[1]
     local _, addr, _ = split_path(path)
@@ -201,7 +250,32 @@ local function transclude_new()
 
   local function select(prefixes)
     ui.select(prefixes:result(), {}, function(prefix)
-      vim.print(prefix)
+      --ui.select(prefixes:result(), {}, function(prefix)
+      forester.new(prefix, tree_dir, callback)
+    end)
+  end
+
+  local inspect = function(x)
+    vim.print(vim.inspect(x))
+  end
+  forester.complete(tree_dir, inspect)
+end
+
+local function transclude_new_tree()
+  local function callback(data)
+    local path = data:result()[1]
+    local _, addr, _ = split_path(path)
+    local content = "\\transclude{" .. addr .. "}"
+
+    put(content)
+    cmd("write")
+    cmd("vsp " .. path)
+    --api.nvim_feedkeys("Go", "n", false)
+    --api.nvim_feedkeys(content, "i", false)
+  end
+
+  local function select(prefixes)
+    ui.select(prefixes:result(), {}, function(prefix)
       --ui.select(prefixes:result(), {}, function(prefix)
       forester.new(prefix, tree_dir, callback)
     end)
@@ -210,15 +284,13 @@ local function transclude_new()
   forester.query("prefix", tree_dir, select)
 end
 
-local function setup(opts)
-  vim.print(opts)
-end
-
 M.new_tree = new_tree
 M.new_from_template = new_from_template
 M.open_tree = open_tree
-M.transclude_new = transclude_new
-M.link_new = link_new
+M.transclude_tree = transclude_tree
+M.transclude_new_tree = transclude_new_tree
+M.link_tree = link_tree
+M.link_new_tree = link_new_tree
 M.setup = setup
 
 return M

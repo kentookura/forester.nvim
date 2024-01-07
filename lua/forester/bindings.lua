@@ -1,7 +1,7 @@
 local vim = vim
 local job = require("plenary.job")
 
-local M = {}
+local Bindings = {}
 
 local function complete(tree_dir, callback)
   job
@@ -10,8 +10,13 @@ local function complete(tree_dir, callback)
       args = { "complete", tree_dir },
       on_exit = function(data, _)
         vim.schedule(function()
-          callback(data)
+          callback(data:result())
         end)
+      end,
+      on_stderr = function(error, data)
+        vim.print("error")
+        vim.print(vim.inspect(error))
+        vim.print(vim.inspect(data))
       end,
     })
     :sync()
@@ -24,8 +29,11 @@ local function query(arg, tree_dir, callback)
       args = { "query", arg, tree_dir },
       on_exit = function(data, _)
         vim.schedule(function()
-          callback(data)
+          callback(data:result())
         end)
+      end,
+      on_stderr = function(error, data)
+        vim.print(vim.inspect(error))
       end,
     })
     :sync()
@@ -38,8 +46,12 @@ local function new(prefix, tree_dir, callback)
       args = { "new", "--prefix", prefix, "--dir", tree_dir, "--dest", tree_dir },
       on_exit = function(data, _)
         vim.schedule(function()
-          callback(data)
+          callback(data:result())
         end)
+      end,
+      on_stderr = function(error, data)
+        vim.print(vim.inspect(error))
+        vim.print(vim.inspect(data))
       end,
     })
     :sync()
@@ -66,13 +78,17 @@ local function template(pfx, tmpl_addr, tree_dir)
           vim.cmd("edit " .. res:result()[1]) -- ugh
         end)
       end),
+      on_stderr = function(error, data)
+        vim.print(vim.inspect(error))
+        vim.print(vim.inspect(data))
+      end,
     })
     :sync()
 end
 
-M.query = query
-M.new = new
-M.template = template
-M.complete = complete
+Bindings.query = query
+Bindings.new = new
+Bindings.template = template
+Bindings.complete = complete
 
-return M
+return Bindings

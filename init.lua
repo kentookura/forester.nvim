@@ -13,15 +13,16 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "kentookura/forester.nvim",
-    config = function()
+    dir = "./.", -- change this to line to "kentookura/neovim"
+    tree_dir = "notes",
+    config = function(opts)
       local forester = require("forester")
-      vim.g.mapleader = " "
-      vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nt", forester.new_from_template, { silent = true })
-      vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nh", forester.transclude_new, { silent = true })
-      vim.keymap.set("n", "<leader>nl", forester.link_new, { silent = true })
+      forester.setup(opts)
+      vim.print(vim.inspect(forester))
+      --vim.g.mapleader = " "
+      --vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
+      --vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
+      --vim.keymap.set("n", "<leader>ng", forester.new_from_template, { silent = true }) --"generate"
     end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
