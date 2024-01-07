@@ -7,8 +7,6 @@ local job = require("plenary.job")
 local forester_ns = api.nvim_create_namespace("forester.extmarks")
 local M = {}
 
-local tree_dir = "trees" -- Goal: unset this variable
-
 local function ensure_treesitter()
   vim.treesitter.language.register("tree", "forester")
   vim.filetype.add({ extension = { tree = "tree" } })
@@ -25,6 +23,8 @@ local function ensure_treesitter()
     filetype = "tree",
   }
 end
+
+local tree_dir = "trees" -- Goal: unset this variable
 
 local setup = function(opts)
   vim.print(vim.inspect(opts.tree_dir)) -- Getting the option here, but not used
