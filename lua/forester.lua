@@ -210,10 +210,15 @@ local function transclude_new()
   forester.query("prefix", tree_dir, select)
 end
 
+local function setup(opts)
+  vim.print(opts)
+end
+
 M.new_tree = new_tree
 M.new_from_template = new_from_template
 M.open_tree = open_tree
 M.transclude_new = transclude_new
 M.link_new = link_new
+M.setup = setup
 
 return M
