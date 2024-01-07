@@ -304,6 +304,10 @@ local function transclude_new_tree()
   forester.query("prefix", tree_dir, select)
 end
 
+local function setup(opts)
+  vim.print(opts)
+end
+
 M.new_tree = new_tree
 M.new_from_template = new_from_template
 M.open_tree = open_tree
@@ -314,5 +318,7 @@ M.link_new_tree = link_new_tree
 M.setup = setup
 M.inc_addr = inc_addr
 M.decr_addr = decr_addr
+M.pad_addr = pad_addr
+M.setup = setup
 
 return M
