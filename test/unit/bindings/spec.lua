@@ -1,0 +1,26 @@
+local forester = require("forester")
+
+local chorus = function()
+  local sandbox = "./test/sandbox"
+  local dirs = scan.scan_dir(sandbox, { respect_gitignore = false })
+  vim.print(vim.inspect(dirs))
+end
+
+describe("forester wrapper", function()
+  describe("new", function()
+    it("creates new trees", function() end)
+  end)
+  describe("complete", function()
+    it("gets completions", function() end)
+  end)
+  describe("query", function()
+    it("queries the forest", function()
+      it("queries prefixes", function() end)
+      it("queries the path", function() end)
+    end)
+  end)
+  describe("template", function()
+    it("creates trees with specified template", function() end)
+    it("handles missing templates", function() end)
+  end)
+end)

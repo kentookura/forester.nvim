@@ -1,27 +1,9 @@
-;;((let) @define)
-;;(method key: (text) @method)
-;; 
-;;"tag" @tag
-;;"def" @define
-;;"object" @lsp.type.class
-;;"scope" @field
-;;"query" @keyword
-;;;(ident) @function
-(comment) @comment
-;(identifier) @field
-(addr) @text.emphasis 
-(link_label) @label
-(title (_)+ @text.title)
-(author (_)+ @text.strong)
-
-(def) @define
-(label) @label
-(object "object" @keyword)
-(method_decl key: (_)+ @method)
-(external_link) @text.uri
+(inline_math math: (ident (label) @label (#eq? @label "rho")(#set! conceal "ρ")))
+(inline_math math: (ident (label) @label (#eq? @label "in")(#set! conceal "∈")))
+(inline_math math: (ident (label) @label (#eq? @label "neq")(#set! conceal "≠")))
+(inline_math math: (ident (label) @label (#eq? @label "qed") (#set! conceal "∎")))
 
 
-(tag (text) @field)
 [
  "("
  ")"
@@ -32,12 +14,12 @@
 ]
 @punctuation.delimiter
 
-[
- "\\"
- "{"
- "}"
-]
-@punctuation.special
+;[
+; "\\"
+; "{"
+; "}"
+;]
+;@punctuation.special
 
 
 [
@@ -80,6 +62,31 @@
 (code ("}") @punctuation.delimiter)
 (code (_)* @text) 
 
+(if_tex "iftex" @operator)
+(if_tex ("\\") @conceal (#set! conceal ""))
+(if_tex ("{") @punctuation.delimiter)
+(if_tex ("}") @punctuation.delimiter)
+
+(ident ((label) @label))
+
+(ident ((label) @label) (#eq? @label "todo") (#set! conceal "☐ ")) ; FIXME conceal list item when making a todo list
+(ident ((label) @label) (#eq? @label "done") (#set! conceal "☑ "))
+;((let) @define)
+;(method key: (text) @method)
+ 
+"tag" @tag
+"def" @define
+"object" @lsp.type.class
+"scope" @field
+"query" @keyword
+;(ident) @function
+(comment) @comment
+;(identifier) @field
+;(arg) @variable
+(addr) @text.emphasis 
+(link_label) @label
+(title (_)+ @text.title)
+
 ("strong" @conceal (#set! conceal ""))
 (strong ("\\") @conceal (#set! conceal ""))
 (strong ("{") @conceal (#set! conceal " "))
@@ -110,8 +117,14 @@
 (meta ("}") @punctuation.delimiter (#set! conceal ""))
 (meta (_)+ @number)
 
-("scope" @function.builtin (#set! conceal "⦾"))
+
+("scope" @function.builtin (#set! conceal "▷"))
 (scope ("\\") @conceal (#set! conceal ""))
+
+(external_link) @text.uri
+
+
+(tag (text) @field)
 
 (link_dest dest: (_) @conceal (#set! conceal""))
 (link_dest "(" @conceal (#set! conceal""))
@@ -120,20 +133,21 @@
 (unlabeled_link "[[" @conceal (#set! conceal ""))
 (unlabeled_link "]]" @conceal (#set! conceal ""))
 
-(put ("put") @keyword (#set! conceal "!"))
+(query_tag "\\query/tag" @tag (#set! conceal "🏷️"))
+(query_tag (text) @lsp.type.enumMember) 
+
+(put ("put") @lsp.type.modifier (#set! conceal "!"))
 (put ("\\") @conceal (#set! conceal ""))
+(transclusion_opt "/" @cocneal (#set! conceal " "))
+;(put "transclude" @keyword) 
 ;;((put identifier: (ident) @identifier) (#eq? @identifier "\\transclude/title") (#set! conceal "T"))
 
+
 ;"title"
-("title" @punctuation (#set! conceal ""))
+(title "title" @function.builtin (#set! conceal ""))
 (title ("\\") @conceal (#set! conceal ""))
 (title ("{") @punctuation.delimiter (#set! conceal ""))
-(title ("}") @punctuation.delimiter (#set! conceal ""))
-
-(author "author" @punctuation (#set! conceal "✍️"))
-(author ("\\") @conceal (#set! conceal ""))
-(author ("{") @conceal (#set! conceal ""))
-(author ("}") @conceal (#set! conceal ""))
+(title ("}") @punctuation (#set! conceal ""))
 
 ("tag" @tag (#set! conceal "🏷️"))
 (tag ("\\") @conceal (#set! conceal ""))

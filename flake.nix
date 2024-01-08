@@ -1,9 +1,10 @@
 {
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
+    forest-server.url = "github:kentookura/forest-server";
     forester = { url = "sourcehut:~kentookura/ocaml-forester/nvim-support"; };
   };
-  outputs = { self, flake-utils, nixpkgs, forester }@inputs:
+  outputs = { self, forest-server, flake-utils, nixpkgs, forester }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = import nixpkgs { inherit system; };
       in {
@@ -22,6 +23,7 @@
             imagemagick
             gcc
             tree-sitter
+            forest-server.packages.${system}.default
           ];
           shellHook = "export PATH=$PATH:./node_modules/.bin";
         };

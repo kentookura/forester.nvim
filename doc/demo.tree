@@ -1,20 +1,17 @@
 \title{Highlighting}
-\export{foo-0002}
-\import{foo-0001}
-
 \taxon{demo}
 \meta{external}{https://github.com/kentookura/forester.nvim}
 
 \tag{neovim}
 \tag{treesitter}
 
-\transclude{nvm-0001} 
-
 \p{
   \ul{
   \li{list}
   \li{items}
   \li{Todo: show surrounding braces when inside list}
+
+  
   }
   \ol{
   \li{ordered list items would be awesome. Need to compute stuff in lua}
@@ -40,10 +37,6 @@
   %}
 }
 
-\scope{
-  \put\transclude/tag{feature}
-  \query{\query/author{kentookura}}
-}
 
 \def\my-object{
   \object[self]{

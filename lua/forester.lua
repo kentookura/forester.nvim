@@ -3,6 +3,7 @@ local api = vim.api
 local ui = vim.ui
 local cmd = vim.cmd
 local forester = require("forester.bindings")
+local util = require("util")
 local job = require("plenary.job")
 local forester_ns = api.nvim_create_namespace("forester.extmarks")
 local M = {}
@@ -38,6 +39,25 @@ local setup = function(opts)
       vim.cmd(":set conceallevel=2")
     end,
   })
+end
+
+local pad_addr = function(i)
+  local base36_str = util.encode(i)
+  local required_padding = 4 - #tostring(base36_str)
+  if required_padding < 0 then
+    return base36_str
+  else
+    return string.rep("0", required_padding) .. base36_str
+  end
+end
+
+vim.print(pad_addr(1))
+local function inc_addr(prefix, tree_num) -- TODO bind these to <C-x> and <C-a>
+  return prefix .. "-" .. pad_addr(tree_num + 1)
+end
+
+local function decr_addr(prefix, tree_num)
+  return prefix .. "-" .. pad_addr(tree_num - 1)
 end
 
 local function new_tree()
@@ -292,5 +312,7 @@ M.transclude_new_tree = transclude_new_tree
 M.link_tree = link_tree
 M.link_new_tree = link_new_tree
 M.setup = setup
+M.inc_addr = inc_addr
+M.decr_addr = decr_addr
 
 return M

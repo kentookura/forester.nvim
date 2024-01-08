@@ -1,0 +1,31 @@
+\title{Forester.nvim}
+\taxon{README}
+\tag{documentation}
+
+\scope{
+    \put\transclude/title{Installation}
+    \transclude{nvm-0002}
+  }
+
+\p{See the example [[init.lua]] for installing with [lazy.vim](https://github.com/folke/lazy.nvim).}
+
+\date{2024-01-08}
+\tag{todo}
+
+\scope{
+    \put\transclude/title{Todos}
+    \query{
+        \query/tag{todo}
+      }
+  }
+
+
+\p{
+  increment/decrement tree addrs using \code{<C-a>} and \code{<C-x>}
+  \code{h: nrformats}
+}
+
+\p{
+  nixvim
+}
+
