@@ -19,8 +19,6 @@ With lazy:
       vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
       vim.keymap.set("n", "<leader>nt", forester.new_from_template, { silent = true })
       vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nh", forester.transclude_new, { silent = true })
-      vim.keymap.set("n", "<leader>nl", forester.link_new, { silent = true })
     end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
