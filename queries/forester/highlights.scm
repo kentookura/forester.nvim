@@ -1,3 +1,27 @@
+;;((let) @define)
+;;(method key: (text) @method)
+;; 
+;;"tag" @tag
+;;"def" @define
+;;"object" @lsp.type.class
+;;"scope" @field
+;;"query" @keyword
+;;;(ident) @function
+(comment) @comment
+;(identifier) @field
+(addr) @text.emphasis 
+(link_label) @label
+(title (_)+ @text.title)
+(author (_)+ @text.strong)
+
+(def) @define
+(label) @label
+(object "object" @keyword)
+(method_decl key: (_)+ @method)
+(external_link) @text.uri
+
+
+(tag (text) @field)
 [
  "("
  ")"
@@ -8,12 +32,12 @@
 ]
 @punctuation.delimiter
 
-;[
-; "\\"
-; "{"
-; "}"
-;]
-;@punctuation.special
+[
+ "\\"
+ "{"
+ "}"
+]
+@punctuation.special
 
 
 [
@@ -56,23 +80,6 @@
 (code ("}") @punctuation.delimiter)
 (code (_)* @text) 
 
-
-((let) @define)
-(method key: (text) @method)
- 
-"tag" @tag
-"def" @define
-"object" @lsp.type.class
-"scope" @field
-"query" @keyword
-;(ident) @function
-(comment) @comment
-;(identifier) @field
-;(arg) @variable
-(addr) @text.emphasis 
-(link_label) @label
-(title (_)+ @text.title)
-
 ("strong" @conceal (#set! conceal ""))
 (strong ("\\") @conceal (#set! conceal ""))
 (strong ("{") @conceal (#set! conceal " "))
@@ -103,14 +110,8 @@
 (meta ("}") @punctuation.delimiter (#set! conceal ""))
 (meta (_)+ @number)
 
-
 ("scope" @function.builtin (#set! conceal "⦾"))
 (scope ("\\") @conceal (#set! conceal ""))
-
-(external_link) @text.uri
-
-
-(tag (text) @field)
 
 (link_dest dest: (_) @conceal (#set! conceal""))
 (link_dest "(" @conceal (#set! conceal""))
@@ -124,10 +125,15 @@
 ;;((put identifier: (ident) @identifier) (#eq? @identifier "\\transclude/title") (#set! conceal "T"))
 
 ;"title"
-("title" @text.title (#set! conceal ""))
+("title" @punctuation (#set! conceal ""))
 (title ("\\") @conceal (#set! conceal ""))
 (title ("{") @punctuation.delimiter (#set! conceal ""))
-(title ("}") @punctuation (#set! conceal ""))
+(title ("}") @punctuation.delimiter (#set! conceal ""))
+
+(author "author" @punctuation (#set! conceal "✍️"))
+(author ("\\") @conceal (#set! conceal ""))
+(author ("{") @conceal (#set! conceal ""))
+(author ("}") @conceal (#set! conceal ""))
 
 ("tag" @tag (#set! conceal "🏷️"))
 (tag ("\\") @conceal (#set! conceal ""))
@@ -150,9 +156,9 @@
 (transclude ("}") @punctuation.delimiter (#set! conceal ""))
 
 ("query" @keyword (#set! conceal "🔍"))
-(query_tree ("\\") @conceal (#set! conceal ""))
+(query ("\\") @conceal (#set! conceal ""))
 
 
-(query_tree ("{") @punctuation.delimiter )
-(query_tree ("}") @punctuation.delimiter )
+(query ("{") @punctuation.delimiter )
+(query ("}") @punctuation.delimiter )
 
