@@ -43,8 +43,19 @@ local function new(prefix, tree_dir, callback)
   job
     :new({
       command = "forester",
-      args = { "new", "--prefix", prefix, "--dir", tree_dir, "--dest", tree_dir },
-      on_exit = function(data, _)
+      args = {
+        "new",
+        "--prefix",
+        prefix,
+        "--dir",
+        tree_dir,
+        "--dest",
+        tree_dir,
+      },
+      on_stderr = function(err, data)
+        vim.print(vim.inspect(data))
+      end,
+      on_stdout = function(err, data)
         vim.schedule(function()
           callback(data:result())
         end)
@@ -56,6 +67,8 @@ local function new(prefix, tree_dir, callback)
     })
     :sync()
 end
+
+--new("foo", "trees", vim.print)
 
 local function template(pfx, tmpl_addr, tree_dir)
   job

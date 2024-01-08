@@ -51,7 +51,6 @@ local pad_addr = function(i)
   end
 end
 
-vim.print(pad_addr(1))
 local function inc_addr(prefix, tree_num) -- TODO bind these to <C-x> and <C-a>
   return prefix .. "-" .. pad_addr(tree_num + 1)
 end
@@ -61,8 +60,13 @@ local function decr_addr(prefix, tree_num)
 end
 
 local function new_tree()
+<<<<<<< HEAD
   local function edit_callback(new_addr)
     cmd("edit " .. new_addr[1])
+=======
+  local function edit_callback(res)
+    cmd("edit " .. res:result()[1])
+>>>>>>> 31d6429 (add transclude_new and link_new)
   end
 
   ui.input({ prompt = "Enter a prefix: " }, function(prefix)
@@ -204,22 +208,24 @@ end
 --  end
 --end
 --
-local function put(content)
-  local r, c = api.nvim_win_get_cursor(0)
-  api.nvim_buf_set_text(0, r, c, r, c, content)
+local function insert_at_cursor(content)
+  local pos = api.nvim_win_get_cursor(0)
+  local r = pos[1]
+  local c = pos[2]
+  api.nvim_buf_set_text(0, r - 1, c, r - 1, c, content)
 end
 
+<<<<<<< HEAD
 local function link_new_tree()
   local function callback(data)
     local path = data:result()[1]
+=======
+local function link_new()
+  local function callback(path)
+>>>>>>> 31d6429 (add transclude_new and link_new)
     local _, addr, _ = split_path(path)
-    local content = "[](" .. addr .. ")"
-
-    put(content)
-    vim.cmd("write")
-    vim.cmd("vsp " .. path)
-    --api.nvim_feedkeys("Go", "n", false)
-    --api.nvim_feedkeys(content, "i", false)
+    local content = { "[](" .. addr .. ")" }
+    insert_at_cursor(content)
   end
 
   local function select(prefixes)
@@ -285,15 +291,9 @@ local function transclude_new_tree()
   local function callback(data)
     local path = data:result()[1]
     local _, addr, _ = split_path(path)
-    local content = "\\transclude{" .. addr .. "}"
-
-    put(content)
-    cmd("write")
-    cmd("vsp " .. path)
-    --api.nvim_feedkeys("Go", "n", false)
-    --api.nvim_feedkeys(content, "i", false)
+    local content = { "\\transclude{" .. addr .. "}" }
+    insert_at_cursor(content)
   end
-
   local function select(prefixes)
     ui.select(prefixes:result(), {}, function(prefix)
       --ui.select(prefixes:result(), {}, function(prefix)

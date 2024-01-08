@@ -1,4 +1,7 @@
-\title{Demo}
+\title{templating}
+\tag{feature}
 
-\p{ asdf
+\p{
+  It might actually be better to use neovim templates than forester's
+  builtin templating functionality.
 }
