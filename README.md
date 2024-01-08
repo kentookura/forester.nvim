@@ -3,6 +3,8 @@
 Filetype plugin for [forester](https://sr.ht/~jonsterling/forester/), a tool
 for writing mathematical hypertext
 
+Status: experimental. Expect things to break.
+
 ## Installation
 
 Install [forester](https://git.sr.ht/~jonsterling/ocaml-forester) either via
