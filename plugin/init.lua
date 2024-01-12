@@ -1,5 +1,25 @@
 local vim = vim
 
+local Config = require("forester.config")
+
+--@class ForestConfig
+--@field config ForestConfig
+local ForestConfig = {
+  forests = {},
+}
+
+function ForestConfig:new()
+  local config = Config.get_default_config()
+  local forest = setmetatable({ config = config }, self)
+  return forest
+end
+
+function ForestConfig:list_all_trees()
+  for forest in self.forests do
+    list_trees(forest)
+  end
+end
+
 local function ensure_treesitter()
   vim.treesitter.language.register("tree", "forester")
   vim.filetype.add({ extension = { tree = "tree" } })
@@ -19,7 +39,6 @@ end
 
 local function setup(opts)
   ensure_treesitter()
-
   vim.opt.path:append("trees")
   vim.opt.suffixesadd:prepend(".tree")
 

@@ -48,6 +48,59 @@ local setup = function(opts)
   })
 end
 
+local function endswith(string, suffix)
+  return string:sub(-#suffix) == suffix
+end
+
+function map(iterable, f)
+  local new = {}
+  for i, v in pairs(iterable) do
+    new[i] = f(v)
+  end
+  return new
+end
+function filter(iterable, pred)
+  local new = {}
+  for i, v in ipairs(iterable) do
+    if pred(v) then
+      table.insert(new, v)
+    end
+  end
+  return new
+end
+
+function fold(iterable, alg)
+  if #iterable == 0 then
+    return nil
+  end
+  local out = nil
+  for i = 1, #iterable do
+    out = alg(out, iterable[i])
+  end
+  return out
+end
+
+local function list_trees(dir, callback)
+  local f = function(file)
+    return endswith(file, ".tree")
+  end
+  job
+    :new({
+      command = "ls",
+      args = { dir },
+      on_exit = vim.schedule_wrap(function(j, exitcode)
+        local trees = filter(j:result(), f)
+        --vim.print(vim.inspect(j:result()))
+        callback(trees)
+        -- vim.print(vim.inspect(trees))
+      end),
+      on_stderr = vim.schedule_wrap(function(j, data)
+        vim.print(vim.inspect(data))
+      end),
+    })
+    :sync()
+end
+
 local pad_addr = function(i)
   local base36_str = util.encode(i)
   local required_padding = 4 - #tostring(base36_str)
@@ -354,6 +407,7 @@ local function setup(opts)
   })
 end
 
+M.list_trees = list_trees
 M.new_tree = new_tree
 M.new_from_template = new_from_template
 M.open_tree = open_tree
