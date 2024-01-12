@@ -1,4 +1,18 @@
 local M = {}
+
+--local addr = item:match("[^, ]*$")
+--local title = item:match("[^,]+$")
+
+local split_path = function(path)
+  -- Returns the Path, Filename, and Extension as 3 values
+  return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
+end
+
+local to_addr = function(path)
+  local _, addr, _ = split_path(path)
+  return addr
+end
+
 local alphabet = {
   0,
   1,
@@ -70,5 +84,7 @@ end
 
 M.encode = encode
 M.decode = decode
+M.to_addr = to_addr
+M.split_path = split_path
 
 return M

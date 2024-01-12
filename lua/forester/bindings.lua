@@ -68,8 +68,6 @@ local function new(prefix, tree_dir, callback)
     :sync()
 end
 
---new("foo", "trees", vim.print)
-
 local function template(pfx, tmpl_addr, tree_dir)
   job
     :new({

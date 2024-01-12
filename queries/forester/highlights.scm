@@ -147,7 +147,7 @@
 (title "title" @function.builtin (#set! conceal ""))
 (title ("\\") @conceal (#set! conceal ""))
 (title ("{") @punctuation.delimiter (#set! conceal ""))
-(title ("}") @punctuation (#set! conceal ""))
+(title ("}") @punctuation.delimiter (#set! conceal ""))
 
 ("tag" @tag (#set! conceal "🏷️"))
 (tag ("\\") @conceal (#set! conceal ""))

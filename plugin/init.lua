@@ -25,8 +25,8 @@ local function setup(opts)
 
   vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
     pattern = { "*.tree" },
-    callback = function()
-      vim.cmd(":TSBufEnable highlight")
+    callback = function(args)
+      vim.treesitter.start(args.buf, "forester")
       vim.cmd(":set conceallevel=2")
     end,
   })

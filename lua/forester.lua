@@ -3,9 +3,16 @@ local api = vim.api
 local ui = vim.ui
 local cmd = vim.cmd
 local forester = require("forester.bindings")
-local util = require("util")
+local util = require("forester.util")
 local job = require("plenary.job")
+<<<<<<< HEAD
 local forester_ns = api.nvim_create_namespace("forester.extmarks")
+=======
+
+local split_path = util.split_path
+local to_addr = util.to_addr
+
+>>>>>>> 47560e0 (refactor)
 local M = {}
 
 local function ensure_treesitter()
@@ -51,12 +58,20 @@ local pad_addr = function(i)
   end
 end
 
-local function inc_addr(prefix, tree_num) -- TODO bind these to <C-x> and <C-a>
-  return prefix .. "-" .. pad_addr(tree_num + 1)
+local function next_addr()
+  local function inc_addr(prefix, tree_num) -- TODO bind these to <C-x> and <C-a>
+    local next = prefix .. "-" .. pad_addr(tree_num + 1)
+    print("inc")
+    -- todo: query addr, replace, see tjs video
+  end
 end
 
-local function decr_addr(prefix, tree_num)
-  return prefix .. "-" .. pad_addr(tree_num - 1)
+local function prev_addr()
+  local function decr_addr(prefix, tree_num)
+    local prev = prefix .. "-" .. pad_addr(tree_num - 1)
+    print("decr")
+    -- todo: query addr, replace, see tjs video
+  end
 end
 
 local function new_tree()
@@ -65,8 +80,12 @@ local function new_tree()
     cmd("edit " .. new_addr[1])
 =======
   local function edit_callback(res)
+<<<<<<< HEAD
     cmd("edit " .. res:result()[1])
 >>>>>>> 31d6429 (add transclude_new and link_new)
+=======
+    cmd("edit " .. res)
+>>>>>>> 47560e0 (refactor)
   end
 
   ui.input({ prompt = "Enter a prefix: " }, function(prefix)
@@ -152,11 +171,6 @@ local function on_enter()
   end
 end
 
-local function split_path(path)
-  -- Returns the Path, Filename, and Extension as 3 values
-  return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
-end
-
 --local function transclude_selection()
 --  local function callback(data)
 --    local path = data:result()[1]
@@ -187,27 +201,51 @@ end
 
 --local transclusions = vim.treesitter.query.parse("tree", [[ (transclude (addr) @id) ]])
 
---local get_root = function(bufnr)
---  local parser = vim.treesitter.get_parser(bufnr, "tree", {})
---  local tree = parser:parse()[1]
---  return tree:root()
---end
---
---local virtualtext = function(bufnr)
---  bufnr = bufnr or api.nvim_get_current_buf()
---  if vim.bo[bufnr].filteype ~= "tree" then
---    vim.notify("can only be used for trees")
---  end
---  local root = get_root(bufnr)
---  local changes = {}
---  for id, node in transclusions:iter_captures(root, bufnr, 0, -1) do
---    local title = "foo"
---    local range = { node:range() }
---    print(vim.inspect(node))
---    --api.nvim_buf_set_virtual_text(bufnr, virtual_types_ns, start_line, msg)
---  end
---end
---
+local scratch = function()
+
+  --vim.lsp.buf_request(0, 'forester-lsp/inlayHints', {params_go_here}, function(_,_, results) print(vim.inspect(results)))
+end
+
+local draw_title_inlay = function(bufnr, pos, title)
+  local r = pos[1]
+  local c = pos[2]
+  api.nvim_buf_set_extmark(bufnr, forester_ns, r, c, { virt_text = { { title, "@comment" } }, virt_text_pos = "eol" })
+end
+
+--api.nvim_buf_clear_namespace(0, forester_ns, 0, -1)
+
+--draw_title_inlay(0, { 173, 0 }, "hello")
+
+local draw_inline_hints = function(bufnr)
+  local get_tree_root = function()
+    local parser = vim.treesitter.get_parser(0)
+    local tree = parser:parse()[1]
+    vim.print(vim.inspect(tree:root()))
+  end
+
+  local addrs = vim.treesitter.query.parse("forester", [[(addr) @addr]])
+
+  local query_title = function(addr)
+    return "TODO"
+  end
+
+  local marks = {}
+  for id, node in addrs:iter_captures(root, bufnr, 0, -1) do
+    local name = addrs.captures[id]
+    -- {start row, start col, end row, end col}
+    local range = { node:range() }
+
+    table.insert(changes, 1, {
+      start = range[1],
+      final = range[3],
+      title = query_title(id),
+    })
+    for _, mark in ipairs(marks) do
+      draw_title_inlay(bufnr, { mark.start, mark.final }, mark.title)
+    end
+  end
+end
+
 local function insert_at_cursor(content)
   local pos = api.nvim_win_get_cursor(0)
   local r = pos[1]
@@ -222,15 +260,18 @@ local function link_new_tree()
 =======
 local function link_new()
   local function callback(path)
+<<<<<<< HEAD
 >>>>>>> 31d6429 (add transclude_new and link_new)
     local _, addr, _ = split_path(path)
     local content = { "[](" .. addr .. ")" }
+=======
+    local content = { "[](" .. to_addr(path) .. ")" }
+>>>>>>> 47560e0 (refactor)
     insert_at_cursor(content)
   end
 
   local function select(prefixes)
-    ui.select(prefixes:result(), {}, function(prefix)
-      --ui.select(prefixes:result(), {}, function(prefix)
+    ui.select(prefixes:result(), {}, function(prefix) -- TODO use completion, not ui.select
       forester.new(prefix, tree_dir, callback)
     end)
   end
@@ -295,8 +336,7 @@ local function transclude_new_tree()
     insert_at_cursor(content)
   end
   local function select(prefixes)
-    ui.select(prefixes:result(), {}, function(prefix)
-      --ui.select(prefixes:result(), {}, function(prefix)
+    ui.select(prefixes:result(), {}, function(prefix) -- TODO use completion, not ui.select
       forester.new(prefix, tree_dir, callback)
     end)
   end
@@ -306,6 +346,12 @@ end
 
 local function setup(opts)
   vim.print(opts)
+  vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
+    pattern = { "*.tree" },
+    callback = function(args)
+      draw_inline_hints(args.buf)
+    end,
+  })
 end
 
 M.new_tree = new_tree
@@ -316,9 +362,10 @@ M.transclude_new_tree = transclude_new_tree
 M.link_tree = link_tree
 M.link_new_tree = link_new_tree
 M.setup = setup
-M.inc_addr = inc_addr
-M.decr_addr = decr_addr
 M.pad_addr = pad_addr
+M.link_new = link_new
+M.prev_addr = prev_addr
+M.next_addr = next_addr
 M.setup = setup
 
 return M
