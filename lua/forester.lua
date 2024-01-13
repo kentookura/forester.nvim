@@ -31,6 +31,7 @@ local function setup(config)
   if not config then
     config = {}
   end
+  local opts = config.opts
   ensure_treesitter()
   vim.opt.path:append("trees")
   vim.opt.suffixesadd:prepend(".tree")
@@ -40,6 +41,9 @@ local function setup(config)
     pattern = { "*.tree" },
     callback = function(args)
       vim.treesitter.start(args.buf, "forester")
+      if opts.conceal then
+        vim.cmd(":set conceallevel=2")
+      end
       --vim.print("opened a tree file")
       --vim.cmd(":set filetype=tree")
       --vim.cmd(":set conceallevel=2")
@@ -59,7 +63,7 @@ local function list_trees(dir, callback)
     :new({
       command = "ls",
       args = { dir },
-      on_exit = vim.schedule_wrap(function(j, exitcode)
+      on_exit = vim.schedule_wrap(function(j, _)
         local trees = filter(j:result(), f)
         --vim.print(vim.inspect(j:result()))
         callback(trees)

@@ -13,23 +13,19 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    dir = "./.", -- change this to line to "kentookura/neovim"
-    tree_dir = "notes",
+    dir = "./.", -- change this to line to: "kentookura/neovim",
+    opts = {
+      tree_dirs = { "test/trees" },
+      conceal = false,
+    },
     config = function(opts)
-      local forester = require("forester")
-      forester.setup(opts)
-      vim.print(vim.inspect(forester))
-      --vim.g.mapleader = " "
-      --vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
-      --vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
-      --vim.keymap.set("n", "<leader>ng", forester.new_from_template, { silent = true }) --"generate"
+      require("forester").setup(opts)
     end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
-      { "nvim-treesitter/playground" },
-      --{ "ziontee113/SelectEase" },
-      --{ "nvim-telescope/telescope.nvim" },
     },
   },
 })
+
+vim.keymap.set("n", "<leader>t", "<Plug>PlenaryTestFile %")
