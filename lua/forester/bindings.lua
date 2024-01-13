@@ -1,42 +1,31 @@
 local vim = vim
+local util = require("forester.util")
 local job = require("plenary.job")
 
 local Bindings = {}
 
-local function complete(tree_dir, callback)
-  job
+local function complete(tree_dir)
+  local res = job
     :new({
       command = "forester",
       args = { "complete", tree_dir },
-      on_exit = function(data, _)
-        vim.schedule(function()
-          callback(data:result())
-        end)
-      end,
-      on_stderr = function(error, data)
-        vim.print("error")
-        vim.print(vim.inspect(error))
-        vim.print(vim.inspect(data))
-      end,
+      enable_recording = true,
     })
     :sync()
+  return util.map(res, function(r)
+    local addr, title = r:match("([^,]+), ([^,]+)")
+    return { addr = addr, title = title }
+  end)
 end
 
-local function query(arg, tree_dir, callback)
-  job
+local function query(arg, tree_dir)
+  local res = job
     :new({
       command = "forester",
       args = { "query", arg, tree_dir },
-      on_exit = function(data, _)
-        vim.schedule(function()
-          callback(data:result())
-        end)
-      end,
-      on_stderr = function(error, data)
-        vim.print(vim.inspect(error))
-      end,
     })
     :sync()
+  return res
 end
 
 local function new(prefix, tree_dir, callback)
@@ -52,10 +41,7 @@ local function new(prefix, tree_dir, callback)
         "--dest",
         tree_dir,
       },
-      on_stderr = function(err, data)
-        vim.print(vim.inspect(data))
-      end,
-      on_stdout = function(err, data)
+      on_stdout = function(_, data)
         vim.schedule(function()
           callback(data:result())
         end)
@@ -86,7 +72,7 @@ local function template(pfx, tmpl_addr, tree_dir)
 
       on_exit = vim.schedule_wrap(function(res)
         vim.schedule(function()
-          vim.cmd("edit " .. res:result()[1]) -- ugh
+          vim.cmd("edit " .. res:result()[1])
         end)
       end),
       on_stderr = function(error, data)

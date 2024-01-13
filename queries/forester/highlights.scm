@@ -138,9 +138,9 @@
 
 (put ("put") @lsp.type.modifier (#set! conceal "!"))
 (put ("\\") @conceal (#set! conceal ""))
-(transclusion_opt "/" @cocneal (#set! conceal " "))
-;(put "transclude" @keyword) 
-;;((put identifier: (ident) @identifier) (#eq? @identifier "\\transclude/title") (#set! conceal "T"))
+; (transclusion_opt "/" @conceal (#set! conceal " "))
+; (put "transclude" @keyword) 
+; ((put identifier: (ident) @identifier) (#eq? @identifier "\\transclude/title") (#set! conceal "T"))
 
 
 ;"title"
@@ -170,9 +170,9 @@
 (transclude ("}") @punctuation.delimiter (#set! conceal ""))
 
 ("query" @keyword (#set! conceal "🔍"))
-(query ("\\") @conceal (#set! conceal ""))
-
-
-(query ("{") @punctuation.delimiter )
-(query ("}") @punctuation.delimiter )
+;(query ("\\") @conceal (#set! conceal ""))
+;
+;
+;(query ("{") @punctuation.delimiter )
+;(query ("}") @punctuation.delimiter )
 

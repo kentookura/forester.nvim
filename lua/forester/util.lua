@@ -82,9 +82,85 @@ local function decode(b36)
   return tonumber(b36, 36)
 end
 
+local pad_addr = function(i)
+  local base36_str = encode(i)
+  local required_padding = 4 - #tostring(base36_str)
+  if required_padding < 0 then
+    return base36_str
+  else
+    return string.rep("0", required_padding) .. base36_str
+  end
+end
+
+local function inc_addr(prefix, tree_num)
+  return prefix .. "-" .. pad_addr(tree_num + 1)
+end
+
+local function next_addr() -- TODO bind these to <C-x> and <C-a>
+  print("next_addr")
+  -- pseudo:
+  -- region = get_closest_addr() --with treesitter
+  -- addr = parse_addr(region)
+  -- overwrite(region, inc(addr))
+  --
+end
+
+local function decr_addr(prefix, tree_num)
+  return prefix .. "-" .. pad_addr(tree_num - 1)
+end
+
+local function prev_addr()
+  print("prev_addr")
+end
+
+local function insert_at_cursor(content)
+  local pos = api.nvim_win_get_cursor(0)
+  local r = pos[1]
+  local c = pos[2]
+  api.nvim_buf_set_text(0, r - 1, c, r - 1, c, content)
+end
+
+function map(iterable, f)
+  local new = {}
+  for i, v in pairs(iterable) do
+    new[i] = f(v)
+  end
+  return new
+end
+
+function filter(iterable, pred)
+  local new = {}
+  for i, v in ipairs(iterable) do
+    if pred(v) then
+      table.insert(new, v)
+    end
+  end
+  return new
+end
+
+function fold(iterable, alg)
+  if #iterable == 0 then
+    return nil
+  end
+  local out = nil
+  for i = 1, #iterable do
+    out = alg(out, iterable[i])
+  end
+  return out
+end
+
 M.encode = encode
 M.decode = decode
 M.to_addr = to_addr
 M.split_path = split_path
+M.pad_addr = pad_addr
+M.next_addr = next_addr
+M.prev_addr = prev_addr
+M.inc_addr = inc_addr
+M.decr_addr = decr_addr
+M.insert_at_cursor = insert_at_cursor
+M.map = map
+M.filter = filter
+M.fold = fold
 
 return M

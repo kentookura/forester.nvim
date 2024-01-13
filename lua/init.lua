@@ -1,23 +1,16 @@
 local vim = vim
 
+local M = {}
 local Config = require("forester.config")
 
 --@class ForestConfig
 --@field config ForestConfig
-local ForestConfig = {
-  forests = {},
-}
+local ForestConfig = {}
 
 function ForestConfig:new()
   local config = Config.get_default_config()
   local forest = setmetatable({ config = config }, self)
   return forest
-end
-
-function ForestConfig:list_all_trees()
-  for forest in self.forests do
-    list_trees(forest)
-  end
 end
 
 local function ensure_treesitter()
@@ -37,18 +30,4 @@ local function ensure_treesitter()
   }
 end
 
-local function setup(opts)
-  ensure_treesitter()
-  vim.opt.path:append("trees")
-  vim.opt.suffixesadd:prepend(".tree")
-
-  vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
-    pattern = { "*.tree" },
-    callback = function(args)
-      vim.treesitter.start(args.buf, "forester")
-      vim.cmd(":set conceallevel=2")
-    end,
-  })
-end
-
-setup()
+ensure_treesitter()
