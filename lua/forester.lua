@@ -27,6 +27,29 @@ local function ensure_treesitter()
   }
 end
 
+local function parse(args)
+  local parts = vim.split(vim.trim(args), "%s+")
+  if parts[1]:find("Forester") then
+    table.remove(parts, 1)
+  end
+  if args:sub(-1) == " " then
+    parts[#parts + 1] = ""
+  end
+  return table.remove(parts, 1) or "", parts
+end
+
+M.commands = {
+  browse = function()
+    print("browse")
+  end,
+  transclude_new = function()
+    print("translcude_new")
+  end,
+  link_new = function()
+    print("link_new")
+  end,
+}
+
 local function setup(config)
   if not config then
     config = {}
@@ -36,7 +59,27 @@ local function setup(config)
   vim.opt.path:append("trees")
   vim.opt.suffixesadd:prepend(".tree")
 
-  vim.print("setting up")
+  vim.api.nvim_create_user_command("Forester", function(cmd)
+    local prefix, args = parse(cmd.args)
+    if #args == 1 and args[1] == "all" then
+      args = vim.tbl_keys({})
+    end
+    if arg == "browse" then
+      vim.print("browsing")
+    end
+  end, {
+    nargs = "?",
+    complete = function(_, line)
+      local prefix, args = parse(line)
+      if #args > 0 then
+        return M.complete(prefix, args[#args])
+      end
+      return vim.tbl_filter(function(key)
+        return key:find(prefix, 1, true) == 1
+      end, vim.tbl_keys(M.commands))
+    end,
+  })
+
   vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
     pattern = { "*.tree" },
     callback = function(args)
@@ -44,9 +87,6 @@ local function setup(config)
       if opts.conceal then
         vim.cmd(":set conceallevel=2")
       end
-      --vim.print("opened a tree file")
-      --vim.cmd(":set filetype=tree")
-      --vim.cmd(":set conceallevel=2")
     end,
   })
 end
