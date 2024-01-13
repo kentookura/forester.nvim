@@ -1,33 +1,33 @@
-local vim = vim
-
-local M = {}
-local Config = require("forester.config")
-
---@class ForestConfig
---@field config ForestConfig
-local ForestConfig = {}
-
-function ForestConfig:new()
-  local config = Config.get_default_config()
-  local forest = setmetatable({ config = config }, self)
-  return forest
-end
-
-local function ensure_treesitter()
-  vim.treesitter.language.register("tree", "forester")
-  vim.filetype.add({ extension = { tree = "tree" } })
-
-  local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-  parser_config.forester = {
-    install_info = {
-      url = "https://github.com/kentookura/tree-sitter-forester",
-      files = { "src/parser.c" },
-      branch = "main",
-      generate_requires_npm = false,
-      requires_generate_from_grammar = false,
-    },
-    filetype = "tree",
-  }
-end
-
-ensure_treesitter()
+--local vim = vim
+--
+--local M = {}
+--local Config = require("forester.config")
+--
+----@class ForestConfig
+----@field config ForestConfig
+--local ForestConfig = {}
+--
+--function ForestConfig:new()
+--  local config = Config.get_default_config()
+--  local forest = setmetatable({ config = config }, self)
+--  return forest
+--end
+--
+--local function ensure_treesitter()
+--  vim.treesitter.language.register("tree", "forester")
+--  vim.filetype.add({ extension = { tree = "tree" } })
+--
+--  local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+--  parser_config.forester = {
+--    install_info = {
+--      url = "https://github.com/kentookura/tree-sitter-forester",
+--      files = { "src/parser.c" },
+--      branch = "main",
+--      generate_requires_npm = false,
+--      requires_generate_from_grammar = false,
+--    },
+--    filetype = "tree",
+--  }
+--end
+--
+--ensure_treesitter()

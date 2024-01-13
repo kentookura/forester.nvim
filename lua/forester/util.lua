@@ -114,13 +114,13 @@ local function prev_addr()
 end
 
 local function insert_at_cursor(content)
-  local pos = api.nvim_win_get_cursor(0)
+  local pos = vim.api.nvim_win_get_cursor(0)
   local r = pos[1]
   local c = pos[2]
-  api.nvim_buf_set_text(0, r - 1, c, r - 1, c, content)
+  vim.api.nvim_buf_set_text(0, r - 1, c, r - 1, c, content)
 end
 
-function map(iterable, f)
+local function map(iterable, f)
   local new = {}
   for i, v in pairs(iterable) do
     new[i] = f(v)
@@ -128,9 +128,9 @@ function map(iterable, f)
   return new
 end
 
-function filter(iterable, pred)
+local function filter(iterable, pred)
   local new = {}
-  for i, v in ipairs(iterable) do
+  for _, v in ipairs(iterable) do
     if pred(v) then
       table.insert(new, v)
     end
@@ -138,7 +138,7 @@ function filter(iterable, pred)
   return new
 end
 
-function fold(iterable, alg)
+local function fold(iterable, alg)
   if #iterable == 0 then
     return nil
   end

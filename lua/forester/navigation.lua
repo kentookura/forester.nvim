@@ -23,7 +23,8 @@ local function open_tree(tree_dir)
     end)
   end
 
-  forester.complete(tree_dir, select)
+  --forester.complete(tree_dir, select)
+  forester.titles(tree_dir)
 end
 
 M.open_tree = open_tree

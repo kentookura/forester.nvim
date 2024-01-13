@@ -9,7 +9,7 @@ describe("forester bindings", function()
     it("works", function()
       assert(
         vim.deep_equal(
-          forester.complete(tree_dir),
+          forester.titles(tree_dir),
           { { addr = "foo-0001", title = "foo" }, { addr = "foo-0002", title = "bar" } }
         )
       )
@@ -28,7 +28,7 @@ describe("forester bindings", function()
           count = count + 1
         end,
       })
-      forester.new("foo", tree_dir, function(res) end)
+      forester.new("foo", tree_dir)
       local scan_again = scan.scan_dir(tree_dir, {})
       assert(count + 1 == #scan_again)
     end)
