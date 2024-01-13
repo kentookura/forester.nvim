@@ -2,6 +2,7 @@ local vim = vim
 local api = vim.api
 local cmd = vim.cmd
 local forester = require("forester.bindings")
+local Config = require("forester.config")
 local util = require("forester.util")
 local job = require("plenary.job")
 
@@ -39,16 +40,25 @@ local function parse(args)
 end
 
 M.commands = {
-  browse = function()
-    print("browse")
+  browse = function(opts)
+    print(opts)
   end,
-  transclude_new = function()
-    print("translcude_new")
+  transclude_new = function(opts)
+    print(opts)
   end,
-  link_new = function()
-    print("link_new")
+  link_new = function(opts)
+    print(opts)
   end,
 }
+
+function M.cmd(cmd, opts)
+  local command = M.commands[cmd]
+  if command == nil then
+    vim.print("Invalid forester commad '" .. cmd .. "'")
+  else
+    command(opts)
+  end
+end
 
 local function setup(config)
   if not config then
@@ -64,9 +74,13 @@ local function setup(config)
     if #args == 1 and args[1] == "all" then
       args = vim.tbl_keys({})
     end
-    if arg == "browse" then
-      vim.print("browsing")
-    end
+    vim.print(vim.inspect(opts))
+    --if #args > 0 then
+    --  opts.plugins = vim.tbl_map(function(plugin)
+    --    return Config.plugins[plugin]
+    --  end, args)
+    --end
+    M.cmd(prefix, opts)
   end, {
     nargs = "?",
     complete = function(_, line)

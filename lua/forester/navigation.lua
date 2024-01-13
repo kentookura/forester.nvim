@@ -3,7 +3,8 @@ local ui = vim.ui
 
 local M = {}
 
-local function open_tree()
+local function open_tree(tree_dir)
+  -- TODO: check if i am in a forest, then check configured tree dirs.
   local function select(data)
     ui.select(data, {
       prompt = "Select a tree title",
