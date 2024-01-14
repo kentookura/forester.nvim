@@ -1,5 +1,3 @@
-local vim = vim
-local api = vim.api
 local cmd = vim.cmd
 local ui = vim.ui
 local util = require("forester.util")
@@ -10,6 +8,9 @@ local forester = require("forester.bindings")
 
 local M = {}
 
+-- TODO: deprecate this in favor of using a neovim specific
+--       templating solution.
+--
 local function new_from_template(tree_dir)
   local function select_prefix(template_addr)
     return function()
@@ -48,18 +49,19 @@ local function new_from_template(tree_dir)
     :sync()
 end
 
-local function new_tree(tree_dir)
-  local function edit_callback(new_addr)
-    cmd("edit " .. new_addr[1])
-  end
+local function new_tree(opts)
+  vim.print(opts)
+  --local function edit_callback(new_addr)
+  --  cmd("edit " .. new_addr[1])
+  --end
 
-  ui.input({ prompt = "Enter a prefix: " }, function(prefix)
-    if prefix == nil then
-      return
-    end
-    forester.new(prefix, tree_dir)
-    --forester.new(prefix, tree_dir, edit_callback)
-  end)
+  --ui.input({ prompt = "Enter a prefix: " }, function(prefix)
+  --  if prefix == nil then
+  --    return
+  --  end
+  --  forester.new(prefix, tree_dir)
+  --  --forester.new(prefix, tree_dir, edit_callback)
+  --end)
 end
 
 local function transclude_new_tree(tree_dir)
@@ -97,7 +99,6 @@ local function link_new_tree(tree_dir)
   forester.query("prefix", tree_dir)
 end
 
-M.new_from_template = new_from_template
 M.new_tree = new_tree
 M.transclude_new_tree = transclude_new_tree
 M.link_new_tree = link_new_tree

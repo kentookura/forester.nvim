@@ -1,10 +1,11 @@
 local M = {}
 
-local function parse(args)
+function M.parse(args)
   local parts = vim.split(vim.trim(args), "%s+")
   if parts[1]:find("Forester") then
     table.remove(parts, 1)
   end
+
   if args:sub(-1) == " " then
     parts[#parts + 1] = ""
   end
@@ -12,14 +13,14 @@ local function parse(args)
 end
 
 M.commands = {
-  browse = function(opts)
-    print(opts)
+  new = function(opts)
+    vim.print(vim.inspect(opts))
   end,
-  transclude_new = function(opts)
-    print(opts)
+  transclude = function(opts)
+    vim.print(vim.inspect(opts))
   end,
-  link_new = function(opts)
-    print(opts)
+  link = function(opts)
+    vim.print(vim.inspect(opts))
   end,
 }
 

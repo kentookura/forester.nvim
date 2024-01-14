@@ -7,7 +7,6 @@ local job = require("plenary.job")
 
 local forester_ns = api.nvim_create_namespace("forester.extmarks")
 
-local parse = Commands.parse
 local split_path = util.split_path
 
 local M = {}
@@ -40,18 +39,28 @@ local function setup(config)
   vim.opt.suffixesadd:prepend(".tree")
 
   vim.api.nvim_create_user_command("Forester", function(cmd)
-    local prefix, args = parse(cmd.args)
+    local prefix, args = Commands.parse(cmd.args)
+    --if #args == 1 and args[1] == "all" then
+    --  args = vim.tbl_keys(Config.plugins)
+    --end
+    --if #args > 0 then
+    --  opts.plugins = vim.tbl_map(function(plugin)
+    --    return Config.plugins[plugin]
+    --  end, args)
+    --end
     Commands.cmd(prefix, opts)
   end, {
+    bar = true,
+    bang = true,
     nargs = "?",
     complete = function(_, line)
-      local prefix, args = parse(line)
+      local prefix, args = Commands.parse(line)
       if #args > 0 then
         return M.complete(prefix, args[#args])
       end
       return vim.tbl_filter(function(key)
         return key:find(prefix, 1, true) == 1
-      end, vim.tbl_keys(M.commands))
+      end, vim.tbl_keys(Commands.commands))
     end,
   })
 
