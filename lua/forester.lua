@@ -31,7 +31,7 @@ end
 
 local function setup(config)
   if not config then
-    config = {}
+    config = { opts = { tree_dirs = "trees" } }
   end
   local opts = config.opts
   ensure_treesitter()
@@ -67,7 +67,7 @@ local function setup(config)
   vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
     pattern = { "*.tree" },
     callback = function(args)
-      vim.treesitter.start(args.buf, "forester")
+      --vim.treesitter.start(args.buf, "forester")
       if opts.conceal then
         vim.cmd(":set conceallevel=2")
       end
