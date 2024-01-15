@@ -1,22 +1,37 @@
+---@tag forester.bindings
+
+---@brief [[
+---
+--- Bindings to the forester command for internal use
+---
+---]]
+
 local vim = vim
 local util = require("forester.util")
 local Job = require("plenary.job")
 
 local Bindings = {}
 
-local function titles(tree_dir)
+local function titles(tree_dir) -- TODO: submit patch to forester for querying paths
   local job = Job:new({
     command = "forester",
     args = { "complete", tree_dir },
     enable_recording = true,
   })
   job:sync()
-  local result = job:result()
-  return util.map(result, function(r)
+  --local result = job:result()
+  local out = {}
+  local result = util.map(job:result(), function(r)
     local addr, title = r:match("([^,]+), ([^,]+)")
     return { addr = addr, title = title }
   end)
+  for k, v in pairs(result) do
+    out[k] = { addr = v.addr, title = v.title, dir = tree_dir }
+  end
+  return out
 end
+
+--vim.print(vim.inspect(titles("test/trees")))
 
 local function query(arg, tree_dir)
   local res = Job:new({

@@ -1,6 +1,8 @@
 local util = require("forester.util")
 local Path = require("plenary.path")
 local Scan = require("plenary.scandir")
+local forester = require("forester.bindings")
+local navigation = require("forester.navigation")
 local M = {}
 
 local contains_match = function(tbl, str)
@@ -48,11 +50,24 @@ end
 
 M.commands = {
   browse = function(opts)
-    if #available_tree_dirs(opts) > 1 then
+    -- NOTE: It would be nice to get the path info for trees directly
+    -- from forester. This is not implemented at the time.
+
+    local dirs = available_tree_dirs(opts)
+    if #dirs > 1 then
       do
         print("found multiple tree directories in current directory.")
       end
     end
+    local all_trees = {}
+    for _, tree_dir in pairs(dirs) do
+      local trees = forester.titles(tree_dir)
+      for k, v in pairs(trees) do
+        all_trees[k] = v
+      end
+    end
+    --vim.print(vim.inspect(all_trees))
+    navigation.pick_tree(all_trees, {})
   end,
   transclude = function(opts)
     vim.print(vim.inspect(opts))

@@ -1,7 +1,60 @@
+local pickers = require("telescope.pickers")
+local finders = require("telescope.finders")
+local conf = require("telescope.config").values
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
+local entry_display = require("telescope.pickers.entry_display")
+
 local forester = require("forester.bindings")
 local ui = vim.ui
 
 local M = {}
+
+local pick_tree = function(trees, opts)
+  opts = opts or {}
+
+  local displayer = entry_display.create({
+    separator = "|",
+    items = {
+      { width = 10 },
+      { width = 10 },
+    },
+  })
+  local make_display = function(item)
+    return displayer({
+      { item.title },
+      { item.addr },
+    })
+  end
+  local entry_maker = function(entry)
+    entry.value = entry.addr
+    entry.ordinal = entry.title
+    entry.display = make_display
+    return entry
+    --return { value = entry, display = make_display, ordinal = entry.title }
+    --return { value = entry, display = entry.title, ordinal = entry.title }
+  end
+  pickers
+    .new(opts, {
+      prompt_title = "Pick a tree",
+      finder = finders.new_table({
+        results = trees,
+        entry_maker = entry_maker,
+      }),
+      sorter = conf.generic_sorter(opts),
+      attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
+          actions.close(prompt_bufnr)
+          local selection = action_state.get_selected_entry()
+          vim.api.nvim_put({ selection[1] }, "", false, true)
+        end)
+        return true
+      end,
+    })
+    :find()
+end
+
+--pick_tree(require("telescope.themes").get_dropdown({}))
 
 local function open_tree(tree_dir)
   -- TODO: check if i am in a forest, then check configured tree dirs.
@@ -9,7 +62,7 @@ local function open_tree(tree_dir)
     ui.select(data, {
       prompt = "Select a tree title",
       format_item = function(item)
-        -- local addr = item:match("[^, ]*$")
+        -- local addr = item:match("[^, ]*$"){ 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
         -- local title = item:match("[^,]+$")
         return item
       end,
@@ -27,6 +80,6 @@ local function open_tree(tree_dir)
   forester.titles(tree_dir)
 end
 
-M.open_tree = open_tree
+M.pick_tree = pick_tree
 
 return M
