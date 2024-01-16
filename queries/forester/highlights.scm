@@ -170,7 +170,7 @@
 (transclude ("}") @punctuation.delimiter (#set! conceal ""))
 
 ("query" @keyword (#set! conceal "🔍"))
-;(query ("\\") @conceal (#set! conceal ""))
+(query_tree ("\\") @conceal (#set! conceal ""))
 ;
 ;
 ;(query ("{") @punctuation.delimiter )

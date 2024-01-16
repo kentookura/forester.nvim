@@ -1,3 +1,4 @@
+local strings = require("plenary.strings")
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local conf = require("telescope.config").values
@@ -12,12 +13,19 @@ local M = {}
 
 local pick_tree = function(trees, opts)
   opts = opts or {}
+  local widths = { title = 0, addr = 0 }
+
+  for _, tree in pairs(trees) do
+    for k, v in pairs(widths) do
+      widths[k] = math.max(v, strings.strdisplaywidth(tree[k]))
+    end
+  end
 
   local displayer = entry_display.create({
-    separator = "|",
+    separator = " ",
     items = {
-      { width = 10 },
-      { width = 10 },
+      { width = widths.title },
+      { width = widths.addr },
     },
   })
   local make_display = function(item)
@@ -31,8 +39,6 @@ local pick_tree = function(trees, opts)
     entry.ordinal = entry.title
     entry.display = make_display
     return entry
-    --return { value = entry, display = make_display, ordinal = entry.title }
-    --return { value = entry, display = entry.title, ordinal = entry.title }
   end
   pickers
     .new(opts, {
@@ -46,7 +52,8 @@ local pick_tree = function(trees, opts)
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()
-          vim.api.nvim_put({ selection[1] }, "", false, true)
+          local file = vim.fn.findfile(selection.addr .. ".tree", selection.dir)
+          vim.cmd("edit " .. file)
         end)
         return true
       end,

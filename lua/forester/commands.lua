@@ -1,3 +1,11 @@
+---@tag forester.commands
+
+---@brief [[
+---
+--- User commands for calling forester from neovim
+---
+---]]
+
 local util = require("forester.util")
 local Path = require("plenary.path")
 local Scan = require("plenary.scandir")

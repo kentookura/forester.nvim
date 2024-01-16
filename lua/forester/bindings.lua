@@ -2,7 +2,7 @@
 
 ---@brief [[
 ---
---- Bindings to the forester command for internal use
+--- Bindings to the forester program.
 ---
 ---]]
 
