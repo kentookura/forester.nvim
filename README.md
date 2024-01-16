@@ -13,13 +13,6 @@ With lazy:
 ```lua
   {
     "kentookura/forester.nvim",
-    config = function()
-      local forester = require("forester")
-      vim.g.mapleader = " "
-      vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nt", forester.new_from_template, { silent = true })
-      vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
-    end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
@@ -27,12 +20,8 @@ With lazy:
   },
 ```
 
-See the example [init.lua](./init.lua)
+See also the example [init.lua](./init.lua)
 
-
-## [Contributing/Roadmap](https://kentookura.srht.site/gld-000B.xml)
-
-Currently assumes that trees are located in `./trees`.
 
 ## Features
 
@@ -51,3 +40,8 @@ Currently assumes that trees are located in `./trees`.
 - Creating new trees
 
 ![Screen Recording showing the creation of new trees](./doc/new.gif)
+
+## Design Notes
+
+Forester enforces uniqueness of addresses per forest. This plugin is designed
+to work with multiple forests, so how should we handle duplicate addresses?

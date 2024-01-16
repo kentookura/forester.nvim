@@ -1,16 +1,19 @@
 \title{Forester.nvim}
-\taxon{README}
+\date{2024-01-08}
+\tag{todo}
 \tag{documentation}
+\taxon{README}
 
 \scope{
     \put\transclude/title{Installation}
     \transclude{nvm-0002}
   }
 
-\p{See the example [[init.lua]] for installing with [lazy.vim](https://github.com/folke/lazy.nvim).}
+\p{
+  See the example [[init.lua]] for installing with
+  [lazy.vim](https://github.com/folke/lazy.nvim).
+}
 
-\date{2024-01-08}
-\tag{todo}
 
 \scope{\put\transclude/title{Todos}
   \query{ \query/tag{todo} }
@@ -22,7 +25,8 @@
 }
 
 \p{
-  no commands for inserting existing links, this should be handled by completion provider.
+  no commands for inserting existing links, this should be handled by
+  completion provider.
 }
 
 \p{

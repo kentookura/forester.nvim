@@ -135,18 +135,17 @@
         "opam-repository": "opam-repository_2"
       },
       "locked": {
-        "lastModified": 1703467654,
-        "narHash": "sha256-I4A+0TYxE4lP8CdtKS7cxRK+L7HuBETcyACSOidL5co=",
-        "owner": "~kentookura",
+        "lastModified": 1705055388,
+        "narHash": "sha256-7mLDdUuQV4ZR6aY7rWraqHS9iDqtBuJNQ//jMDWkIFs=",
+        "owner": "jonsterling",
         "repo": "ocaml-forester",
-        "rev": "0096c8c36e4d1b89b1051a5438989df2a8fa52fa",
-        "type": "sourcehut"
+        "rev": "f767434a5223a25b9383a7d7268539a92c1db857",
+        "type": "github"
       },
       "original": {
-        "owner": "~kentookura",
-        "ref": "nvim-support",
+        "owner": "jonsterling",
         "repo": "ocaml-forester",
-        "type": "sourcehut"
+        "type": "github"
       }
     },
     "mirage-opam-overlays": {
@@ -212,11 +211,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1704626572,
-        "narHash": "sha256-VwRTEKzK4wSSv64G+g3RLF3t6yBHrhR2VK3kZ5UWisU=",
+        "lastModified": 1704842529,
+        "narHash": "sha256-OTeQA+F8d/Evad33JMfuXC89VMetQbsU4qcaePchGr4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "24fe8bb4f552ad3926274d29e083b79d84707da6",
+        "rev": "eabe8d3eface69f5bb16c18f8662a702f50c20d5",
         "type": "github"
       },
       "original": {
@@ -283,11 +282,11 @@
     "opam-repository_2": {
       "flake": false,
       "locked": {
-        "lastModified": 1699845376,
-        "narHash": "sha256-RZ+w6CI/K1PO33D5H7mTK0pT4jDh6DzwMT3zSUOsWTo=",
+        "lastModified": 1703856811,
+        "narHash": "sha256-dE+PZI0N8Hahs+D8GuvYktBGPhW9cyBZGxN6K+n2Y1g=",
         "owner": "ocaml",
         "repo": "opam-repository",
-        "rev": "cd93eb224789c7c645f72575b685eec97b0ccbca",
+        "rev": "91155d8f7ba41238a91fbffd093e5bb7a532aa0a",
         "type": "github"
       },
       "original": {

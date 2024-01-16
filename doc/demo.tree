@@ -21,7 +21,7 @@
   [Install the plugin](foo-0001) and try it out! See the example [neovim config](./init.lua)
 
 
-  Embedded  syntax highlighting would be awesome. Requires syntax change in forester.
+  Embedded syntax highlighting would be awesome. Requires syntax change in forester.
   \code{
     def function()
     end

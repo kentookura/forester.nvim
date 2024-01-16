@@ -2,7 +2,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     forest-server.url = "github:kentookura/forest-server";
-    forester = { url = "sourcehut:~kentookura/ocaml-forester/nvim-support"; };
+    forester = { url = "github:jonsterling/ocaml-forester"; };
   };
   outputs = { self, forest-server, flake-utils, nixpkgs, forester }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
@@ -19,9 +19,9 @@
             nodePackages.katex
             nodejs
             scrot
-            gh-markdown-preview
             imagemagick
             gcc
+            screenkey
             tree-sitter
             forest-server.packages.${system}.default
           ];
