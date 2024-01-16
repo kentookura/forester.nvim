@@ -3,7 +3,6 @@
 (inline_math math: (ident (label) @label (#eq? @label "neq")(#set! conceal "≠")))
 (inline_math math: (ident (label) @label (#eq? @label "qed") (#set! conceal "∎")))
 
-
 [
  "("
  ")"
@@ -171,8 +170,4 @@
 
 ("query" @keyword (#set! conceal "🔍"))
 (query_tree ("\\") @conceal (#set! conceal ""))
-;
-;
-;(query ("{") @punctuation.delimiter )
-;(query ("}") @punctuation.delimiter )
 

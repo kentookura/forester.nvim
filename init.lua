@@ -20,7 +20,7 @@ require("lazy").setup({
     opts = {
       forests = { "~/glade/notes", "~/forest" }, -- global forest config
       tree_dirs = { "trees", "test/trees", "notes", "doc" }, -- plugin will check if current directory contains these
-      conceal = false,
+      conceal = true,
     },
     config = function(opts)
       local forester = require("forester").setup(opts)

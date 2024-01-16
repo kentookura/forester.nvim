@@ -31,8 +31,6 @@ local function titles(tree_dir) -- TODO: submit patch to forester for querying p
   return out
 end
 
---vim.print(vim.inspect(titles("test/trees")))
-
 local function query(arg, tree_dir)
   local res = Job:new({
     command = "forester",
@@ -53,20 +51,6 @@ local function new(prefix, tree_dir)
       "--dest",
       tree_dir,
     },
-    on_stderr = function(i, j)
-      vim.print("err")
-      --for k in j do
-      --vim.print(vim.inspect(j))
-      --end
-    end,
-    on_stdout = function(i, j)
-      vim.print("stdout")
-      --vim.print(j)
-    end,
-    --on_exit = function(i, j)
-    --  --vim.print("exit")
-    --  -vim.print(j)
-    --end,
   })
   job:sync()
   return job:result()

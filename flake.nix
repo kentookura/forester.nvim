@@ -25,7 +25,6 @@
             tree-sitter
             forest-server.packages.${system}.default
           ];
-          shellHook = "export PATH=$PATH:./node_modules/.bin";
         };
       });
 }

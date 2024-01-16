@@ -56,10 +56,22 @@ local function available_tree_dirs(opts)
   return local_tree_dirs
 end
 
+local function all_prefixes(opts)
+  local dirs = available_tree_dirs(opts)
+  local out = {}
+  for _, tree_dir in pairs(dirs) do
+    local trees = forester.query("prefix", tree_dir)
+    for k, v in pairs(trees) do
+      out[k] = { prefix = v, dir = tree_dir }
+    end
+  end
+  return out
+end
+
 M.commands = {
   browse = function(opts)
     -- NOTE: It would be nice to get the path info for trees directly
-    -- from forester. This is not implemented at the time.
+    --       from forester. This is not implemented at the time.
 
     local dirs = available_tree_dirs(opts)
     if #dirs > 1 then
@@ -74,14 +86,38 @@ M.commands = {
         all_trees[k] = v
       end
     end
-    --vim.print(vim.inspect(all_trees))
     navigation.pick_tree(all_trees, {})
   end,
-  transclude = function(opts)
+
+  new = function(opts)
     vim.print(vim.inspect(opts))
   end,
+
+  transclude = function(opts)
+    local prefixes = all_prefixes(opts)
+    vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
+      format_item = function(item)
+        return item.prefix
+      end,
+    }, function(choice)
+      local path = forester.new(choice.prefix, choice.dir)[1]
+      local _, addr, _ = util.split_path(path)
+      local content = { "\\transclude{" .. addr .. "}" }
+      vim.api.nvim_put(content, "c", true, true)
+    end)
+  end,
   link = function(opts)
-    vim.print(vim.inspect(opts))
+    local prefixes = all_prefixes(opts)
+    vim.ui.select(prefixes, {
+      format_item = function(item)
+        return item.prefix
+      end,
+    }, function(choice)
+      local path = forester.new(choice.prefix, choice.dir)[1]
+      local _, addr, _ = util.split_path(path)
+      local content = { "[](" .. addr .. ")" } -- NOTE: We should improve the workflow with snippets or something similar
+      vim.api.nvim_put(content, "c", true, true)
+    end)
   end,
 }
 

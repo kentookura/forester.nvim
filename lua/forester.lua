@@ -1,7 +1,6 @@
 local api = vim.api
 local Commands = require("forester.commands")
 local Forester = require("forester.bindings")
-local Config = require("forester.config")
 local util = require("forester.util")
 local job = require("plenary.job")
 
@@ -67,7 +66,7 @@ local function setup(config)
   vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
     pattern = { "*.tree" },
     callback = function(args)
-      --vim.treesitter.start(args.buf, "forester")
+      vim.treesitter.start(args.buf, "forester")
       if opts.conceal then
         vim.cmd(":set conceallevel=2")
       end
@@ -77,28 +76,6 @@ end
 
 local function endswith(string, suffix)
   return string:sub(-#suffix) == suffix
-end
-
-local function list_trees(dir, callback)
-  local f = function(file)
-    return endswith(file, ".tree")
-  end
-  job
-    :new({
-      command = "ls",
-      args = { dir },
-      on_exit = vim.schedule_wrap(function(j, _)
-        local trees = util.filter(j:result(), f)
-        --vim.print(vim.inspect(j:result()))
-        callback(trees)
-        -- vim.print(vim.inspect(trees))
-      end),
-      on_stderr = vim.schedule_wrap(function(j, data)
-        vim.print(vim.inspect(data))
-      end),
-      --vim.print(vim.inspect(opts))
-    })
-    :sync()
 end
 
 local function select_title(titles, callback)
@@ -123,9 +100,8 @@ local function transclude_tree(tree_dir)
   end)
 end
 
-M.list_trees = list_trees
-M.transclude_tree = transclude_tree
-M.link_tree = link_tree
+--M.transclude_tree = transclude_tree
+--M.link_tree = link_tree
 M.setup = setup
 
 return M
