@@ -25,6 +25,9 @@ require("lazy").setup({
     config = function(opts)
       local forester = require("forester").setup(opts)
       vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
+      vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+      vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
+      vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
     end,
     dependencies = {
       { "nvim-telescope/telescope.nvim" },
