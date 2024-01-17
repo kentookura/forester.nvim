@@ -1,4 +1,5 @@
 local api = vim.api
+local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
 local Forester = require("forester.bindings")
 local util = require("forester.util")
@@ -32,6 +33,10 @@ local function setup(config)
   if not config then
     config = { opts = { tree_dirs = "trees" } }
   end
+
+  ---Register your source to nvim-cmp.
+  require("cmp").register_source("month", CompletionSource)
+
   local opts = config.opts
   ensure_treesitter()
   vim.opt.path:append("trees")

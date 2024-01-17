@@ -5,7 +5,7 @@ local M = {}
 local draw_title_inlay = function(bufnr, pos, title)
   local r = pos[1]
   local c = pos[2]
-  --api.nvim_buf_set_extmark(bufnr, forester_ns, r, c, { virt_text = { { title, "@comment" } }, virt_text_pos = "eol" })
+  api.nvim_buf_set_extmark(bufnr, forester_ns, r, c, { virt_text = { { title, "@comment" } }, virt_text_pos = "eol" })
 end
 
 local draw_inline_hints = function(bufnr)
@@ -39,6 +39,8 @@ local draw_inline_hints = function(bufnr)
     end
   end
 end
+
+draw_inline_hints(0)
 
 M.draw_title_inlay = draw_title_inlay
 M.draw_inline_hints = draw_inline_hints
