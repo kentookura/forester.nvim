@@ -1,0 +1,7 @@
+\title{templating}
+\tag{feature}
+
+\p{
+  It might actually be better to use neovim templates than forester's
+  builtin templating functionality.
+}

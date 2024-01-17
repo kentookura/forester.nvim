@@ -2,3 +2,8 @@ vendor/plenary.nvim
 trees/
 .direnv/
 
+/latex
+/notes
+/output
+/templates
+/theme

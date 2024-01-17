@@ -1,9 +1,10 @@
 {
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    forester = { url = "sourcehut:~kentookura/ocaml-forester/nvim-support"; };
+    forest-server.url = "github:kentookura/forest-server";
+    forester = { url = "github:jonsterling/ocaml-forester"; };
   };
-  outputs = { self, flake-utils, nixpkgs, forester }@inputs:
+  outputs = { self, forest-server, flake-utils, nixpkgs, forester }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = import nixpkgs { inherit system; };
       in {
@@ -18,12 +19,12 @@
             nodePackages.katex
             nodejs
             scrot
-            gh-markdown-preview
             imagemagick
             gcc
+            screenkey
             tree-sitter
+            forest-server.packages.${system}.default
           ];
-          shellHook = "export PATH=$PATH:./node_modules/.bin";
         };
       });
 }

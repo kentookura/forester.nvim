@@ -1,0 +1,35 @@
+\title{Forester.nvim}
+\date{2024-01-08}
+\tag{todo}
+\tag{documentation}
+\taxon{README}
+
+\scope{
+    \put\transclude/title{Installation}
+    \transclude{nvm-0002}
+  }
+
+\p{
+  See the example [[init.lua]] for installing with
+  [lazy.vim](https://github.com/folke/lazy.nvim).
+}
+
+
+\scope{\put\transclude/title{Todos}
+  \query{ \query/tag{todo} }
+}
+
+\p{
+  increment/decrement tree addrs using \code{<C-a>} and \code{<C-x>}
+  \code{h: nrformats}
+}
+
+\p{
+  no commands for inserting existing links, this should be handled by
+  completion provider.
+}
+
+\p{
+  nixvim
+}
+

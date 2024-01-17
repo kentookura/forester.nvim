@@ -1,3 +1,5 @@
+vim.g.mapleader = " "
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -13,22 +15,29 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "kentookura/forester.nvim",
-    config = function()
-      local forester = require("forester")
-      vim.g.mapleader = " "
-      vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nt", forester.new_from_template, { silent = true })
-      vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nh", forester.transclude_new, { silent = true })
-      vim.keymap.set("n", "<leader>nl", forester.link_new, { silent = true })
+    dir = "./.", -- change this to line to: "kentookura/neovim",
+    name = "forester.nvim",
+    opts = {
+      forests = { "~/glade/notes", "~/forest" }, -- global forest config
+      tree_dirs = { "trees", "test/trees", "notes", "doc" }, -- plugin will check if current directory contains these
+      conceal = true,
+    },
+    config = function(opts)
+      local forester = require("forester").setup(opts)
+      vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
+      vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+      vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
+      vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
     end,
     dependencies = {
+      { "nvim-telescope/telescope.nvim" },
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
-      { "nvim-treesitter/playground" },
-      --{ "ziontee113/SelectEase" },
-      --{ "nvim-telescope/telescope.nvim" },
+      { "hrsh7th/nvim-cmp" },
     },
   },
+  { "nvim-treesitter/nvim-treesitter" },
 })
+
+vim.keymap.set("n", "<leader>t", "<Plug>PlenaryTestFile %")
+vim.keymap.set("n", "<leader>r", "<Plug>Lazy reload forester.nvim")
