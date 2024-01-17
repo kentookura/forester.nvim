@@ -90,7 +90,15 @@ M.commands = {
   end,
 
   new = function(opts)
-    vim.print(vim.inspect(opts))
+    local prefixes = all_prefixes(opts)
+    vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
+      format_item = function(item)
+        return item.prefix
+      end,
+    }, function(choice)
+      local path = forester.new(choice.prefix, choice.dir)[1]
+      vim.cmd("edit " .. path)
+    end)
   end,
 
   transclude = function(opts)
