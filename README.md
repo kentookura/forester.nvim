@@ -13,22 +13,27 @@ With lazy:
 ```lua
   {
     "kentookura/forester.nvim",
+    opts = {
+      forests = { "~/forest/"}, -- global forests
+      tree_dirs = {"trees", "notes"} -- where the plugin will look for trees. Works outside of global forests
+      conceal = true;
+    };
     config = function()
       local forester = require("forester")
       vim.g.mapleader = " "
-      vim.keymap.set("n", "<leader>nn", forester.new_tree, { silent = true })
-      vim.keymap.set("n", "<leader>nt", forester.new_from_template, { silent = true })
-      vim.keymap.set("n", "<leader>n.", forester.open_tree, { silent = true })
+
+      vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
+      vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+      vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
+      vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
     end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
+      { "hrsh7th/nvim-cmp" },
     },
   },
 ```
-
-See also the example [init.lua](./init.lua)
-
 
 ## Features
 
@@ -36,19 +41,16 @@ See also the example [init.lua](./init.lua)
 
 ![Screenshot showcasing the conceal feature](./doc/conceal.png)
 
-- following links with `gf`
+  Note: The tree-sitter grammar is implemented independently from the parser that is part of `forester`.
+  Please report any issues with the grammar in the [grammar repository](https://github.com/kentookura/tree-sitter-forester)
 
-![Screen Recording showing the following of forester links in vim](./doc/link.gif)
+- following links and transclusions with `gf`
 
-- Open trees by searching for their title
+- Browsing forests with telescope
 
-![Screen Recording showing the browsing trees by title](./doc/search.gif)
+- Creating new trees within neovim
 
-- Creating new trees
+## Roadmap
 
-![Screen Recording showing the creation of new trees](./doc/new.gif)
-
-## Design Notes
-
-Forester enforces uniqueness of addresses per forest. This plugin is designed
-to work with multiple forests, so how should we handle duplicate addresses?
+- Adding more telescope pickers and previewers, making use of the `forester query` commands
+- improving syntax highlighting and concealing
