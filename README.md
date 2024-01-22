@@ -3,6 +3,15 @@
 Filetype plugin for [forester](https://sr.ht/~jonsterling/forester/), a tool
 for writing mathematical hypertext
 
+Available user commands:
+
+- `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
+- `Forester new`: Create a new tree by specifying a prefix
+- `Forester transclude`: transclude a new tree at cursor position
+- `Forester link`: link a new tree at cursor position
+
+TODO: Link & transclude existing trees at cursor position.
+
 ## Installation
 
 Install [forester](https://git.sr.ht/~jonsterling/ocaml-forester) either via
