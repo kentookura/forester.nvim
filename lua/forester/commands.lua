@@ -44,7 +44,8 @@ function M.parse(args)
 end
 
 local function available_tree_dirs(opts)
-  local configured_tree_dirs = util.map(opts.tree_dirs, function(dir)
+  local tree_dirs = opts.tree_dirs or { "trees" }
+  local configured_tree_dirs = util.map(tree_dirs, function(dir)
     return "./" .. Path:new({ dir, sep = "/" }):normalize()
   end)
 
@@ -86,11 +87,28 @@ M.commands = {
         all_trees[k] = v
       end
     end
-    navigation.pick_tree(all_trees, {})
+    if #all_trees == 0 then
+      do
+        vim.print("No trees found!")
+      end
+    elseif #all_trees == 1 then
+      do
+        local path = all_trees[1].addr .. ".tree"
+        vim.print("Only found one tree. Opening...")
+        vim.cmd("edit " .. vim.fn.findfile(path))
+      end
+    else
+      do
+        navigation.pick_tree(all_trees, {})
+      end
+    end
   end,
 
   new = function(opts)
     local prefixes = all_prefixes(opts)
+
+    -- if #prefixes = 0 then do
+
     vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
       format_item = function(item)
         return item.prefix

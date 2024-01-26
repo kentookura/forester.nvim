@@ -34,9 +34,11 @@ local function setup(config)
     config = { opts = { tree_dirs = "trees" } }
   end
 
-  require("cmp").register_source("forester", CompletionSource)
-  require("cmp").setup({
-    sources = { { name = "forester" } },
+  local cmp = require("cmp")
+
+  cmp.register_source("forester", CompletionSource)
+  cmp.setup({
+    sources = { { name = "forester", dup = 0 } },
   })
 
   local opts = config.opts
