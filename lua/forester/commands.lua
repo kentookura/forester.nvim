@@ -44,7 +44,7 @@ function M.parse(args)
 end
 
 local function available_tree_dirs(opts)
-  local tree_dirs = opts.tree_dirs or { "trees" }
+  local tree_dirs = opts.tree_dirs
   local configured_tree_dirs = util.map(tree_dirs, function(dir)
     return "./" .. Path:new({ dir, sep = "/" }):normalize()
   end)

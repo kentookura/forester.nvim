@@ -31,7 +31,7 @@ end
 
 local function setup(config)
   if not config then
-    config = { opts = { tree_dirs = "trees" } }
+    config = { opts = { tree_dirs = { "trees" } } }
   end
 
   local cmp = require("cmp")
@@ -43,7 +43,7 @@ local function setup(config)
 
   local opts = config.opts
   ensure_treesitter()
-  vim.opt.path:append("trees")
+  vim.opt.path:append("trees") -- TODO: Pass in opts.tree_dirs.
   vim.opt.suffixesadd:prepend(".tree")
 
   vim.api.nvim_create_user_command("Forester", function(cmd)
