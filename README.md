@@ -14,9 +14,6 @@ TODO: Link & transclude existing trees at cursor position.
 
 ## Installation
 
-Install [forester](https://git.sr.ht/~jonsterling/ocaml-forester) either via
-opam or nix.
-
 With lazy:
 
 ```lua
@@ -25,7 +22,7 @@ With lazy:
     opts = {
       forests = { "~/forest/"}, -- global forests
       tree_dirs = {"trees", "notes"} -- where the plugin will look for trees. Works outside of global forests
-      conceal = true;
+      conceal = false; -- Concealing is highly experimental, incomplete, partially broken. Enable only if you want to improve it!
     };
     config = function()
       local forester = require("forester")
