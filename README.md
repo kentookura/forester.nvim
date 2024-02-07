@@ -10,7 +10,11 @@ Available user commands:
 - `Forester transclude`: transclude a new tree at cursor position
 - `Forester link`: link a new tree at cursor position
 
-TODO: Link & transclude existing trees at cursor position.
+TODO: 
+
+- Link & transclude existing trees at cursor position.
+- autocomplete
+- ...
 
 ## Installation
 
@@ -43,9 +47,9 @@ With lazy:
 
 ## Features
 
-- Tree-sitter syntax highlighting and concealing
+- Tree-sitter syntax highlighting
 
-![Screenshot showcasing the conceal feature](./doc/conceal.png)
+![Screenshot showcasing the conceal feature](./doc/highlight.png)
 
   Note: The tree-sitter grammar is implemented independently from the parser that is part of `forester`.
   Please report any issues with the grammar in the [grammar repository](https://github.com/kentookura/tree-sitter-forester)
