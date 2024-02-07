@@ -11,11 +11,10 @@ local split_path = util.split_path
 
 local M = {}
 
-local function ensure_treesitter()
+local function add_treesitter_config()
   vim.treesitter.language.register("tree", "forester")
   vim.filetype.add({ extension = { tree = "tree" } })
 
-  require("nvim-treesitter.configs").setup({ ensure_installed = { "forester" } })
   local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
   parser_config.forester = {
     install_info = {
@@ -42,7 +41,7 @@ local function setup(config)
   })
 
   local opts = config.opts
-  ensure_treesitter()
+  add_treesitter_config()
   vim.opt.path:append("trees") -- TODO: Pass in opts.tree_dirs.
   vim.opt.suffixesadd:prepend(".tree")
 

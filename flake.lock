@@ -110,11 +110,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1703931163,
-        "narHash": "sha256-w1v7iSM9qAVgVKWPsc2r17laqSaHgnK6Ko/EA38O1Es=",
+        "lastModified": 1707123559,
+        "narHash": "sha256-WL533ZK+OR2561YlcMqsFNyMjgh0kYLw8RJmPibITaY=",
         "owner": "kentookura",
         "repo": "forest-server",
-        "rev": "ce6be940e1e46caa0204f03eb8e74dede7d26f79",
+        "rev": "6c4f5a2957264b33118931ce3d62f3fe05abd617",
         "type": "github"
       },
       "original": {
@@ -211,11 +211,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1705303754,
-        "narHash": "sha256-loWkd7lUzSvGBU9xnva37iPB2rr5ulq1qBLT44KjzGA=",
+        "lastModified": 1707171055,
+        "narHash": "sha256-7ZiKRdhrScsDfhDkGy8yJWAT6BfHqa8PYMX04roU03k=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e0629618b4b419a47e2c8a3cab223e2a7f3a8f97",
+        "rev": "4b1aab22192b787355733c9495d47f4c66af084c",
         "type": "github"
       },
       "original": {
