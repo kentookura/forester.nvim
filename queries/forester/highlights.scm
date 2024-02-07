@@ -19,7 +19,10 @@
 (strong "strong" @function.builtin)
 (code "code" @function.builtin)
 
+(tex "tex" @function.builtin)
+
 (tag "tag" @field)
+(date "date" @field)
 (author "author" @field)
 (contributor "contributor" @field)
 (title "title" @field)
