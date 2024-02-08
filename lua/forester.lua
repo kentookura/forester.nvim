@@ -6,16 +6,11 @@ local Preview = require("forester.preview")
 local util = require("forester.util")
 local job = require("plenary.job")
 
-local forester_ns = api.nvim_create_namespace("forester.extmarks")
-
 local split_path = util.split_path
 
 local M = {}
 
 local function add_treesitter_config()
-  vim.treesitter.language.register("tree", "forester")
-  vim.filetype.add({ extension = { tree = "tree" } })
-
   local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
   parser_config.forester = {
     install_info = {
@@ -27,9 +22,11 @@ local function add_treesitter_config()
     },
     filetype = "tree",
   }
+  vim.treesitter.language.register("forester", "forester")
 end
 
 local function setup(config)
+  vim.filetype.add({ extension = { tree = "forester" } })
   if not config then
     config = { opts = { tree_dirs = { "trees" } } }
   end
@@ -42,9 +39,10 @@ local function setup(config)
   })
 
   local opts = config.opts
+
   add_treesitter_config()
-  for dir in opts.tree_dirs do
-    vim.opt.path:append(dir)
+  for k, v in pairs(opts.tree_dirs) do
+    vim.opt.path:append(v)
   end
   vim.opt.suffixesadd:prepend(".tree")
 
@@ -76,8 +74,6 @@ local function setup(config)
       vim.treesitter.start(args.buf, "forester")
     end,
   })
-
-  require("hover").register(Preview.hover_provider)
 end
 
 M.setup = setup
