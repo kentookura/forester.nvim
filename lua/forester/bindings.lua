@@ -6,11 +6,16 @@
 ---
 ---]]
 
-local vim = vim
 local util = require("forester.util")
 local Job = require("plenary.job")
 
 local Bindings = {}
+
+local function build(tree_dir)
+  local job = Job:new({ command = "forester", args = { "build", tree_dir } })
+  job:sync()
+  return job:result()
+end
 
 local function titles(tree_dir) -- TODO: submit patch to forester for querying paths
   local job = Job:new({
@@ -83,6 +88,7 @@ local function template(pfx, tmpl_addr, tree_dir)
   }):sync()
 end
 
+Bindings.build = build
 Bindings.query = query
 Bindings.new = new
 Bindings.template = template

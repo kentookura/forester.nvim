@@ -2,6 +2,7 @@ local api = vim.api
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
 local Forester = require("forester.bindings")
+local Preview = require("forester.preview")
 local util = require("forester.util")
 local job = require("plenary.job")
 
@@ -42,19 +43,13 @@ local function setup(config)
 
   local opts = config.opts
   add_treesitter_config()
-  vim.opt.path:append("trees") -- TODO: Pass in opts.tree_dirs.
+  for dir in opts.tree_dirs do
+    vim.opt.path:append(dir)
+  end
   vim.opt.suffixesadd:prepend(".tree")
 
   vim.api.nvim_create_user_command("Forester", function(cmd)
     local prefix, args = Commands.parse(cmd.args)
-    --if #args == 1 and args[1] == "all" then
-    --  args = vim.tbl_keys(Config.plugins)
-    --end
-    --if #args > 0 then
-    --  opts.plugins = vim.tbl_map(function(plugin)
-    --    return Config.plugins[plugin]
-    --  end, args)
-    --end
     Commands.cmd(prefix, opts)
   end, {
     bar = true,
@@ -71,45 +66,20 @@ local function setup(config)
     end,
   })
 
+  if opts.conceal then
+    vim.cmd(":set conceallevel=2")
+  end
+
   vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
     pattern = { "*.tree" },
     callback = function(args)
       vim.treesitter.start(args.buf, "forester")
-      if opts.conceal then
-        vim.cmd(":set conceallevel=2")
-      end
     end,
   })
+
+  require("hover").register(Preview.hover_provider)
 end
 
-local function endswith(string, suffix)
-  return string:sub(-#suffix) == suffix
-end
-
-local function select_title(titles, callback)
-  vim.ui.select(titles, {
-    format_item = function(item)
-      return item.title .. " (" .. item.addr .. ")"
-    end,
-  }, callback)
-end
-
-local function link_tree(tree_dir)
-  local titles = Forester.titles(tree_dir)
-  select_title(titles, function(choice)
-    util.insert_at_cursor({ "[](" .. choice.addr .. ")" })
-  end)
-end
-
-local function transclude_tree(tree_dir)
-  local titles = Forester.titles(tree_dir)
-  select_title(titles, function(choice)
-    util.insert_at_cursor({ "\\transclude{" .. choice.addr .. "}" })
-  end)
-end
-
---M.transclude_tree = transclude_tree
---M.link_tree = link_tree
 M.setup = setup
 
 return M

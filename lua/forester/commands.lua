@@ -70,6 +70,9 @@ local function all_prefixes(opts)
 end
 
 M.commands = {
+  build = function(opts)
+    forester.build(opts)
+  end,
   browse = function(opts)
     -- NOTE: It would be nice to get the path info for trees directly
     --       from forester. This is not implemented at the time.
@@ -132,6 +135,7 @@ M.commands = {
       vim.api.nvim_put(content, "c", true, true)
     end)
   end,
+
   link = function(opts)
     local prefixes = all_prefixes(opts)
     vim.ui.select(prefixes, {

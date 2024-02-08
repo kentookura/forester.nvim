@@ -62,3 +62,11 @@
 (export "export" @include)
 (transclude "transclude" @include)
 
+
+(paragraph (text) @spell)
+(li (text) @spell)
+(em (text) @spell)
+(strong (text) @spell)
+(title (text) @spell)
+(markdown_link label: (text) @spell)
+(method_decl value: (method_body (text) @spell))
