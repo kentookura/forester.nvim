@@ -45,6 +45,8 @@ With lazy:
       { "hrsh7th/nvim-cmp" },
     },
   },
+
+require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
 ```
 
 ## Features
