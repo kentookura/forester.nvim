@@ -19,14 +19,14 @@ require("lazy").setup({
     name = "forester.nvim",
     opts = {
       forests = { "~/glade/notes", "~/forest" }, -- global forest config
-      tree_dirs = { "trees", "test/trees", "notes", "doc" }, -- plugin will check if current directory contains these
+      tree_dirs = { "trees" }, -- plugin will check if current directory contains these
       conceal = true,
     },
     config = function(opts)
       local forester = require("forester").setup(opts)
 
       vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
-      -- vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
+      vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
       -- vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
       -- vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
       -- vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
