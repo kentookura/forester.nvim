@@ -135,17 +135,17 @@
         "opam-repository": "opam-repository_2"
       },
       "locked": {
-        "lastModified": 1705055388,
-        "narHash": "sha256-7mLDdUuQV4ZR6aY7rWraqHS9iDqtBuJNQ//jMDWkIFs=",
-        "owner": "jonsterling",
+        "lastModified": 1707323470,
+        "narHash": "sha256-STy+gJH174ouJt4F4BkK/zZSHw+heC/l9oQcr6R7dWY=",
+        "owner": "~jonsterling",
         "repo": "ocaml-forester",
-        "rev": "f767434a5223a25b9383a7d7268539a92c1db857",
-        "type": "github"
+        "rev": "b76ec0df815978dbb601031c6468a64f9a2f3356",
+        "type": "sourcehut"
       },
       "original": {
-        "owner": "jonsterling",
+        "owner": "~jonsterling",
         "repo": "ocaml-forester",
-        "type": "github"
+        "type": "sourcehut"
       }
     },
     "mirage-opam-overlays": {
@@ -211,11 +211,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1707171055,
-        "narHash": "sha256-7ZiKRdhrScsDfhDkGy8yJWAT6BfHqa8PYMX04roU03k=",
+        "lastModified": 1707205916,
+        "narHash": "sha256-fmRJilYGlB7VCt3XsdYxrA0u8e/K84O5xYucerUY0iM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4b1aab22192b787355733c9495d47f4c66af084c",
+        "rev": "8cc79aa39bbc6eaedaf286ae655b224c71e02907",
         "type": "github"
       },
       "original": {

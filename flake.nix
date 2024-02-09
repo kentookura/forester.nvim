@@ -2,7 +2,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     forest-server.url = "github:kentookura/forest-server";
-    forester = { url = "github:jonsterling/ocaml-forester"; };
+    forester = { url = "sourcehut:~jonsterling/ocaml-forester"; };
   };
   outputs = { self, forest-server, flake-utils, nixpkgs, forester }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
