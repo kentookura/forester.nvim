@@ -40,7 +40,7 @@ local draw_inline_hints = function(bufnr)
   end
 end
 
-draw_inline_hints(0)
+--draw_inline_hints(0)
 
 M.draw_title_inlay = draw_title_inlay
 M.draw_inline_hints = draw_inline_hints

@@ -69,40 +69,43 @@ local function all_prefixes(opts)
   return out
 end
 
+local function all_trees(opts)
+  local dirs = available_tree_dirs(opts)
+  local all_trees = {}
+  for _, tree_dir in pairs(dirs) do
+    local trees = forester.titles(tree_dir)
+    for k, v in pairs(trees) do
+      all_trees[k] = v
+    end
+  end
+  return all_trees
+end
+
 M.commands = {
+  preview = function(opts)
+    forester.build(opts)
+  end,
+  tag = function(opts)
+    forester.query("tags")
+  end,
   build = function(opts)
     forester.build(opts)
   end,
   browse = function(opts)
-    -- NOTE: It would be nice to get the path info for trees directly
-    --       from forester. This is not implemented at the time.
-
-    local dirs = available_tree_dirs(opts)
-    if #dirs > 1 then
-      do
-        print("found multiple tree directories in current directory.")
-      end
-    end
-    local all_trees = {}
-    for _, tree_dir in pairs(dirs) do
-      local trees = forester.titles(tree_dir)
-      for k, v in pairs(trees) do
-        all_trees[k] = v
-      end
-    end
-    if #all_trees == 0 then
+    local trees = all_trees(opts)
+    if #trees == 0 then
       do
         vim.print("No trees found!")
       end
-    elseif #all_trees == 1 then
+    elseif #trees == 1 then
       do
-        local path = all_trees[1].addr .. ".tree"
+        local path = trees[1].addr .. ".tree"
         vim.print("Only found one tree. Opening...")
         vim.cmd("edit " .. vim.fn.findfile(path))
       end
     else
       do
-        navigation.pick_tree(all_trees, {})
+        navigation.pick_by_title(trees, {})
       end
     end
   end,

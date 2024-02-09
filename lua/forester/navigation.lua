@@ -8,7 +8,7 @@ local entry_display = require("telescope.pickers.entry_display")
 
 local M = {}
 
-local pick_tree = function(trees, opts)
+local pick_by_title = function(trees, opts)
   opts = opts or {}
   local widths = { title = 0, addr = 0 }
 
@@ -49,7 +49,8 @@ local pick_tree = function(trees, opts)
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()
-          local file = vim.fn.findfile(selection.addr .. ".tree", selection.dir)
+          local search_path = selection.dir .. "/.*"
+          local file = vim.fn.findfile(selection.addr .. ".tree", search_path)
           vim.cmd("edit " .. file)
         end)
         return true
@@ -58,31 +59,6 @@ local pick_tree = function(trees, opts)
     :find()
 end
 
---pick_tree(require("telescope.themes").get_dropdown({}))
-
---local function open_tree(tree_dir)
---  local function select(data)
---    ui.select(data, {
---      prompt = "Select a tree title",
---      format_item = function(item)
---        -- local addr = item:match("[^, ]*$"){ 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
---        -- local title = item:match("[^,]+$")
---        return item
---      end,
---    }, function(choice)
---      if choice == nil then
---        return
---      end
---      local addr = choice:match("[^,%s]+")
---      local path = vim.fn.findfile(addr .. ".tree", tree_dir .. "/**")
---      vim.cmd("edit " .. path)
---    end)
---  end
---
---  --forester.complete(tree_dir, select)
---  forester.titles(tree_dir)
---end
-
-M.pick_tree = pick_tree
+M.pick_by_title = pick_by_title
 
 return M
