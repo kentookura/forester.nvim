@@ -10,6 +10,8 @@ Available user commands:
 - `Forester transclude`: transclude a new tree at cursor position
 - `Forester link`: link a new tree at cursor position
 
+This plugin is pre-alpha, expect breaking changes.
+
 TODO: 
 
 - Link & transclude existing trees at cursor position.
