@@ -26,7 +26,7 @@ local function add_treesitter_config()
 end
 
 local function setup(config)
-  vim.filetype.add({ extension = { tree = "forester" } })
+  vim.filetype.add({ extension = { tree = "forester" }, pattern = { ["*.tree"] = "forester" } })
   if not config then
     config = { opts = { tree_dirs = { "trees" } } }
   end
