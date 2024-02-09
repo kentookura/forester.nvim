@@ -74,6 +74,9 @@ local function setup(config)
       vim.treesitter.start(args.buf, "forester")
     end,
   })
+  local hover = require("hover")
+  hover.setup({})
+  hover.register(Preview.hover_provider)
 end
 
 M.setup = setup
