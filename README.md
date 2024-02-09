@@ -16,6 +16,8 @@ TODO:
 - autocomplete
 - ...
 
+Streaming development on [twitch](https://twitch.tv/kento_okura)
+
 ## Installation
 
 With lazy:
