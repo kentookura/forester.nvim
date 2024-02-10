@@ -62,6 +62,7 @@ M.navigate = function(state, path)
     return {
       id = tree.addr,
       name = tree.title,
+      path = tree.path, -- TODO : get path from ocaml-forester
       type = "file",
       stat_provider = "example-custom",
       children = {},

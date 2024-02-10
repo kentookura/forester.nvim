@@ -25,7 +25,7 @@ require("lazy").setup({
     config = function(opts)
       local forester = require("forester").setup(opts)
 
-      vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
+      -- vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
       vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
       -- vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
       -- vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
@@ -37,7 +37,7 @@ require("lazy").setup({
       { "nvim-lua/plenary.nvim" },
       { "hrsh7th/nvim-cmp" },
       { "MunifTanjim/nui.nvim" },
-      { "lewis6991/hover.nvim" },
+      -- { "lewis6991/hover.nvim" },
     },
   },
   { "nvim-treesitter/nvim-treesitter" },
@@ -50,11 +50,7 @@ require("lazy").setup({
         forest = {
           window = {
             mappings = {
-              ["<cr>"] = function(state)
-                local node = state.tree:get_node()
-                local path = node.id .. ".tree"
-                vim.cmd("edit " .. vim.fn.findfile(path))
-              end,
+              --
             },
           },
         },

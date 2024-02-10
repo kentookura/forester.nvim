@@ -6,7 +6,7 @@ local hover_provider = {
   enabled = function(bufnr)
     return true
   end,
-  execute = function(opts, done) -- TODO: get rendered text from forester
+  execute = function(opts, done) --  TODO: get rendered text from forester
     vim.cmd("normal yi{")
     vim.print(vim.fn.getreg())
 
