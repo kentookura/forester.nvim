@@ -57,12 +57,17 @@ M.navigate = function(state, path)
     path = vim.fn.getcwd()
   end
   state.path = path
-
-  local trees = util.map(forester.titles("trees"), function(tree)
+  local trees = util.map(vim.json.decode(forester.query("all", "trees")[1]), function(tree) -- TODO: pass tree-dirs
+    local title
+    if tree.title == vim.NIL then
+      title = tree.addr
+    else
+      title = tree.title
+    end
     return {
-      id = tree.addr,
-      name = tree.title,
-      path = tree.path, -- TODO : get path from ocaml-forester
+      id = tree.addr or "",
+      name = title,
+      path = tree.path,
       type = "file",
       stat_provider = "example-custom",
       children = {},
@@ -70,12 +75,6 @@ M.navigate = function(state, path)
   end)
   renderer.show_nodes(trees, state)
 end
-
---{ {
---    addr = "foo-0001",
---    dir = "trees",     --->
---    title = "Hello"
---  } }
 
 ---Configures the plugin, should be called before the plugin is used.
 ---@param config table Configuration table containing any keys that the user

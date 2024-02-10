@@ -25,7 +25,7 @@ M.custom = function(config, node, state)
 end
 
 M.icon = function(config, node, state)
-  -- local icon = config.default or " "
+  -- local icon = config.default or "🌲"
   local icon = "🌲"
   local padding = config.padding or " "
   local highlight = config.highlight or highlights.FILE_ICON
