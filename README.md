@@ -45,6 +45,7 @@ With lazy:
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
       { "hrsh7th/nvim-cmp" },
+      { "lewis6991/hover.nvim" },
     },
   },
 
