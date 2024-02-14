@@ -20,6 +20,7 @@ require("lazy").setup({
     opts = {
       forests = { "~/glade/notes", "~/forest" }, -- global forest config
       tree_dirs = { "trees" }, -- plugin will check if current directory contains these
+      preview = { port = "1234" },
       conceal = true,
     },
     config = function(opts)
@@ -60,7 +61,6 @@ require("lazy").setup({
     end,
   },
   {
-    -- Theme inspired by Atom
     "navarasu/onedark.nvim",
     priority = 1000,
     config = function()
