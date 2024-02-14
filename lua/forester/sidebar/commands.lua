@@ -6,12 +6,12 @@ local vim = vim
 
 local M = {}
 
-M.example_command = function(state)
+M.new_tree = function(state)
   local tree = state.tree
   local node = tree:get_node()
   local id = node:get_id()
   local name = node.name
-  print(string.format("example_command: id=%s, name=%s", id, name))
+  print(string.format(": id=%s, name=%s", id, name))
 end
 
 M.refresh = function(state)

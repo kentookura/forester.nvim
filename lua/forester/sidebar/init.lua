@@ -50,6 +50,10 @@ M.get_node_stat = function(node)
   }
 end
 
+local get_state = function(tabid)
+  return manager.get_state(M.name, tabid)
+end
+
 ---Navigate to the given path.
 ---@param path string Path to navigate to. If empty, will navigate to the cwd.
 M.navigate = function(state, path)
@@ -57,6 +61,7 @@ M.navigate = function(state, path)
     path = vim.fn.getcwd()
   end
   state.path = path
+  print(vim.inspect(state))
   local trees = util.map(vim.json.decode(forester.query("all", "trees")[1]), function(tree) -- TODO: pass tree-dirs
     local title
     if tree.title == vim.NIL then
