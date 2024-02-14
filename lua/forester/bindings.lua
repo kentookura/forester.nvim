@@ -11,6 +11,11 @@ local Job = require("plenary.job")
 
 local Bindings = {}
 
+local function watch(tree_dir, port)
+  local _port = port or 1234
+  return Job:new({ command = "forest", args = { "watch", _port, tree_dir } })
+end
+
 local function build(tree_dir)
   local job = Job:new({ command = "forester", args = { "build", tree_dir } })
   job:sync()
@@ -88,6 +93,7 @@ local function template(pfx, tmpl_addr, tree_dir)
   }):sync()
 end
 
+Bindings.watch = watch
 Bindings.build = build
 Bindings.query = query
 Bindings.new = new
