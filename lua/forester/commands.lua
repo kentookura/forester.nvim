@@ -88,6 +88,9 @@ M.commands = {
   tag = function(opts)
     forester.query("tags")
   end,
+  watch = function(opts)
+    return { start = forester.build(opts), stop = forester.build(opts) }
+  end,
   build = function(opts)
     forester.build(opts)
   end,
@@ -148,7 +151,7 @@ M.commands = {
     }, function(choice)
       local path = forester.new(choice.prefix, choice.dir)[1]
       local _, addr, _ = util.split_path(path)
-      local content = { "[](" .. addr .. ")" } -- NOTE: We should improve the workflow with snippets or something similar
+      local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar
       vim.api.nvim_put(content, "c", true, true)
     end)
   end,
