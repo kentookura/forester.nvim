@@ -28,6 +28,8 @@
 (title "title" @field)
 (taxon "taxon" @field)
 
+(subtree "subtree" @keyword.function)
+
 (title "title" @text.title)
 (title (_) @text.title)
 (author author: (_) @markup.heading.url)
