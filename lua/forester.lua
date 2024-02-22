@@ -1,12 +1,5 @@
-local api = vim.api
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
-local Forester = require("forester.bindings")
-local Preview = require("forester.preview")
-local util = require("forester.util")
-local job = require("plenary.job")
-
-local split_path = util.split_path
 
 local M = {}
 
@@ -41,6 +34,8 @@ local function setup(config)
   local opts = config.opts
 
   add_treesitter_config()
+
+  -- Make links followable with `gf`
   for k, v in pairs(opts.tree_dirs) do
     vim.opt.path:append(v)
   end
@@ -56,7 +51,7 @@ local function setup(config)
     complete = function(_, line)
       local prefix, args = Commands.parse(line)
       if #args > 0 then
-        return M.complete(prefix, args[#args])
+        return Commands.complete(prefix, args[#args])
       end
       return vim.tbl_filter(function(key)
         return key:find(prefix, 1, true) == 1
