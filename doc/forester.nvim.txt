@@ -1,4 +1,4 @@
-*forester.nvim.txt*        For NVIM v0.8.0       Last change: 2024 February 22
+*forester.nvim.txt*         For NVIM v0.8.0         Last change: 2024 March 05
 
 ==============================================================================
 Table of Contents                            *forester.nvim-table-of-contents*
