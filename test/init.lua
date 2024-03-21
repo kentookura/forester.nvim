@@ -18,7 +18,7 @@ require("lazy").setup({
     dir = "./.", -- change this to line to: "kentookura/neovim",
     name = "forester.nvim",
     opts = {
-      forests = { "~/glade/notes", "~/forest" }, -- global forest config
+      -- forests = { "~/glade/notes", "~/forest" }, -- global forest config
       tree_dirs = { "trees" }, -- plugin will check if current directory contains these
       preview = { port = "1234" },
       conceal = true,
@@ -28,12 +28,19 @@ require("lazy").setup({
 
       -- vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
       vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
-      -- vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+      vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
       -- vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
       -- vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
     end,
     dependencies = {
       { "nvim-telescope/telescope.nvim" },
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        cond = function()
+          return vim.fn.executable("make") == 1
+        end,
+      },
       { "nvim-treesitter/nvim-treesitter" },
       { "nvim-lua/plenary.nvim" },
       { "hrsh7th/nvim-cmp" },

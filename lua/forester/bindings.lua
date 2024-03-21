@@ -49,6 +49,14 @@ local function query(arg, tree_dir)
   return res
 end
 
+local function query_all(tree_dir)
+  local res = Job:new({
+    command = "forester",
+    args = { "query", "all", tree_dir },
+  }):sync()
+  return vim.json.decode(res[1])
+end
+
 local function new(prefix, tree_dir)
   local job = Job:new({
     command = "forester",
@@ -96,6 +104,7 @@ end
 Bindings.watch = watch
 Bindings.build = build
 Bindings.query = query
+Bindings.query_all = query_all
 Bindings.new = new
 Bindings.template = template
 Bindings.titles = titles

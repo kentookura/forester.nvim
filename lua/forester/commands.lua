@@ -73,7 +73,7 @@ local function all_trees(opts)
   local dirs = available_tree_dirs(opts)
   local all_trees = {}
   for _, tree_dir in pairs(dirs) do
-    local trees = forester.titles(tree_dir)
+    local trees = forester.query_all(tree_dir)
     for k, v in pairs(trees) do
       all_trees[k] = v
     end
@@ -96,21 +96,28 @@ M.commands = {
   end,
   browse = function(opts)
     local trees = all_trees(opts)
-    if #trees == 0 then
+    local t = {}
+    for k, v in pairs(trees) do
+      v.addr = k
+      table.insert(t, v)
+    end
+    if #t == 0 then
       do
         vim.print("No trees found!")
       end
-    elseif #trees == 1 then
-      do
-        local path = trees[1].addr .. ".tree"
-        vim.print("Only found one tree. Opening...")
-        vim.cmd("edit " .. vim.fn.findfile(path))
-      end
-    else
-      do
-        navigation.pick_by_title(trees, {})
-      end
     end
+    -- elseif #trees == 1 then
+    --   do
+    --     local path = trees[1].addr .. ".tree"
+    --     vim.print("Only found one tree. Opening...")
+    --     vim.cmd("edit " .. vim.fn.findfile(path))
+    --   end
+    -- else
+    --   do
+    -- vim.print(vim.inspect(t[1]))
+    --   end
+    -- end
+    navigation.pick_by_title(t, {})
   end,
 
   new = function(opts)
@@ -140,6 +147,10 @@ M.commands = {
       local content = { "\\transclude{" .. addr .. "}" }
       vim.api.nvim_put(content, "c", true, true)
     end)
+  end,
+
+  info = function(opts)
+    vim.notify(vim.inspect(opt))
   end,
 
   link = function(opts)

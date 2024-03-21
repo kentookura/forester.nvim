@@ -21,11 +21,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1705309234,
-        "narHash": "sha256-uNRRNRKmJyCRC/8y1RqBkqWBLM034y4qN7EprSdmgyA=",
+        "lastModified": 1709126324,
+        "narHash": "sha256-q6EQdSeUZOG26WelxqkmR7kArjgWCdw5sfJVHPH/7j8=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "1ef2e671c3b0c19053962c07dbda38332dcebf26",
+        "rev": "d465f4819400de7c8d874d50b982301f28a84605",
         "type": "github"
       },
       "original": {
@@ -134,17 +134,16 @@
         "opam-nix": "opam-nix"
       },
       "locked": {
-        "lastModified": 1708264552,
-        "narHash": "sha256-wYRVyEyuOcWNfLOT9KiWHUX6Sr5+7QKX/vaGk5szvSw=",
-        "owner": "~jonsterling",
-        "repo": "ocaml-forester",
-        "rev": "280566c941eb51f1a7e63488454c081012153a0b",
-        "type": "sourcehut"
+        "dirtyRev": "18e70047621f0af3835107e3e2882f3698994f5e-dirty",
+        "dirtyShortRev": "18e7004-dirty",
+        "lastModified": 1709502310,
+        "narHash": "sha256-iMWrsNxtmyJkVcv3eTPC8mCcHu03MOZIITScslrd9us=",
+        "type": "git",
+        "url": "file:///home/kento/ocaml-forester"
       },
       "original": {
-        "owner": "~jonsterling",
-        "repo": "ocaml-forester",
-        "type": "sourcehut"
+        "type": "git",
+        "url": "file:///home/kento/ocaml-forester"
       }
     },
     "mirage-opam-overlays": {
@@ -211,11 +210,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1708564076,
-        "narHash": "sha256-KKkqoxlgx9n3nwST7O2kM8tliDOijiSSNaWuSkiozdQ=",
+        "lastModified": 1709386671,
+        "narHash": "sha256-VPqfBnIJ+cfa78pd4Y5Cr6sOWVW8GYHRVucxJGmRf8Q=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "98b00b6947a9214381112bdb6f89c25498db4959",
+        "rev": "fa9a51752f1b5de583ad5213eb621be071806663",
         "type": "github"
       },
       "original": {
