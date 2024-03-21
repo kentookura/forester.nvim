@@ -35,8 +35,6 @@ local pick_by_title = function(trees, opts)
   end
 
   local entry_maker = function(entry)
-    vim.notify("making entry")
-    vim.notify(vim.inspect(entry))
     return { --
       value = entry,
       display = make_display,

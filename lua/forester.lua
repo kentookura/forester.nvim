@@ -1,5 +1,6 @@
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
+local Ui = require("forester.ui")
 
 local M = {}
 
@@ -20,6 +21,7 @@ end
 
 local function setup(config)
   vim.filetype.add({ extension = { tree = "forester" }, pattern = { ["*.tree"] = "forester" } })
+  -- Ui.setup({ enable = true })
   if not config then
     config = { opts = { tree_dirs = { "trees" } } }
   end

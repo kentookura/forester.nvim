@@ -117,7 +117,10 @@ M.commands = {
     -- vim.print(vim.inspect(t[1]))
     --   end
     -- end
-    navigation.pick_by_title(t, {})
+    local ts = util.filter(t, function(tree)
+      return tree.title ~= vim.NIL
+    end)
+    navigation.pick_by_title(ts, {})
   end,
 
   new = function(opts)
