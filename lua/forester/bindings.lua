@@ -11,21 +11,63 @@ local Job = require("plenary.job")
 
 local Bindings = {}
 
+local function find_config(filename)
+  return vim.fn.findfile(filename, ".;")
+end
+
+local function find_default_config()
+  return vim.fn.findfile("forest.toml", ".;")
+end
+
+local function get_file_contents(filename)
+  return table.concat(vim.fn.readfile(filename), "\n")
+end
+
+local get_tree_dirs = function(config)
+  local text = get_file_contents(config)
+  local parser = vim.treesitter.get_string_parser(text, "toml")
+
+  local query = vim.treesitter.query.parse(
+    "toml",
+    [[(document
+        (table
+          (pair
+            (bare_key) @key (#eq? @key "trees")
+            (array (string) @dir))))
+    ]]
+    -- (bare_key) @key (#eq? @key "trees")
+    -- (array (string) @tree_dir ))))
+  )
+
+  local dirs = {}
+  for id, node in query:iter_captures(parser:parse()[1]:root(), text) do
+    local name = query.captures[id]
+    if name == "dir" then
+      local dir = vim.treesitter.get_node_text(node, text)
+      local str = dir:gsub('^"(.*)"$', "%1")
+      table.insert(dirs, str)
+    end
+  end
+  return dirs
+end
+
+vim.print(vim.inspect(get_tree_dirs(find_default_config())))
+
 local function watch(tree_dir, port)
   local _port = port or 1234
   return Job:new({ command = "forest", args = { "watch", _port, tree_dir } })
 end
 
-local function build(tree_dir)
-  local job = Job:new({ command = "forester", args = { "build", tree_dir } })
+local function build()
+  local job = Job:new({ command = "forester", args = { "build" } })
   job:sync()
   return job:result()
 end
 
-local function titles(tree_dir) -- TODO: submit patch to forester for querying paths
+local function titles()
   local job = Job:new({
     command = "forester",
-    args = { "complete", tree_dir },
+    args = { "complete" },
     enable_recording = true,
   })
   job:sync()
@@ -36,23 +78,23 @@ local function titles(tree_dir) -- TODO: submit patch to forester for querying p
     return { addr = addr, title = title }
   end)
   for k, v in pairs(result) do
-    out[k] = { addr = v.addr, title = v.title, dir = tree_dir }
+    out[k] = { addr = v.addr, title = v.title }
   end
   return out
 end
 
-local function query(arg, tree_dir)
+local function query(arg)
   local res = Job:new({
     command = "forester",
-    args = { "query", arg, tree_dir },
+    args = { "query", arg },
   }):sync()
   return res
 end
 
-local function query_all(tree_dir)
+local function query_all()
   local res = Job:new({
     command = "forester",
-    args = { "query", "all", tree_dir },
+    args = { "query", "all" },
   }):sync()
   return vim.json.decode(res[1])
 end
@@ -74,18 +116,18 @@ local function new(prefix, tree_dir)
   return job:result()
 end
 
-local function template(pfx, tmpl_addr, tree_dir)
+-- where should the dest come from?
+local function template(pfx, tmpl_addr, dest)
   Job:new({
     command = "forester",
     args = {
       "new",
       "--prefix",
       pfx,
-      "--dir",
-      tree_dir,
+      -- "--dir",
+      -- tree_dir,
       "--dest",
-      tree_dir,
-      "--template",
+      dest("--template"),
       tmpl_addr,
     },
 
