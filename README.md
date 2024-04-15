@@ -1,5 +1,7 @@
 # forester.nvim
 
+DOES NOT YET WORK WITH FORESTER 4.0
+
 Filetype plugin for [forester](https://sr.ht/~jonsterling/forester/), a tool
 for writing mathematical hypertext
 
