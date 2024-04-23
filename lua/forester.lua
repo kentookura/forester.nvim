@@ -1,6 +1,5 @@
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
-local Ui = require("forester.ui")
 
 local M = {}
 
@@ -20,8 +19,7 @@ local function add_treesitter_config()
 end
 
 local function setup(config)
-  vim.filetype.add({ extension = { tree = "forester" }, pattern = { ["*.tree"] = "forester" } })
-  -- Ui.setup({ enable = true })
+  vim.filetype.add({ extension = { tree = "forester" }, pattern = { ["*.tree"] = "forester" } }) -- FIXME: This doesn't work?
   if not config then
     config = { opts = { tree_dirs = { "trees" } } }
   end
@@ -31,21 +29,20 @@ local function setup(config)
   local cmp = require("cmp")
 
   cmp.register_source("forester", CompletionSource)
-  cmp.setup({
-    sources = { { name = "forester", dup = 0 } },
-  })
+  cmp.setup({ sources = { { name = "forester", dup = 0 } } })
 
   add_treesitter_config()
 
   -- Make links followable with `gf`
-  for k, v in pairs(opts.tree_dirs) do
+  for _, v in pairs(opts.tree_dirs) do
     vim.opt.path:append(v)
   end
   vim.opt.suffixesadd:prepend(".tree")
 
   vim.api.nvim_create_user_command("Forester", function(cmd)
     local prefix, args = Commands.parse(cmd.args)
-    Commands.cmd(prefix, opts)
+    Commands.cmd(prefix)
+    -- Commands.cmd(prefix, opts)
   end, {
     bar = true,
     bang = true,
@@ -71,9 +68,6 @@ local function setup(config)
       vim.treesitter.start(args.buf, "forester")
     end,
   })
-  -- local hover = require("hover")
-  -- hover.setup({})
-  -- hover.register(Preview.hover_provider)
 end
 
 M.setup = setup

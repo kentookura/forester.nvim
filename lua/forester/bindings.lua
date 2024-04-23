@@ -8,8 +8,12 @@
 
 local util = require("forester.util")
 local Job = require("plenary.job")
+local Path = require("plenary.path")
+local Scan = require("plenary.scandir")
 
 local Bindings = {}
+
+local os_sep = Path.path.sep
 
 local function find_config(filename)
   return vim.fn.findfile(filename, ".;")
@@ -23,9 +27,10 @@ local function get_file_contents(filename)
   return table.concat(vim.fn.readfile(filename), "\n")
 end
 
-local get_tree_dirs = function(config)
+local tree_dirs = function(config)
   local text = get_file_contents(config)
   local parser = vim.treesitter.get_string_parser(text, "toml")
+  local root_dir = Path:new(config):parents()[1]
 
   local query = vim.treesitter.query.parse(
     "toml",
@@ -35,8 +40,6 @@ local get_tree_dirs = function(config)
             (bare_key) @key (#eq? @key "trees")
             (array (string) @dir))))
     ]]
-    -- (bare_key) @key (#eq? @key "trees")
-    -- (array (string) @tree_dir ))))
   )
 
   local dirs = {}
@@ -45,13 +48,43 @@ local get_tree_dirs = function(config)
     if name == "dir" then
       local dir = vim.treesitter.get_node_text(node, text)
       local str = dir:gsub('^"(.*)"$', "%1")
-      table.insert(dirs, str)
+      table.insert(dirs, root_dir .. "/" .. str)
     end
   end
   return dirs
 end
 
-vim.print(vim.inspect(get_tree_dirs(find_default_config())))
+local dir_of_latest_tree_of_prefix = function(cfg, pfx)
+  local config = find_config(cfg)
+  local dirs = tree_dirs(config)
+  if #dirs == 1 then
+    return dirs[1]
+  else
+    local highest_in_each_dir = util.map(dirs, function(dir)
+      local dir_and_file = util.map(Scan.scan_dir(dir), function(file)
+        local split_path = vim.split(file, os_sep)
+        local fname = split_path[#split_path]
+        return { dir, fname }
+      end)
+      local matching_pfx = util.filter(dir_and_file, function(f)
+        return string.sub(f[2], 1, string.len(pfx)) == pfx
+      end)
+      local ids = util.map(matching_pfx, function(f)
+        local pattern = "%-([^%.]+)%.%w+$"
+        local id = string.match(f[2], pattern)
+        return { f[1], util.decode(id) }
+      end)
+      return ids
+    end)
+    local output = {}
+    for _, tbl in ipairs(highest_in_each_dir) do
+      for k, v in ipairs(tbl) do
+        output[k] = v[1]
+      end
+    end
+    return output[#output]
+  end
+end
 
 local function watch(tree_dir, port)
   local _port = port or 1234
@@ -106,8 +139,6 @@ local function new(prefix, tree_dir)
       "new",
       "--prefix",
       prefix,
-      "--dir",
-      tree_dir,
       "--dest",
       tree_dir,
     },
@@ -150,5 +181,7 @@ Bindings.query_all = query_all
 Bindings.new = new
 Bindings.template = template
 Bindings.titles = titles
+Bindings.dir_of_latest_tree_of_prefix = dir_of_latest_tree_of_prefix
+Bindings.tree_dirs = tree_dirs
 
 return Bindings

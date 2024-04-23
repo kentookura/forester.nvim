@@ -1,6 +1,7 @@
 local strings = require("plenary.strings")
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
+local previewers = require("telescope.previewers")
 local conf = require("telescope.config").values
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
@@ -41,7 +42,7 @@ local pick_by_title = function(trees, opts)
       ordinal = entry.title,
       title = entry.title,
       addr = entry.addr,
-      sourcePath = entry.sourcePath,
+      filename = entry.sourcePath,
     }
   end
 
@@ -52,12 +53,13 @@ local pick_by_title = function(trees, opts)
         results = trees,
         entry_maker = entry_maker,
       }),
+      previewer = previewers.vim_buffer_cat.new(opts),
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(prompt_bufnr, map)
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()
-          vim.cmd("edit " .. selection.sourcePath)
+          vim.cmd("edit " .. selection.filename)
         end)
         return true
       end,
@@ -66,18 +68,5 @@ local pick_by_title = function(trees, opts)
 end
 
 M.pick_by_title = pick_by_title
-
--- local forester = require("forester.bindings")
--- local trees = (forester.query_all("trees"))
--- local t = {}
---
--- for k, v in pairs(trees) do
---   v.addr = k
---   table.insert(t, v)
--- end
-
--- vim.print(vim.inspect(t))
--- vim.print(#t)
--- pick_by_title(t, {})
 
 return M

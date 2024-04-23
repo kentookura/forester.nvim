@@ -1,3 +1,6 @@
+forest.json
+forest.toml
+build/
 vendor/plenary.nvim
 trees/
 .direnv/

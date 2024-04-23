@@ -1,6 +1,5 @@
 (comment) @comment
 
-
 [
  "\\" 
  "("
@@ -39,6 +38,7 @@
 (transclude address: (_) @markup.link.url)
 
 (def "def" @keyword)
+(let "let" @keyword)
 (object "object" @constant)
 (object self: (_) @keyword)
 (method_decl key: (_) @method)

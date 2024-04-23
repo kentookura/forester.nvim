@@ -17,22 +17,17 @@ require("lazy").setup({
   {
     dir = "./.", -- change this to line to: "kentookura/neovim",
     name = "forester.nvim",
-    opts = {
-      -- forests = { "~/glade/notes", "~/forest" }, -- global forest config
-      tree_dirs = { "trees" }, -- plugin will check if current directory contains these
-      preview = { port = "1234" },
-      conceal = true,
-    },
-    config = function(opts)
-      local forester = require("forester").setup(opts)
+    config = function()
+      local forester = require("forester").setup()
 
-      -- vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
       vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
       vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+      -- vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
       -- vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
       -- vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
     end,
     dependencies = {
+      { "L3MON4D3/LuaSnip" },
       { "nvim-telescope/telescope.nvim" },
       {
         "nvim-telescope/telescope-fzf-native.nvim",
@@ -49,34 +44,10 @@ require("lazy").setup({
     },
   },
   { "nvim-treesitter/nvim-treesitter" },
-  { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    config = function()
-      require("neo-tree").setup({
-        sources = { "filesystem", "forester.sidebar" },
-        forest = {
-          window = {
-            mappings = {
-              --
-            },
-          },
-        },
-      })
-      vim.keymap.set("n", "<leader>f", ":Neotree forest<CR>")
-      vim.keymap.set("n", "\\", ":Neotree toggle<CR>")
-    end,
-  },
-  {
-    "navarasu/onedark.nvim",
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme("onedark")
-    end,
-  },
 })
 
 local cmp = require("cmp")
+local luasnip = require("luasnip")
 
 cmp.setup({
   snippet = {
@@ -125,8 +96,6 @@ cmp.setup({
 })
 
 require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
-require("lualine").setup()
-
 vim.keymap.set("n", "<leader>t", "<Plug>PlenaryTestFile %")
 vim.keymap.set("n", "<leader>r", "<Plug>Lazy reload forester.nvim")
 vim.opt.termguicolors = true
