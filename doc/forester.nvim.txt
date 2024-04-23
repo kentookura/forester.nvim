@@ -1,4 +1,4 @@
-*forester.nvim.txt*         For NVIM v0.8.0         Last change: 2024 March 21
+*forester.nvim.txt*         For NVIM v0.8.0         Last change: 2024 April 23
 
 ==============================================================================
 Table of Contents                            *forester.nvim-table-of-contents*
@@ -8,9 +8,12 @@ Table of Contents                            *forester.nvim-table-of-contents*
 3. Installation                                   |forester.nvim-installation|
 4. Configuration                                 |forester.nvim-configuration|
 5. Roadmap                                             |forester.nvim-roadmap|
+6. Links                                                 |forester.nvim-links|
 
 ==============================================================================
 1. 🌲 forester.nvim 🌲             *forester.nvim-🌲-forester.nvim-🌲*
+
+DOES NOT YET WORK WITH FORESTER 4.0
 
 Filetype plugin for forester <https://sr.ht/~jonsterling/forester/>, a tool for
 writing mathematical hypertext
