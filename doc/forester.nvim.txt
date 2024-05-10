@@ -1,4 +1,4 @@
-*forester.nvim.txt*         For NVIM v0.8.0         Last change: 2024 April 29
+*forester.nvim.txt*          For NVIM v0.8.0          Last change: 2024 May 10
 
 ==============================================================================
 Table of Contents                            *forester.nvim-table-of-contents*
@@ -12,6 +12,8 @@ Table of Contents                            *forester.nvim-table-of-contents*
 
 ==============================================================================
 1. 🌲 forester.nvim 🌲             *forester.nvim-🌲-forester.nvim-🌲*
+
+DOES NOT YET WORK WITH FORESTER 4.0
 
 DOES NOT YET WORK WITH FORESTER 4.0
 
@@ -37,10 +39,12 @@ Available user commands:
 
 - `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/…
 - `Forester new`: Create a new tree by specifying a prefix
+- `Forester config`: Choose the config file from which to source the tree directories
+
+These features need work:
+
 - `Forester transclude`: transclude a new tree at cursor position
 - `Forester link`: link a new tree at cursor position
-
-Streaming development on twitch <https://twitch.tv/kento_okura>
 
 
 ==============================================================================
@@ -58,6 +62,8 @@ With lazy:
         },
       },
 <
+
+You might need to run `:TSInstall toml`
 
 
 ==============================================================================
