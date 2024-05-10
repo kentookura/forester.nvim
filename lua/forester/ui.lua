@@ -1,3 +1,4 @@
+-- This is code is WIP and does not get used yet.
 local api = vim.api
 
 local M = {}

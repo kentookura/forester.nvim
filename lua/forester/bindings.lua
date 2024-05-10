@@ -15,8 +15,12 @@ local Bindings = {}
 
 local os_sep = Path.path.sep
 
+local function all_configs()
+  return Scan.scan_dir(".", { search_pattern = "toml" })
+end
+
 local function find_config(filename)
-  return vim.fn.findfile(filename, ".;")
+  return vim.fn.findfile(filename, ".;") -- .; searches up. :h file-searching for more info
 end
 
 local function find_default_config()
@@ -27,7 +31,8 @@ local function get_file_contents(filename)
   return table.concat(vim.fn.readfile(filename), "\n")
 end
 
-local tree_dirs = function(config)
+local tree_dirs = function()
+  local config = vim.g.forester_current_config
   local text = get_file_contents(config)
   local parser = vim.treesitter.get_string_parser(text, "toml")
   local root_dir = Path:new(config):parents()[1]
@@ -54,9 +59,8 @@ local tree_dirs = function(config)
   return dirs
 end
 
-local dir_of_latest_tree_of_prefix = function(cfg, pfx)
-  local config = find_config(cfg)
-  local dirs = tree_dirs(config)
+local dir_of_latest_tree_of_prefix = function(pfx)
+  local dirs = tree_dirs()
   if #dirs == 1 then
     return dirs[1]
   else
@@ -183,5 +187,7 @@ Bindings.template = template
 Bindings.titles = titles
 Bindings.dir_of_latest_tree_of_prefix = dir_of_latest_tree_of_prefix
 Bindings.tree_dirs = tree_dirs
+Bindings.find_default_config = find_default_config
+Bindings.all_configs = all_configs
 
 return Bindings

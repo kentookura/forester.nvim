@@ -27,11 +27,12 @@ Available user commands:
 
 - `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
 - `Forester new`: Create a new tree by specifying a prefix
+- `Forester config`: Choose the config file from which to source the tree directories
+
+These features need work:
+
 - `Forester transclude`: transclude a new tree at cursor position
 - `Forester link`: link a new tree at cursor position
-
-
-Streaming development on [twitch](https://twitch.tv/kento_okura)
 
 # Installation
 
@@ -47,6 +48,8 @@ With lazy:
     },
   },
 ```
+
+You might need to run `:TSInstall toml`
 
 # Configuration
 

@@ -9,6 +9,33 @@ local entry_display = require("telescope.pickers.entry_display")
 
 local M = {}
 
+local pick_config = function(config_files, opts)
+  opts = opts or {}
+
+  pickers
+    .new(opts, {
+      prompt_title = "Pick a config",
+      finder = finders.new_table({
+        results = config_files,
+        --entry_maker = entry_maker,
+      }),
+      previewer = previewers.vim_buffer_cat.new(opts),
+      sorter = conf.generic_sorter(opts),
+      attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
+          actions.close(prompt_bufnr)
+          local selection = action_state.get_selected_entry()
+          --vim.cmd("edit " .. selection.filename)
+          vim.g.forester_current_config = selection[1]
+          --vim.notify(vim.inspect(selection[1]))
+        end)
+        return true
+      end,
+    })
+    :find()
+end
+
+-- There are some issues with this code. For example, tree adresses are sometimes not visible in the picker window.
 local pick_by_title = function(trees, opts)
   opts = opts or {}
   local widths = { title = 0, addr = 0 }
@@ -68,5 +95,6 @@ local pick_by_title = function(trees, opts)
 end
 
 M.pick_by_title = pick_by_title
+M.pick_config = pick_config
 
 return M

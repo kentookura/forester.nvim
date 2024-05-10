@@ -8,7 +8,7 @@
 
 local util = require("forester.util")
 local forester = require("forester.bindings")
-local navigation = require("forester.navigation")
+local pickers = require("forester.pickers")
 local M = {}
 
 function M.parse(args)
@@ -24,7 +24,7 @@ function M.parse(args)
 end
 
 local function all_prefixes()
-  local dirs = forester.tree_dirs("forest.toml")
+  local dirs = forester.tree_dirs()
   local out = {}
   for _, tree_dir in pairs(dirs) do
     local trees = forester.query("prefix")
@@ -35,10 +35,14 @@ local function all_prefixes()
   return out
 end
 
+local function switch_config()
+  local configs = forester.all_configs()
+  --vim.print(vim.inspect(configs))
+  local config_file = pickers.pick_config(configs)
+  vim.print(vim.inspect(vim.g.forester_current_config))
+end
+
 M.commands = {
-  preview = function()
-    forester.build()
-  end,
   tag = function()
     forester.query("tags")
   end,
@@ -47,6 +51,12 @@ M.commands = {
   end,
   build = function()
     forester.build()
+  end,
+  preview = function()
+    forester.build()
+  end,
+  config = function()
+    switch_config()
   end,
   browse = function()
     local trees = forester.query_all()
@@ -63,7 +73,7 @@ M.commands = {
     local ts = util.filter(t, function(tree)
       return tree.title ~= vim.NIL
     end)
-    navigation.pick_by_title(ts, {})
+    pickers.pick_by_title(ts, {})
   end,
 
   new = function()
@@ -79,7 +89,7 @@ M.commands = {
         end
       else
         do
-          local path = forester.dir_of_latest_tree_of_prefix("forest.toml", choice.prefix)
+          local path = forester.dir_of_latest_tree_of_prefix(choice.prefix)
           local new_tree = forester.new(choice.prefix, path)[1]
           vim.cmd("edit " .. new_tree)
         end
@@ -100,7 +110,7 @@ M.commands = {
         end
       else
         do
-          local path = forester.dir_of_latest_tree_of_prefix("forest.toml", choice.prefix)
+          local path = forester.dir_of_latest_tree_of_prefix(choice.prefix)
           local new_tree = forester.new(choice.prefix, choice.dir)[1]
           local _, addr, _ = util.split_path(path)
           local content = { "\\transclude{" .. addr .. "}" }
@@ -119,7 +129,7 @@ M.commands = {
         return item.prefix
       end,
     }, function(choice)
-      local path = forester.dir_of_latest_tree_of_prefix("forest.toml", choice.prefix)
+      local path = forester.dir_of_latest_tree_of_prefix(choice.prefix)
       local new_tree = forester.new(choice.prefix, choice.dir)[1]
       local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar
       vim.api.nvim_put(content, "c", true, true)

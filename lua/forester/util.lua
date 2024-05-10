@@ -2,6 +2,11 @@ local M = {}
 
 --local addr = item:match("[^, ]*$")
 --local title = item:match("[^,]+$")
+local function add_tree_dirs_to_path(dirs)
+  for _, v in pairs(dirs) do
+    vim.opt.path:append(v)
+  end
+end
 
 local split_path = function(path)
   -- Returns the Path, Filename, and Extension as 3 values
@@ -167,5 +172,6 @@ M.map = map
 M.filter = filter
 M.fold = fold
 M.compare_addr = compare_addr
+M.add_tree_dirs_to_path = add_tree_dirs_to_path
 
 return M

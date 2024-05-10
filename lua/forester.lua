@@ -1,5 +1,6 @@
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
+local Forester = require("forester.bindings")
 
 local M = {}
 
@@ -18,13 +19,17 @@ local function add_treesitter_config()
   vim.treesitter.language.register("forester", "forester")
 end
 
-local function setup(config)
+local function setup()
   vim.filetype.add({ extension = { tree = "forester" }, pattern = { ["*.tree"] = "forester" } }) -- FIXME: This doesn't work?
-  if not config then
-    config = { opts = { tree_dirs = { "trees" } } }
-  end
 
-  local opts = config.opts
+  vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
+    pattern = { "*.tree" },
+    callback = function(args)
+      vim.treesitter.start(args.buf, "forester")
+    end,
+  })
+
+  --local config = Forester.find_default_config()
 
   local cmp = require("cmp")
 
@@ -34,9 +39,13 @@ local function setup(config)
   add_treesitter_config()
 
   -- Make links followable with `gf`
-  for _, v in pairs(opts.tree_dirs) do
-    vim.opt.path:append(v)
-  end
+  --
+  local _ = pcall(function()
+    local dirs = Forester.tree_dirs()
+    for _, v in pairs(dirs) do
+      vim.opt.path:append(v)
+    end
+  end)
   vim.opt.suffixesadd:prepend(".tree")
 
   vim.api.nvim_create_user_command("Forester", function(cmd)
@@ -58,16 +67,9 @@ local function setup(config)
     end,
   })
 
-  if opts.conceal then
-    vim.cmd(":set conceallevel=2")
-  end
-
-  vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
-    pattern = { "*.tree" },
-    callback = function(args)
-      vim.treesitter.start(args.buf, "forester")
-    end,
-  })
+  --if opts.conceal then
+  --  vim.cmd(":set conceallevel=2")
+  --end
 end
 
 M.setup = setup

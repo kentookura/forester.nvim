@@ -95,7 +95,7 @@ cmp.setup({
   },
 })
 
-require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
+--require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
 vim.keymap.set("n", "<leader>t", "<Plug>PlenaryTestFile %")
 vim.keymap.set("n", "<leader>r", "<Plug>Lazy reload forester.nvim")
 vim.opt.termguicolors = true
