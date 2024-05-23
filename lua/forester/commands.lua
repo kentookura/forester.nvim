@@ -13,18 +13,6 @@ local Config = require("forester.config")
 local M = {}
 
 M.commands = {
-  tag = function()
-    Forester.query("tags")
-  end,
-  watch = function()
-    return { start = Forester.build(), stop = Forester.build() }
-  end,
-  build = function()
-    Forester.build()
-  end,
-  preview = function()
-    Forester.build()
-  end,
   config = function()
     Config.switch_config()
   end,
