@@ -1,66 +1,23 @@
-# forester.nvim
+# 🌲 forester.nvim 🌲
+
+DOES NOT YET WORK WITH FORESTER 4.0
+
+DOES NOT YET WORK WITH FORESTER 4.0
 
 DOES NOT YET WORK WITH FORESTER 4.0
 
 Filetype plugin for [forester](https://sr.ht/~jonsterling/forester/), a tool
 for writing mathematical hypertext
 
-Available user commands:
-
-- `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
-- `Forester new`: Create a new tree by specifying a prefix
-- `Forester transclude`: transclude a new tree at cursor position
-- `Forester link`: link a new tree at cursor position
+# Features
 
 This plugin is pre-alpha, expect breaking changes.
-
-TODO: 
-
-- Link & transclude existing trees at cursor position.
-- autocomplete
-- ...
-
-Streaming development on [twitch](https://twitch.tv/kento_okura)
-
-## Installation
-
-With lazy:
-
-```lua
-  {
-    "kentookura/forester.nvim",
-    opts = {
-      forests = { "~/forest/"}, -- global forests
-      tree_dirs = {"trees", "notes"} -- where the plugin will look for trees. Works outside of global forests
-      conceal = false; -- Concealing is highly experimental, incomplete, partially broken. Enable only if you want to improve it!
-    };
-    config = function()
-      local forester = require("forester")
-      vim.g.mapleader = " "
-
-      vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
-      vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
-      vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
-      vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
-    end,
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-      { "nvim-lua/plenary.nvim" },
-      { "hrsh7th/nvim-cmp" },
-    },
-  },
-
-require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
-```
-
-## Features
 
 - Tree-sitter syntax highlighting
 
 ![Screenshot showcasing the conceal feature](./doc/highlight.png)
 
-  Note: The tree-sitter grammar is implemented independently from the parser that is part of `forester`.
-  Please report any issues with the grammar in the [grammar repository](https://github.com/kentookura/tree-sitter-forester)
+  Please report any issues with the grammar in the [relevant repository](https://github.com/kentookura/tree-sitter-forester)
 
 - following links and transclusions with `gf`
 
@@ -68,7 +25,61 @@ require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon
 
 - Creating new trees within neovim
 
-## Roadmap
+Available user commands:
+
+- `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
+- `Forester new`: Create a new tree by specifying a prefix
+- `Forester config`: Choose the config file from which to source the tree directories
+
+These features need work:
+
+- `Forester transclude`: transclude a new tree at cursor position
+- `Forester link`: link a new tree at cursor position
+
+# Installation
+
+With lazy:
+
+```lua
+  {
+    "kentookura/forester.nvim",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+      { "nvim-lua/plenary.nvim" },
+      { "hrsh7th/nvim-cmp" },
+    },
+  },
+```
+
+You might need to run `:TSInstall toml`
+
+# Configuration
+
+```lua
+{
+  opts = {
+    forests = { "~/forest/"},      -- Global forests
+    tree_dirs = {"trees", "notes"} -- Where the plugin will look for trees relative to the current directory. 
+  };                               -- Works outside of global forests
+
+  config = function()
+    local forester = require("forester")
+    vim.g.mapleader = " "
+
+    vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
+    vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+    vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
+    vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
+  end,
+}
+
+require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
+```
+
+
+# Roadmap
 
 - Adding more telescope pickers and previewers, making use of the `forester query` commands
-- improving syntax highlighting and concealing
+- Link & transclude existing trees at cursor position.
+- autocomplete
+- ...

@@ -2,6 +2,15 @@ local M = {}
 
 --local addr = item:match("[^, ]*$")
 --local title = item:match("[^,]+$")
+local function add_tree_dirs_to_path(dirs)
+  for _, v in pairs(dirs) do
+    vim.opt.path:append(v)
+  end
+end
+
+local function filename(url)
+  return url:match("[^/]+$")
+end
 
 local split_path = function(path)
   -- Returns the Path, Filename, and Extension as 3 values
@@ -55,7 +64,7 @@ local alphabet = {
 local function encode(num)
   -- Check for number
   if type(num) ~= "number" then
-    error("Number must be a number, not a string. Silly user.", 1)
+    error("Number must be a number, not a string.", 1)
   end
 
   -- We can only accept positive numbers
@@ -90,6 +99,10 @@ local pad_addr = function(i)
   else
     return string.rep("0", required_padding) .. base36_str
   end
+end
+
+local compare_addr = function(a, b)
+  return decode(a) < decode(b)
 end
 
 local function inc_addr(prefix, tree_num)
@@ -162,5 +175,8 @@ M.insert_at_cursor = insert_at_cursor
 M.map = map
 M.filter = filter
 M.fold = fold
+M.compare_addr = compare_addr
+M.add_tree_dirs_to_path = add_tree_dirs_to_path
+M.filename = filename
 
 return M

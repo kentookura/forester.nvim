@@ -1,6 +1,9 @@
+-- This is code is WIP and does not get used yet.
 local api = vim.api
 
 local M = {}
+
+local NAMESPACE = "foresterUI"
 
 local draw_title_inlay = function(bufnr, pos, title)
   local r = pos[1]
@@ -39,10 +42,31 @@ local draw_inline_hints = function(bufnr)
     end
   end
 end
+-- local update_extmarks
 
---draw_inline_hints(0)
+local function update_extmarks(bufnr, ns_id, ui_opts)
+  draw_inline_hints(bufnr)
+end
+
+local function get_extmarks_autocmd_callback(ui_opts)
+  local ns_id = vim.api.nvim_create_namespace(NAMESPACE)
+  local callback = function(ev)
+    update_extmarks(ev.buf, ns_id, ui_opts)
+  end
+  return callback
+end
 
 M.draw_title_inlay = draw_title_inlay
 M.draw_inline_hints = draw_inline_hints
+
+M.setup = function(ui_opts)
+  if ui_opts.enable == false then
+    return
+  end
+  local group = vim.api.nvim_create_augroup("forester_inlay_hints", { clear = true })
+  vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "TextChangedI", "TextChangedP" }, {
+    callback = get_extmarks_autocmd_callback(ui_opts),
+  })
+end
 
 return M

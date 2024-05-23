@@ -1,6 +1,5 @@
 (comment) @comment
 
-
 [
  "\\" 
  "("
@@ -28,6 +27,8 @@
 (title "title" @field)
 (taxon "taxon" @field)
 
+(subtree "subtree" @keyword.function)
+
 (title "title" @text.title)
 (title (_) @text.title)
 (author author: (_) @markup.heading.url)
@@ -37,6 +38,7 @@
 (transclude address: (_) @markup.link.url)
 
 (def "def" @keyword)
+(let "let" @keyword)
 (object "object" @constant)
 (object self: (_) @keyword)
 (method_decl key: (_) @method)

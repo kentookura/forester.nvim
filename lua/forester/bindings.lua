@@ -9,18 +9,25 @@
 local util = require("forester.util")
 local Job = require("plenary.job")
 
+--local Path = require("plenary.path")
+
 local Bindings = {}
 
-local function build(tree_dir)
-  local job = Job:new({ command = "forester", args = { "build", tree_dir } })
+local function watch(tree_dir, port)
+  local _port = port or 1234
+  return Job:new({ command = "forest", args = { "watch", _port, tree_dir } })
+end
+
+local function build(config)
+  local job = Job:new({ command = "forester", args = { "build", config } })
   job:sync()
   return job:result()
 end
 
-local function titles(tree_dir) -- TODO: submit patch to forester for querying paths
+local function titles(config)
   local job = Job:new({
     command = "forester",
-    args = { "complete", tree_dir },
+    args = { "complete", config },
     enable_recording = true,
   })
   job:sync()
@@ -31,49 +38,55 @@ local function titles(tree_dir) -- TODO: submit patch to forester for querying p
     return { addr = addr, title = title }
   end)
   for k, v in pairs(result) do
-    out[k] = { addr = v.addr, title = v.title, dir = tree_dir }
+    out[k] = { addr = v.addr, title = v.title }
   end
   return out
 end
 
-local function query(arg, tree_dir)
+local function query(arg, config)
   local res = Job:new({
     command = "forester",
-    args = { "query", arg, tree_dir },
+    args = { "query", arg, config },
   }):sync()
   return res
 end
 
-local function new(prefix, tree_dir)
+local function query_all(config)
+  local res = Job:new({
+    command = "forester",
+    args = { "query", "all", config },
+  }):sync()
+  return vim.json.decode(res[1])
+end
+
+local function new(prefix, tree_dir, config)
   local job = Job:new({
     command = "forester",
     args = {
       "new",
       "--prefix",
       prefix,
-      "--dir",
-      tree_dir,
       "--dest",
       tree_dir,
+      config,
     },
   })
   job:sync()
   return job:result()
 end
 
-local function template(pfx, tmpl_addr, tree_dir)
+-- where should the dest come from?
+local function template(pfx, tmpl_addr, dest, config)
   Job:new({
     command = "forester",
     args = {
       "new",
       "--prefix",
       pfx,
-      "--dir",
-      tree_dir,
       "--dest",
-      tree_dir,
-      "--template",
+      dest("--template"),
       tmpl_addr,
+      config,
     },
 
     on_exit = vim.schedule_wrap(function(res)
@@ -88,8 +101,10 @@ local function template(pfx, tmpl_addr, tree_dir)
   }):sync()
 end
 
+Bindings.watch = watch
 Bindings.build = build
 Bindings.query = query
+Bindings.query_all = query_all
 Bindings.new = new
 Bindings.template = template
 Bindings.titles = titles
