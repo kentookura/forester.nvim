@@ -31,8 +31,26 @@ local function setup()
   })
 
   local config = Config.find_default_config()
-  if config then
+  if config ~= "" then
     vim.g.forester_current_config = config
+    vim.api.nvim_create_user_command("Forester", function(cmd)
+      local prefix, args = Commands.parse(cmd.args)
+      Commands.cmd(prefix)
+      -- Commands.cmd(prefix, opts)
+    end, {
+      bar = true,
+      bang = true,
+      nargs = "?",
+      complete = function(_, line)
+        local prefix, args = Commands.parse(line)
+        if #args > 0 then
+          return Commands.complete(prefix, args[#args])
+        end
+        return vim.tbl_filter(function(key)
+          return key:find(prefix, 1, true) == 1
+        end, vim.tbl_keys(Commands.commands))
+      end,
+    })
   end
 
   local cmp = require("cmp")
@@ -51,25 +69,6 @@ local function setup()
     end
   end)
   vim.opt.suffixesadd:prepend(".tree")
-
-  vim.api.nvim_create_user_command("Forester", function(cmd)
-    local prefix, args = Commands.parse(cmd.args)
-    Commands.cmd(prefix)
-    -- Commands.cmd(prefix, opts)
-  end, {
-    bar = true,
-    bang = true,
-    nargs = "?",
-    complete = function(_, line)
-      local prefix, args = Commands.parse(line)
-      if #args > 0 then
-        return Commands.complete(prefix, args[#args])
-      end
-      return vim.tbl_filter(function(key)
-        return key:find(prefix, 1, true) == 1
-      end, vim.tbl_keys(Commands.commands))
-    end,
-  })
 
   --if opts.conceal then
   --  vim.cmd(":set conceallevel=2")
