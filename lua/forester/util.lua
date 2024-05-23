@@ -8,6 +8,10 @@ local function add_tree_dirs_to_path(dirs)
   end
 end
 
+local function filename(url)
+  return url:match("[^/]+$")
+end
+
 local split_path = function(path)
   -- Returns the Path, Filename, and Extension as 3 values
   return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
@@ -173,5 +177,6 @@ M.filter = filter
 M.fold = fold
 M.compare_addr = compare_addr
 M.add_tree_dirs_to_path = add_tree_dirs_to_path
+M.filename = filename
 
 return M

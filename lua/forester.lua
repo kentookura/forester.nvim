@@ -1,6 +1,7 @@
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
 local Forester = require("forester.bindings")
+local Config = require("forester.config")
 
 local M = {}
 
@@ -29,7 +30,10 @@ local function setup()
     end,
   })
 
-  --local config = Forester.find_default_config()
+  local config = Config.find_default_config()
+  if config then
+    vim.g.forester_current_config = config
+  end
 
   local cmp = require("cmp")
 
@@ -39,7 +43,7 @@ local function setup()
   add_treesitter_config()
 
   -- Make links followable with `gf`
-  --
+
   local _ = pcall(function()
     local dirs = Forester.tree_dirs()
     for _, v in pairs(dirs) do

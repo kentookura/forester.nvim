@@ -8,103 +8,26 @@
 
 local util = require("forester.util")
 local Job = require("plenary.job")
-local Path = require("plenary.path")
-local Scan = require("plenary.scandir")
+
+--local Path = require("plenary.path")
 
 local Bindings = {}
-
-local os_sep = Path.path.sep
-
-local function all_configs()
-  return Scan.scan_dir(".", { search_pattern = "toml" })
-end
-
-local function find_config(filename)
-  return vim.fn.findfile(filename, ".;") -- .; searches up. :h file-searching for more info
-end
-
-local function find_default_config()
-  return vim.fn.findfile("forest.toml", ".;")
-end
-
-local function get_file_contents(filename)
-  return table.concat(vim.fn.readfile(filename), "\n")
-end
-
-local tree_dirs = function()
-  local config = vim.g.forester_current_config
-  local text = get_file_contents(config)
-  local parser = vim.treesitter.get_string_parser(text, "toml")
-  local root_dir = Path:new(config):parents()[1]
-
-  local query = vim.treesitter.query.parse(
-    "toml",
-    [[(document
-        (table
-          (pair
-            (bare_key) @key (#eq? @key "trees")
-            (array (string) @dir))))
-    ]]
-  )
-
-  local dirs = {}
-  for id, node in query:iter_captures(parser:parse()[1]:root(), text) do
-    local name = query.captures[id]
-    if name == "dir" then
-      local dir = vim.treesitter.get_node_text(node, text)
-      local str = dir:gsub('^"(.*)"$', "%1")
-      table.insert(dirs, root_dir .. "/" .. str)
-    end
-  end
-  return dirs
-end
-
-local dir_of_latest_tree_of_prefix = function(pfx)
-  local dirs = tree_dirs()
-  if #dirs == 1 then
-    return dirs[1]
-  else
-    local highest_in_each_dir = util.map(dirs, function(dir)
-      local dir_and_file = util.map(Scan.scan_dir(dir), function(file)
-        local split_path = vim.split(file, os_sep)
-        local fname = split_path[#split_path]
-        return { dir, fname }
-      end)
-      local matching_pfx = util.filter(dir_and_file, function(f)
-        return string.sub(f[2], 1, string.len(pfx)) == pfx
-      end)
-      local ids = util.map(matching_pfx, function(f)
-        local pattern = "%-([^%.]+)%.%w+$"
-        local id = string.match(f[2], pattern)
-        return { f[1], util.decode(id) }
-      end)
-      return ids
-    end)
-    local output = {}
-    for _, tbl in ipairs(highest_in_each_dir) do
-      for k, v in ipairs(tbl) do
-        output[k] = v[1]
-      end
-    end
-    return output[#output]
-  end
-end
 
 local function watch(tree_dir, port)
   local _port = port or 1234
   return Job:new({ command = "forest", args = { "watch", _port, tree_dir } })
 end
 
-local function build()
-  local job = Job:new({ command = "forester", args = { "build" } })
+local function build(config)
+  local job = Job:new({ command = "forester", args = { "build", config } })
   job:sync()
   return job:result()
 end
 
-local function titles()
+local function titles(config)
   local job = Job:new({
     command = "forester",
-    args = { "complete" },
+    args = { "complete", config },
     enable_recording = true,
   })
   job:sync()
@@ -120,23 +43,23 @@ local function titles()
   return out
 end
 
-local function query(arg)
+local function query(arg, config)
   local res = Job:new({
     command = "forester",
-    args = { "query", arg },
+    args = { "query", arg, config },
   }):sync()
   return res
 end
 
-local function query_all()
+local function query_all(config)
   local res = Job:new({
     command = "forester",
-    args = { "query", "all" },
+    args = { "query", "all", config },
   }):sync()
   return vim.json.decode(res[1])
 end
 
-local function new(prefix, tree_dir)
+local function new(prefix, tree_dir, config)
   local job = Job:new({
     command = "forester",
     args = {
@@ -145,6 +68,7 @@ local function new(prefix, tree_dir)
       prefix,
       "--dest",
       tree_dir,
+      config,
     },
   })
   job:sync()
@@ -152,18 +76,17 @@ local function new(prefix, tree_dir)
 end
 
 -- where should the dest come from?
-local function template(pfx, tmpl_addr, dest)
+local function template(pfx, tmpl_addr, dest, config)
   Job:new({
     command = "forester",
     args = {
       "new",
       "--prefix",
       pfx,
-      -- "--dir",
-      -- tree_dir,
       "--dest",
       dest("--template"),
       tmpl_addr,
+      config,
     },
 
     on_exit = vim.schedule_wrap(function(res)
@@ -185,9 +108,5 @@ Bindings.query_all = query_all
 Bindings.new = new
 Bindings.template = template
 Bindings.titles = titles
-Bindings.dir_of_latest_tree_of_prefix = dir_of_latest_tree_of_prefix
-Bindings.tree_dirs = tree_dirs
-Bindings.find_default_config = find_default_config
-Bindings.all_configs = all_configs
 
 return Bindings
