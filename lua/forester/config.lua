@@ -131,5 +131,6 @@ local function switch_config()
 end
 
 M.all_prefixes = all_prefixes
+M.switch_config = switch_config
 
 return M

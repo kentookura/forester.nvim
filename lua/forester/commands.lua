@@ -10,7 +10,6 @@ local util = require("forester.util")
 local Forester = require("forester.bindings")
 local pickers = require("forester.pickers")
 local Config = require("forester.config")
-local Path = require("plenary.path")
 local M = {}
 
 M.commands = {
@@ -30,8 +29,7 @@ M.commands = {
     Config.switch_config()
   end,
   browse = function()
-    local config = vim.g.forester_current_config
-    local trees = Forester.query_all(config)
+    local trees = Forester.query_all(vim.g.forester_current_config)
     local t = {}
     for k, v in pairs(trees) do
       v.addr = k
@@ -42,10 +40,7 @@ M.commands = {
         vim.print("No trees found!")
       end
     end
-    local ts = util.filter(t, function(tree)
-      return tree.title ~= vim.NIL
-    end)
-    pickers.pick_by_title(ts, {})
+    pickers.pick_by_title(t, {})
   end,
 
   new = function()
@@ -96,7 +91,7 @@ M.commands = {
     local prefixes = Config.all_prefixes()
     vim.ui.select(prefixes, {
       format_item = function(item)
-        return item.prefix
+        return item
       end,
     }, function(choice)
       if choice == nil then
@@ -105,8 +100,8 @@ M.commands = {
         end
       else
         do
-          local path = Config.dir_of_latest_tree_of_prefix(choice.prefix)
-          local new_tree = Forester.new(choice.prefix, choice.dir)[1]
+          local path = Config.dir_of_latest_tree_of_prefix(choice)
+          local new_tree = Forester.new(choice, path)[1]
           local addr = util.filename(new_tree):match("(.+)%..+$")
           local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar
           vim.api.nvim_put(content, "c", true, true)

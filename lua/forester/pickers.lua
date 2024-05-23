@@ -25,9 +25,7 @@ local pick_config = function(config_files, opts)
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()
-          --vim.cmd("edit " .. selection.filename)
           vim.g.forester_current_config = selection[1]
-          --vim.notify(vim.inspect(selection[1]))
         end)
         return true
       end,
@@ -42,7 +40,7 @@ local pick_by_title = function(trees, opts)
 
   for _, tree in pairs(trees) do
     for k, v in pairs(widths) do
-      widths[k] = math.max(v, strings.strdisplaywidth(tree[k]))
+      widths[k] = math.max(v, strings.strdisplaywidth(tree[k]), ("<untitled>"):len())
       -- widths[k] = 50
     end
   end
@@ -56,8 +54,17 @@ local pick_by_title = function(trees, opts)
   })
 
   local make_display = function(item) -- NOTE: item is the table returned by entry_maker
+    local title
+    if item.title == vim.NIL then
+      do
+        title = "<untitled>"
+      end
+    else
+      title = item.title
+    end
+
     return displayer({
-      { item.title }, --  TODO: Figure out highlight groups
+      { title }, --  TODO: Figure out highlight groups
       { item.addr },
     })
   end
