@@ -45,7 +45,7 @@ M.commands = {
       else
         do
           local path = Config.dir_of_latest_tree_of_prefix(choice)
-          local new_tree = Forester.new(choice, path)[1]
+          local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
           vim.cmd("edit " .. new_tree)
         end
       end
@@ -66,7 +66,7 @@ M.commands = {
       else
         do
           local path = Config.dir_of_latest_tree_of_prefix(choice)
-          local new_tree = Forester.new(choice, path)[1]
+          local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
           local addr = util.filename(new_tree):match("(.+)%..+$")
           local content = { "\\transclude{" .. addr .. "}" }
           vim.api.nvim_put(content, "c", true, true)
