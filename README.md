@@ -42,6 +42,16 @@ You might need to run `:TSInstall toml` and `:TSInstall forester`.
 
 # Configuration
 
+In your `forest.toml` (or any other config) you should add the list of
+prefixes:
+
+```
+prefixes = ["foo", "bar"]
+```
+
+When calling `:Forester new`, you will then be able to choose the prefix of the
+new tree.
+
 ```lua
 {
   config = function()
