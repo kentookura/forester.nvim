@@ -8,27 +8,20 @@ for writing mathematical hypertext
 This plugin is pre-alpha, expect breaking changes.
 
 - Tree-sitter syntax highlighting
-
-![Screenshot showcasing the conceal feature](./doc/highlight.png)
-
   Please report any issues with the grammar in the [relevant repository](https://github.com/kentookura/tree-sitter-forester)
-
 - following links and transclusions with `gf`
-
-- Browsing forests with telescope
-
-- Creating new trees within neovim
+- Searching for trees by title with [telescope](https://github.com/nvim-telescope/telescope.nvim)
+- Creating new trees without leaving your editor
 
 Available user commands:
 
 - `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
 - `Forester new`: Create a new tree by specifying a prefix
 - `Forester config`: Choose the config file from which to source the tree directories
+- `Forester transclude_new`: transclude a new tree at cursor position
+- `Forester link_new`: link a new tree at cursor position
 
-These features need work:
-
-- `Forester transclude`: transclude a new tree at cursor position
-- `Forester link`: link a new tree at cursor position
+There is ongoing work on the Forester LSP, so I am not going to put effort into supporting completion in this plugin.
 
 # Installation
 
@@ -45,17 +38,12 @@ With lazy:
   },
 ```
 
-You might need to run `:TSInstall toml`
+You might need to run `:TSInstall toml` and `:TSInstall forester`.
 
 # Configuration
 
 ```lua
 {
-  opts = {
-    forests = { "~/forest/"},      -- Global forests
-    tree_dirs = {"trees", "notes"} -- Where the plugin will look for trees relative to the current directory. 
-  };                               -- Works outside of global forests
-
   config = function()
     local forester = require("forester")
     vim.g.mapleader = " "
@@ -69,7 +57,6 @@ You might need to run `:TSInstall toml`
 
 require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
 ```
-
 
 # Roadmap
 
