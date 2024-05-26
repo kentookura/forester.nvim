@@ -75,6 +75,23 @@ local function new(prefix, tree_dir, config)
   return job:result()
 end
 
+local function new_random(prefix, tree_dir, config)
+  local job = Job:new({
+    command = "forester",
+    args = {
+      "new",
+      "--prefix",
+      prefix,
+      "--dest",
+      tree_dir,
+      "--random",
+      config,
+    },
+  })
+  job:sync()
+  return job:result()
+end
+
 -- where should the dest come from?
 local function template(pfx, tmpl_addr, dest, config)
   Job:new({
@@ -106,6 +123,7 @@ Bindings.build = build
 Bindings.query = query
 Bindings.query_all = query_all
 Bindings.new = new
+Bindings.new_random = new_random
 Bindings.template = template
 Bindings.titles = titles
 

@@ -31,6 +31,27 @@ M.commands = {
     pickers.pick_by_title(t, {})
   end,
 
+  new_random = function()
+    local prefixes = Config.all_prefixes()
+    vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
+      format_item = function(item)
+        return item
+      end,
+    }, function(choice)
+      if choice == nil then
+        do
+          return
+        end
+      else
+        do
+          local path = Config.dir_of_latest_tree_of_prefix(choice)
+          local new_tree = Forester.new_random(choice, path, vim.g.forester_current_config)[1]
+          vim.cmd("edit " .. new_tree)
+        end
+      end
+    end)
+  end,
+
   new = function()
     local prefixes = Config.all_prefixes()
     vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
