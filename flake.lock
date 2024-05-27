@@ -131,11 +131,11 @@
         "opam-repository": "opam-repository_2"
       },
       "locked": {
-        "lastModified": 1716296889,
-        "narHash": "sha256-sFkqu0O/Ft4/ROo5T9RQDSqsC04y3K7rdx22McNxHAw=",
+        "lastModified": 1716654291,
+        "narHash": "sha256-ZtsGU0XSBOKBEUZZzSiChvL+dmxWc0bn2TqzMj3Kvz8=",
         "owner": "~jonsterling",
         "repo": "ocaml-forester",
-        "rev": "54b71ee89c447476729215025b114bb4d6beadf0",
+        "rev": "f106b90b6ac9bd12703a026c0271908ea66ada4e",
         "type": "sourcehut"
       },
       "original": {
@@ -222,10 +222,12 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-+z/XjO3QJs5rLE5UOf015gdVauVRQd2vZtsFkaXBq2Y=",
-        "path": "/nix/store/cc0ribc27c349w1v2anrby7z8kigy5pq-source",
-        "type": "path"
+        "lastModified": 1716715802,
+        "narHash": "sha256-usk0vE7VlxPX8jOavrtpOqphdfqEQpf9lgedlY/r66c=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "e2dd4e18cc1c7314e24154331bae07df76eb582f",
+        "type": "github"
       },
       "original": {
         "id": "nixpkgs",
