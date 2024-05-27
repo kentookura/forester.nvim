@@ -17,6 +17,7 @@ Available user commands:
 
 - `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
 - `Forester new`: Create a new tree by specifying a prefix
+- `Forester new_random`: Create a new tree with a random adress by specifying a prefix
 - `Forester config`: Choose the config file from which to source the tree directories
 - `Forester transclude_new`: transclude a new tree at cursor position
 - `Forester link_new`: link a new tree at cursor position
@@ -60,6 +61,7 @@ new tree.
 
     vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
     vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
+    vim.keymap.set("n", "<leader>nr", "<cmd>Forester new_random<CR>", { silent = true })
     vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
     vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
   end,
