@@ -62,17 +62,11 @@ local function setup()
 
   -- Make links followable with `gf`
 
-  local _ = pcall(function()
-    local dirs = Forester.tree_dirs()
-    for _, v in pairs(dirs) do
-      vim.opt.path:append(v)
-    end
-  end)
+  local dirs = Config.tree_dirs()
+  for _, v in pairs(dirs) do
+    vim.opt.path:append(v)
+  end
   vim.opt.suffixesadd:prepend(".tree")
-
-  --if opts.conceal then
-  --  vim.cmd(":set conceallevel=2")
-  --end
 end
 
 M.setup = setup

@@ -131,6 +131,7 @@ local function switch_config()
 end
 
 M.all_prefixes = all_prefixes
+M.tree_dirs = tree_dirs
 M.switch_config = switch_config
 
 return M

@@ -9,8 +9,6 @@
 local util = require("forester.util")
 local Job = require("plenary.job")
 
---local Path = require("plenary.path")
-
 local Bindings = {}
 
 local function watch(tree_dir, port)
