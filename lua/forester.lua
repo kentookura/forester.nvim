@@ -21,14 +21,7 @@ local function add_treesitter_config()
 end
 
 local function setup()
-  vim.filetype.add({ extension = { tree = "forester" }, pattern = { ["*.tree"] = "forester" } }) -- FIXME: This doesn't work?
-
-  vim.api.nvim_create_autocmd({ "BufNew", "BufEnter" }, {
-    pattern = { "*.tree" },
-    callback = function(args)
-      vim.treesitter.start(args.buf, "forester")
-    end,
-  })
+  vim.filetype.add({ extension = { tree = "forester" } })
 
   local config = Config.find_default_config()
   if config ~= "" then
