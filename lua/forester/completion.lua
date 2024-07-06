@@ -46,7 +46,7 @@ function source:complete(params, callback)
   local input = string.sub(params.context.cursor_before_line, params.offset - 1)
   if vim.startswith(input, "(") then
     local items = {}
-    local trees = forester.query_all("trees")
+    local trees = forester.query_all(vim.g.forester_current_config)
     -- vim.print(vim.inspect(trees))
     for addr, data in pairs(trees) do
       -- vim.notify(vim.inspect(data.title))
