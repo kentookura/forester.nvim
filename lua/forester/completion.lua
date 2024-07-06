@@ -62,7 +62,7 @@ function source:complete(params, callback)
         label = title .. " (" .. addr .. ")",
         -- label = " (" .. addr .. ")",
         insertText = addr,
-        documentation = "hello",
+        documentation = nil,
         detail = addr,
       })
     end
