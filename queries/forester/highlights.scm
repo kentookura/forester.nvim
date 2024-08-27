@@ -10,7 +10,7 @@
  "]"
 ] @punctuation.bracket
 
-(paragraph "p" @function.builtin)
+(p "p" @function.builtin)
 (li "li" @markup.list)
 (ul "ul"  @markup.list)
 (ol "ol"  @markup.list)
@@ -20,20 +20,10 @@
 
 (tex "tex" @function.builtin)
 
-(tag "tag" @field)
-(date "date" @field)
-(author "author" @field)
-(contributor "contributor" @field)
-(title "title" @field)
-(taxon "taxon" @field)
+(ident (text) @field)
 
 (subtree "subtree" @keyword.function)
 
-(title "title" @text.title)
-(title (_) @text.title)
-(author author: (_) @markup.heading.url)
-
-(ident label: (_) @string)
 (transclude "transclude" @include)
 (transclude address: (_) @markup.link.url)
 
@@ -53,22 +43,14 @@
 (put "put" @variable.parameter)
 
 (query_tree "query" @keyword)
-;(query_author "query/author" @keyword)
-;(query_tag "query/tag" @keyword)
-;(query_taxon "query/taxon" @keyword)
-;(query_and "query/and" @keyword)
-;(query_or "query/or" @keyword)
-;(query_meta "query/meta" @keyword)
 
 (import "import" @include)
 (export "export" @include)
 (transclude "transclude" @include)
 
 
-(paragraph (text) @spell)
 (li (text) @spell)
 (em (text) @spell)
 (strong (text) @spell)
-(title (text) @spell)
 (markdown_link label: (text) @spell)
 (method_decl value: (method_body (text) @spell))
