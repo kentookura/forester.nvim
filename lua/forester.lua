@@ -1,6 +1,6 @@
 local CompletionSource = require("forester.completion")
 local Commands = require("forester.commands")
-local Forester = require("forester.bindings")
+local Ui = require("forester.ui")
 local Config = require("forester.config")
 
 local M = {}
@@ -29,7 +29,6 @@ local function setup()
     vim.api.nvim_create_user_command("Forester", function(cmd)
       local prefix, args = Commands.parse(cmd.args)
       Commands.cmd(prefix)
-      -- Commands.cmd(prefix, opts)
     end, {
       bar = true,
       bang = true,
@@ -62,6 +61,7 @@ local function setup()
     end
   end)
   vim.opt.suffixesadd:prepend(".tree")
+  Ui.setup()
 end
 
 M.setup = setup

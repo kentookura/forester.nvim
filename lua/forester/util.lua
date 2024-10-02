@@ -143,9 +143,22 @@ end
 
 local function filter(iterable, pred)
   local new = {}
-  for _, v in ipairs(iterable) do
+  for i, v in pairs(iterable) do
     if pred(v) then
-      table.insert(new, v)
+      new[i] = v
+    end
+  end
+  return new
+end
+
+local function filter_map(iterable, f)
+  local new = {}
+  for i, v in pairs(iterable) do
+    if f(v)[1] then
+      do
+        new[i] = f(v)[2]
+      end
+    else
     end
   end
   return new
@@ -174,6 +187,7 @@ M.decr_addr = decr_addr
 M.insert_at_cursor = insert_at_cursor
 M.map = map
 M.filter = filter
+M.filter_map = filter_map
 M.fold = fold
 M.compare_addr = compare_addr
 M.add_tree_dirs_to_path = add_tree_dirs_to_path
