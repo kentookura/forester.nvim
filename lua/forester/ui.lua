@@ -40,12 +40,11 @@ local draw_inline_hints = function(bufnr)
   for _, node in addrs:iter_captures(root, bufnr, 0, -1) do
     local range = { node:range() }
     local title = title_cache[vim.treesitter.get_node_text(node, bufnr)] or ""
-    vim.notify(vim.inspect(title))
     api.nvim_buf_set_extmark(
       bufnr,
       NAMESPACE_ID,
       range[1],
-      range[3],
+      range[2],
       { virt_text = { { title, "@comment" } }, virt_text_pos = "eol" }
     )
   end

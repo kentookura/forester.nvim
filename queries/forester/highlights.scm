@@ -37,7 +37,7 @@
 
 (markdown_link label: (_) @label)
 (markdown_link dest: (_) @text.uri)
-(unlabeled_link (external_link (_) @text.uri))
+(unlabeled_link (external_link)) @text.uri
 
 (scope "scope" @namespace)
 (put "put" @variable.parameter)

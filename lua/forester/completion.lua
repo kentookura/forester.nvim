@@ -33,23 +33,13 @@ function source:get_trigger_characters()
   return { "\\", "(", "{" }
 end
 
--- local items = util.map(vim.json.decode(forester.query("all", "doc")[1]), function(tree)
---   -- return { label = tree.title }
---   return tree
--- end)
--- vim.print(vim.inspect(items))
----Invoke completion (required).
----
 function source:complete(params, callback)
-  -- vim.notify(vim.inspect(params))
-  -- vim.notify(vim.inspect(params.context.cursor_before_line))
   local input = string.sub(params.context.cursor_before_line, params.offset - 1)
-  if vim.startswith(input, "(") then
+  vim.notify(vim.inspect(params.context.cursor_before_line))
+  if params.context.cursor_before_line == "\\transclude{" then
     local items = {}
     local trees = forester.query_all(vim.g.forester_current_config)
-    -- vim.print(vim.inspect(trees))
     for addr, data in pairs(trees) do
-      -- vim.notify(vim.inspect(data.title))
       local title
       if data.title == vim.NIL then
         title = "<untitled>"
@@ -58,31 +48,48 @@ function source:complete(params, callback)
       end
       table.insert(items, {
         filterText = addr .. " " .. title,
-        -- filterText = addr,
+        label = addr,
+        insertText = addr .. "}",
+        documentation = title,
+        detail = addr,
+      })
+    end
+    callback({ items = items })
+  end
+  if vim.startswith(input, "(") then
+    local items = {}
+    local trees = forester.query_all(vim.g.forester_current_config)
+    for addr, data in pairs(trees) do
+      local title
+      if data.title == vim.NIL then
+        title = "<untitled>"
+      else
+        title = data.title
+      end
+      table.insert(items, {
+        filterText = addr .. " " .. title,
         label = title .. " (" .. addr .. ")",
-        -- label = " (" .. addr .. ")",
         insertText = addr,
         documentation = nil,
         detail = addr,
       })
     end
-    --vim.print(vim.inspect(items))
     callback({ items = items })
   elseif vim.startswith(input, "\\") then
     callback({
-      { label = "title" },
-      { label = "author" },
-      { label = "date" },
-      { label = "taxon" },
-      { label = "def" },
-      { label = "import" },
-      { label = "export" },
-      { label = "p" },
-      { label = "strong" },
-      { label = "transclude" },
-      { label = "let" },
-      { label = "code" },
-      { label = "tex" },
+      { label = "title", insertText = "title{" },
+      { label = "author", insertText = "author{" },
+      { label = "date", insertText = "date{" },
+      { label = "taxon", insertText = "taxon{" },
+      { label = "def", insertText = "def{" },
+      { label = "import", insertText = "import{" },
+      { label = "export", insertText = "export{" },
+      { label = "p", insertText = "p{" },
+      { label = "strong", insertText = "strong{" },
+      { label = "transclude", insertText = "transclude{" },
+      { label = "let", insertText = "let{" },
+      { label = "code", insertText = "code{" },
+      { label = "tex", insertText = "tex{" },
     })
   end
 end

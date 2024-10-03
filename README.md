@@ -12,6 +12,7 @@ This plugin is pre-alpha, expect breaking changes.
 - following links and transclusions with `gf`
 - Searching for trees by title with [telescope](https://github.com/nvim-telescope/telescope.nvim)
 - Creating new trees without leaving your editor
+- Displaying tree titles with virtual text
 
 Available user commands:
 
@@ -21,8 +22,6 @@ Available user commands:
 - `Forester config`: Choose the config file from which to source the tree directories
 - `Forester transclude_new`: transclude a new tree at cursor position
 - `Forester link_new`: link a new tree at cursor position
-
-There is ongoing work on the Forester LSP, so I am not going to put effort into supporting completion in this plugin.
 
 # Installation
 
