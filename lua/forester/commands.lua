@@ -91,7 +91,6 @@ M.commands = {
           local addr = util.filename(new_tree):match("(.+)%..+$")
           local content = { "\\transclude{" .. addr .. "}" }
           vim.api.nvim_put(content, "c", true, true)
-          vim.notify("The transclude_new command is deprecated. You can instead use the completion source")
         end
       end
     end)
@@ -115,7 +114,6 @@ M.commands = {
           local addr = util.filename(new_tree):match("(.+)%..+$")
           local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar
           vim.api.nvim_put(content, "c", true, true)
-          vim.notify("The link_new command is deprecated. You can instead use the completion source")
         end
       end
     end)
