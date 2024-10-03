@@ -68,9 +68,9 @@ function source:complete(params, callback)
       end
       table.insert(items, {
         filterText = addr .. " " .. title,
-        label = title .. " (" .. addr .. ")",
-        insertText = addr,
-        documentation = nil,
+        label = addr,
+        insertText = addr .. ")",
+        documentation = title,
         detail = addr,
       })
     end
