@@ -158,11 +158,17 @@ function source:complete(params, callback)
     local items = {}
     local trees = forester.query_all(vim.g.forester_current_config)
     local prefix_items = map(Config.all_prefixes(), function(pfx)
-      return { label = pfx, data = { isPrefix = true } }
+      return {
+        label = pfx,
+        documentation = "create a new tree with prefix `" .. pfx .. "`",
+        data = { isPrefix = true },
+      }
     end)
     local prefix_random_items = map(Config.all_prefixes(), function(pfx)
       return {
         label = pfx,
+        filterText = pfx .. " " .. "random",
+        documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
         labelDetails = { description = "random" },
         data = { isPrefix = true, isRandom = true },
       }
