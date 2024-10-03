@@ -1,3 +1,8 @@
+local Scan = require("plenary.scandir")
+local Path = require("plenary.path")
+
+local os_sep = Path.path.sep
+
 local M = {}
 
 --local addr = item:match("[^, ]*$")
@@ -175,6 +180,34 @@ local function fold(iterable, alg)
   return out
 end
 
+---@param fname string
+local extract_id = function(fname)
+  local pattern = "%-([^%.]+)%.%w+$"
+  local id = string.match(fname, pattern)
+  return decode(id)
+end
+
+local highest_in_dir = function(pfx, dir)
+  local files = map(Scan.scan_dir(dir), function(file)
+    local split = vim.split(file, os_sep)
+    return split[#split]
+  end)
+  local of_matching_pfx = filter(files, function(fn)
+    return string.sub(fn, 1, pfx:len()) == pfx
+  end)
+  local ids = map(of_matching_pfx, extract_id)
+  local sorted = {}
+  for _, v in pairs(ids) do
+    table.insert(sorted, v)
+  end
+  table.sort(sorted)
+  local max = sorted[#sorted]
+  if max then
+    return { dir, max }
+  else
+  end
+end
+
 M.encode = encode
 M.decode = decode
 M.to_addr = to_addr
@@ -192,5 +225,6 @@ M.fold = fold
 M.compare_addr = compare_addr
 M.add_tree_dirs_to_path = add_tree_dirs_to_path
 M.filename = filename
+M.highest_in_dir = highest_in_dir
 
 return M

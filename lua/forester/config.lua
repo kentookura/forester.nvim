@@ -4,8 +4,6 @@ local Path = require("plenary.path")
 local util = require("forester.util")
 --local Config = require("forester.config")
 
-local os_sep = Path.path.sep
-
 local M = {}
 
 local function all_configs()
@@ -59,42 +57,22 @@ end
 --
 M.dir_of_latest_tree_of_prefix = function(pfx)
   local dirs = tree_dirs()
-  local highest_in_dir = function(dir)
-    local files = util.map(Scan.scan_dir(dir), function(file)
-      local split_path = vim.split(file, os_sep)
-      return split_path[#split_path]
-    end)
-    local matching_pfx = util.filter(files, function(filename)
-      return string.sub(filename, 1, pfx:len()) == pfx
-    end)
-    local ids = util.map(matching_pfx, function(f)
-      local pattern = "%-([^%.]+)%.%w+$"
-      local id = string.match(f, pattern)
-      return util.decode(id)
-    end)
-    table.sort(ids)
-    local max = ids[#ids]
-    return max
-  end
   if #dirs == 1 then
     return dirs[1]
   else
-    local h = 0
-    local d = ""
-    for _, dir in pairs(dirs) do
-      local highest = highest_in_dir(dir)
-      if highest ~= nil then
-        do
-          if highest > h then
-            do
-              h = highest
-              d = dir
-            end
-          end
-        end
+    local tmp = util.filter_map(dirs, function(dir)
+      local highest = util.highest_in_dir(pfx, dir)
+      if highest == nil then
+        return { false }
+      else
+        return { true, highest }
       end
+    end)
+    local res = {}
+    for _, v in pairs(tmp) do
+      res[v[2]] = v[1]
     end
-    return d
+    return res[table.maxn(res)]
   end
 end
 
