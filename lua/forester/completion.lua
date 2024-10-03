@@ -61,6 +61,7 @@ local function ends_with_one_of(table, str)
   end)
 end
 
+-- Eventually this will be removed and become part of the LSP server
 local FORESTER_BUILTINS = {
   { label = "verb", documentation = "" },
   { label = "startverb", documentation = "" },
@@ -156,10 +157,20 @@ function source:complete(params, callback)
   else
     local items = {}
     local trees = forester.query_all(vim.g.forester_current_config)
-    local prefixes = map(Config.all_prefixes(), function(pfx)
+    local prefix_items = map(Config.all_prefixes(), function(pfx)
       return { label = pfx, data = { isPrefix = true } }
     end)
-    for _, v in pairs(prefixes) do
+    local prefix_random_items = map(Config.all_prefixes(), function(pfx)
+      return {
+        label = pfx,
+        labelDetails = { description = "random" },
+        data = { isPrefix = true, isRandom = true },
+      }
+    end)
+    for _, v in pairs(prefix_items) do
+      table.insert(items, v)
+    end
+    for _, v in pairs(prefix_random_items) do
       table.insert(items, v)
     end
     local function insert_text(addr)
@@ -209,7 +220,12 @@ function source:execute(item, callback)
   elseif data.isPrefix then
     local pfx = item.label
     local path = Config.dir_of_latest_tree_of_prefix(pfx)
-    local new_tree = forester.new(pfx, path, vim.g.forester_current_config)[1]
+    local new_tree
+    if data.isRandom ~= nil and data.isRandom then
+      new_tree = forester.new_random(pfx, path, vim.g.forester_current_config)[1]
+    else
+      new_tree = forester.new(pfx, path, vim.g.forester_current_config)[1]
+    end
     -- I no longer understand this string pattern, but it gets the foo-XXXX out of foo-XXXX.tree
     local addr = util.filename(new_tree):match("(.+)%..+$")
     -- last 5 chars: -XXXX
