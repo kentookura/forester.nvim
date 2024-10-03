@@ -68,6 +68,12 @@ M.setup = function()
     pattern = { "*.tree" },
     callback = get_extmarks_autocmd_callback(),
   })
+  vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+    pattern = { "*.tree" },
+    callback = function()
+      title_cache = create_title_cache()
+    end,
+  })
 end
 
 return M
