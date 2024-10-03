@@ -75,5 +75,4 @@ require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon
 
 - Adding more telescope pickers and previewers, making use of the `forester query` commands
 - Link & transclude existing trees at cursor position.
-- autocomplete
 - ...
