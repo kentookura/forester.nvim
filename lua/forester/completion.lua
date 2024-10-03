@@ -1,5 +1,7 @@
 local forester = require("forester.bindings")
+local Config = require("forester.config")
 local util = require("forester.util")
+local map = util.map
 local source = {}
 
 ---Return whether this source is available in the current context or not (optional).
@@ -154,6 +156,12 @@ function source:complete(params, callback)
   else
     local items = {}
     local trees = forester.query_all(vim.g.forester_current_config)
+    local prefixes = map(Config.all_prefixes(), function(pfx)
+      return { label = pfx, data = { isPrefix = true } }
+    end)
+    for _, v in pairs(prefixes) do
+      table.insert(items, v)
+    end
     local function insert_text(addr)
       if ends_with_one_of(triggers_for_closing_brace, text_before_cursor) then
         return addr .. "}"
@@ -176,9 +184,10 @@ function source:complete(params, callback)
         insertText = insert_text(addr),
         documentation = title,
         detail = addr,
+        data = { isPrefix = false },
       })
     end
-    callback({ items = items })
+    callback({ items = items, isIncomplete = true })
   end
 end
 
@@ -191,10 +200,25 @@ function source:resolve(completion_item, callback)
 end
 
 ---Executed after the item was selected.
----@param completion_item lsp.CompletionItem
----@param callback fun(completion_item: lsp.CompletionItem|nil)
-function source:execute(completion_item, callback)
-  callback(completion_item)
+---@param item lsp.CompletionItem
+---@param callback fun(item: lsp.CompletionItem|nil)
+function source:execute(item, callback)
+  local data = item.data
+  if data == nil or data.isPrefix == nil then
+    callback(item)
+  elseif data.isPrefix then
+    local pfx = item.label
+    local path = Config.dir_of_latest_tree_of_prefix(pfx)
+    local new_tree = forester.new(pfx, path, vim.g.forester_current_config)[1]
+    -- I no longer understand this string pattern, but it gets the foo-XXXX out of foo-XXXX.tree
+    local addr = util.filename(new_tree):match("(.+)%..+$")
+    -- last 5 chars: -XXXX
+    local id = string.sub(addr, -5)
+    vim.api.nvim_put({ id }, "c", true, true)
+    callback()
+  else
+    callback(item)
+  end
 end
 
 return source
