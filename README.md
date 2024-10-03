@@ -24,6 +24,8 @@ Available user commands:
 - `Forester transclude_new`: transclude a new tree at cursor position
 - `Forester link_new`: link a new tree at cursor position
 
+![screenshot of of the virtual text feature](https://github.com/kentookura/forester.nvim/blob/main/virtual-text.png?raw=true)
+
 # Installation
 
 With lazy:
