@@ -13,6 +13,7 @@ This plugin is pre-alpha, expect breaking changes.
 - Searching for trees by title with [telescope](https://github.com/nvim-telescope/telescope.nvim)
 - Creating new trees without leaving your editor
 - Displaying tree titles with virtual text
+- Address completion
 
 Available user commands:
 
