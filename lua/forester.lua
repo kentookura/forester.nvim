@@ -48,7 +48,7 @@ local function setup()
   local cmp = require("cmp")
 
   cmp.register_source("forester", CompletionSource)
-  cmp.setup({ sources = { { name = "forester", dup = 0 } } })
+  cmp.setup.filetype("forester", { sources = { { name = "forester", dup = 0 } } })
 
   add_treesitter_config()
 
