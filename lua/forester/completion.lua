@@ -147,8 +147,24 @@ local FORESTER_BUILTINS = {
 
 local default_items = {}
 for _, v in pairs(FORESTER_BUILTINS) do
-  table.insert(default_items, { label = v.label, insertText = v.label .. "{", documentation = v.documentation })
+  table.insert(
+    default_items,
+    { label = v.label, insertText = v.label .. "{", documentation = { kind = "markdown", value = v.documentation } }
+  )
 end
+
+local cache = forester.query_all(vim.g.forester_current_config)
+
+local function refresh_cache()
+  cache = forester.query_all(vim.g.forester_current_config)
+end
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  pattern = { "*.tree" },
+  callback = function()
+    refresh_cache()
+  end,
+})
 
 function source:complete(params, callback)
   local input = string.sub(params.context.cursor_before_line, params.offset - 1)
@@ -189,7 +205,7 @@ function source:complete(params, callback)
         return addr .. "]]"
       end
     end
-    for addr, data in pairs(trees) do
+    for addr, data in pairs(cache) do
       local title
       if data.title == vim.NIL then
         title = "<untitled>"
