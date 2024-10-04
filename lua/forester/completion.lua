@@ -145,15 +145,16 @@ local FORESTER_BUILTINS = {
   { label = "rel/links", documentation = "" },
 }
 
+local default_items = {}
+for _, v in pairs(FORESTER_BUILTINS) do
+  table.insert(default_items, { label = v.label, insertText = v.label .. "{", documentation = v.documentation })
+end
+
 function source:complete(params, callback)
   local input = string.sub(params.context.cursor_before_line, params.offset - 1)
   local text_before_cursor = params.context.cursor_before_line
   if vim.startswith(input, "\\") then
-    local items = {}
-    for _, v in pairs(FORESTER_BUILTINS) do
-      table.insert(items, { label = v.label, insertText = v.label .. "{", documentation = v.documentation })
-    end
-    callback(items)
+    callback(default_items)
   else
     local items = {}
     local trees = forester.query_all(vim.g.forester_current_config)
