@@ -156,8 +156,10 @@ end
 local cache
 
 local function refresh_cache()
-  local _, res = pcall(forester.query_all, vim.g.forester_current_config)
-  cache = res
+  local success, res = pcall(forester.query_all, vim.g.forester_current_config)
+  if success then
+    cache = res
+  end
 end
 
 refresh_cache()
