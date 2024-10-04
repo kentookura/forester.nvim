@@ -153,11 +153,14 @@ for _, v in pairs(FORESTER_BUILTINS) do
   )
 end
 
-local cache = forester.query_all(vim.g.forester_current_config)
+local cache
 
 local function refresh_cache()
-  cache = forester.query_all(vim.g.forester_current_config)
+  local _, res = pcall(forester.query_all, vim.g.forester_current_config)
+  cache = res
 end
+
+refresh_cache()
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   pattern = { "*.tree" },
@@ -173,7 +176,6 @@ function source:complete(params, callback)
     callback(default_items)
   else
     local items = {}
-    local trees = forester.query_all(vim.g.forester_current_config)
     local prefix_items = map(Config.all_prefixes(), function(pfx)
       return {
         label = pfx,
