@@ -162,7 +162,7 @@ end
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   pattern = { "*.tree" },
   callback = function()
-    refresh_cache()
+    vim.schedule(refresh_cache)
   end,
 })
 
