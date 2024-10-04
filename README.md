@@ -17,10 +17,11 @@ This plugin is pre-alpha, expect breaking changes.
 
 Available user commands:
 
+- `Forester build`: Build the currently configured forest. Use `Forester config` to switch forest.
+- `Forester config`: Choose the config file from which to source the tree directories
 - `Forester browse`: Telescope picker, search trees by title. TODO: support browsing by tag/taxon/...
 - `Forester new`: Create a new tree by specifying a prefix
 - `Forester new_random`: Create a new tree with a random adress by specifying a prefix
-- `Forester config`: Choose the config file from which to source the tree directories
 - `Forester transclude_new`: transclude a new tree at cursor position
 - `Forester link_new`: link a new tree at cursor position
 

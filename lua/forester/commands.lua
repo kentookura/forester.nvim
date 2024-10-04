@@ -1,13 +1,6 @@
----@tag forester.commands
-
----@brief [[
----
---- User commands for calling forester from neovim
----
----]]
-
 local util = require("forester.util")
 local Forester = require("forester.bindings")
+local Job = require("plenary.job")
 local pickers = require("forester.pickers")
 local Config = require("forester.config")
 local M = {}
@@ -16,6 +9,12 @@ M.commands = {
   config = function()
     Config.switch_config()
   end,
+
+  build = function()
+    local job = Job:new({ command = "forester", args = { "build", vim.g.forester_current_config } })
+    job:and_then_on_success(vim.notify("Successfully built the forest"))
+  end,
+
   browse = function()
     local trees = Forester.query_all(vim.g.forester_current_config)
     local t = {}
