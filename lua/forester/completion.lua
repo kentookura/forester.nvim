@@ -253,7 +253,7 @@ function source:execute(item, callback)
     local addr = util.filename(new_tree):match("(.+)%..+$")
     -- last 5 chars: -XXXX
     local id = string.sub(addr, -5)
-    vim.api.nvim_put({ id }, "c", true, true)
+    vim.api.nvim_put({ id .. "}" }, "c", true, true)
     callback()
   else
     callback(item)
