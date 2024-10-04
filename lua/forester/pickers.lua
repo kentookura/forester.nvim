@@ -33,7 +33,6 @@ local pick_config = function(config_files, opts)
     :find()
 end
 
--- There are some issues with this code. For example, tree adresses are sometimes not visible in the picker window.
 local pick_by_title = function(trees, opts)
   opts = opts or {}
   local widths = { title = 0, addr = 0 }
@@ -70,13 +69,19 @@ local pick_by_title = function(trees, opts)
   end
 
   local entry_maker = function(entry)
-    return { --
+    return {
       value = entry,
       display = make_display,
       ordinal = entry.title,
       title = entry.title,
       addr = entry.addr,
-      filename = entry.sourcePath,
+      -- FIXME:
+      -- https://github.com/nvim-telescope/telescope.nvim/blob/eae0d8fbde590b0eaa2f9481948cd6fd7dd21656/lua/telescope/from_entry.lua#L14
+      -- If this is nil, telescope ends up passing `value` to `path_expand`,
+      -- which is a table and thus fails. Ultimately, we should be taking
+      -- care to filter out trees that have no sourcePath, as we cannot open
+      -- them in the editor.
+      filename = entry.sourcePath or "",
     }
   end
 
