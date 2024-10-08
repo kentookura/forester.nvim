@@ -39,14 +39,16 @@ local draw_inline_hints = function(bufnr)
   local root = get_tree_root()
   for _, node in addrs:iter_captures(root, bufnr, 0, -1) do
     local range = { node:range() }
-    local title = title_cache[vim.treesitter.get_node_text(node, bufnr)] or ""
-    api.nvim_buf_set_extmark(
-      bufnr,
-      NAMESPACE_ID,
-      range[1],
-      range[2],
-      { virt_text = { { title, "@comment" } }, virt_text_pos = "eol" }
-    )
+    local title = title_cache[vim.treesitter.get_node_text(node, bufnr)]
+    if title and title ~= vim.NIL then
+      api.nvim_buf_set_extmark(
+        bufnr,
+        NAMESPACE_ID,
+        range[1],
+        range[2],
+        { virt_text = { { title, "@comment" } }, virt_text_pos = "eol" }
+      )
+    end
   end
 end
 
