@@ -30,8 +30,10 @@ local draw_inline_hints = function(bufnr)
 
   local get_tree_root = function()
     local parser = vim.treesitter.get_parser(0)
-    local tree = parser:parse()[1]
-    return tree:root()
+    if parser ~= nil then
+      local tree = parser:parse()[1]
+      return tree:root()
+    end
   end
 
   local addrs = vim.treesitter.query.parse("forester", [[(addr) @addr]])
