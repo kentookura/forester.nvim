@@ -1,6 +1,7 @@
 local forester = require("forester.bindings")
 local config = require("forester.config")
 local util = require("forester.util")
+local FORESTER_BUILTINS = require("forester.BUILTINS").FORESTER_BUILTINS
 local map = util.map
 local source = {}
 
