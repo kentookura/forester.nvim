@@ -54,7 +54,7 @@ local pick_by_title = function(trees, opts)
 
   local make_display = function(item) -- NOTE: item is the table returned by entry_maker
     local title
-    if item.title == vim.NIL then
+    if item.title == vim.NIL or item.title == nil then
       do
         title = "<untitled>"
       end

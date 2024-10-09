@@ -6,7 +6,7 @@ local filter_map = require("forester.util").filter_map
 local M = {}
 
 local function create_title_cache()
-  local success, trees = pcall(Forester.query_all, vim.g.forester_current_config)
+  local success, trees = pcall(forester.query_all, vim.g.forester_current_config)
   if success then
     return filter_map(trees, function(tree)
       if tree.title ~= "" then
