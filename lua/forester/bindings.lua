@@ -9,7 +9,7 @@
 local util = require("forester.util")
 local Job = require("plenary.job")
 
-local Bindings = {}
+local bindings = {}
 
 local function watch(tree_dir, port)
   local _port = port or 1234
@@ -118,13 +118,13 @@ local function template(pfx, tmpl_addr, dest, config)
   }):sync()
 end
 
-Bindings.watch = watch
-Bindings.build = build
-Bindings.query = query
-Bindings.query_all = query_all
-Bindings.new = new
-Bindings.new_random = new_random
-Bindings.template = template
-Bindings.titles = titles
+bindings.watch = watch
+bindings.build = build
+bindings.query = query
+bindings.query_all = query_all
+bindings.new = new
+bindings.new_random = new_random
+bindings.template = template
+bindings.titles = titles
 
-return Bindings
+return bindings

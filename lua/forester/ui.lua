@@ -1,6 +1,6 @@
 -- This is code is WIP and does not get used yet.
 local api = vim.api
-local Forester = require("forester.bindings")
+local forester = require("forester.bindings")
 local filter_map = require("forester.util").filter_map
 
 local M = {}

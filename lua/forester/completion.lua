@@ -1,5 +1,5 @@
 local forester = require("forester.bindings")
-local Config = require("forester.config")
+local config = require("forester.config")
 local util = require("forester.util")
 local map = util.map
 local source = {}
@@ -178,7 +178,7 @@ function source:complete(params, callback)
     callback(default_items)
   else
     local items = {}
-    local prefix_items = map(Config.all_prefixes(), function(pfx)
+    local prefix_items = map(config.all_prefixes(), function(pfx)
       return {
         label = pfx,
         documentation = "create a new tree with prefix `" .. pfx .. "`",
@@ -246,7 +246,7 @@ function source:execute(item, callback)
     callback(item)
   elseif data.isPrefix then
     local pfx = item.label
-    local path = Config.dir_of_latest_tree_of_prefix(pfx)
+    local path = config.dir_of_latest_tree_of_prefix(pfx)
     local new_tree
     if data.isRandom ~= nil and data.isRandom then
       new_tree = forester.new_random(pfx, path, vim.g.forester_current_config)[1]

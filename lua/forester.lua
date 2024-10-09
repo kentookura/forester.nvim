@@ -1,7 +1,7 @@
-local CompletionSource = require("forester.completion")
-local Commands = require("forester.commands")
-local Ui = require("forester.ui")
-local Config = require("forester.config")
+local completionSource = require("forester.completion")
+local commands = require("forester.commands")
+local ui = require("forester.ui")
+local config = require("forester.config")
 
 local M = {}
 
@@ -23,31 +23,31 @@ end
 local function setup()
   vim.filetype.add({ extension = { tree = "forester" } })
 
-  local config = Config.find_default_config()
-  if config ~= "" then
-    vim.g.forester_current_config = config
+  local cfg = config.find_default_config()
+  if cfg ~= "" then
+    vim.g.forester_current_config = cfg
     vim.api.nvim_create_user_command("Forester", function(cmd)
-      local prefix, args = Commands.parse(cmd.args)
-      Commands.cmd(prefix)
+      local prefix, _ = commands.parse(cmd.args)
+      commands.cmd(prefix)
     end, {
       bar = true,
       bang = true,
       nargs = "?",
       complete = function(_, line)
-        local prefix, args = Commands.parse(line)
+        local prefix, args = commands.parse(line)
         if #args > 0 then
-          return Commands.complete(prefix, args[#args])
+          return commands.complete(prefix, args[#args])
         end
         return vim.tbl_filter(function(key)
           return key:find(prefix, 1, true) == 1
-        end, vim.tbl_keys(Commands.commands))
+        end, vim.tbl_keys(commands.commands))
       end,
     })
   end
 
   local cmp = require("cmp")
 
-  cmp.register_source("forester", CompletionSource)
+  cmp.register_source("forester", completionSource)
   cmp.setup.filetype("forester", { sources = { { name = "forester", dup = 0 } } })
 
   add_treesitter_config()
@@ -55,15 +55,19 @@ local function setup()
   -- Make links followable with `gf`
 
   local _ = pcall(function()
-    local dirs = Config.tree_dirs()
+    local dirs = config.tree_dirs()
     for _, v in pairs(dirs) do
       vim.opt.path:append(v)
     end
   end)
   vim.opt.suffixesadd:prepend(".tree")
-  Ui.setup()
+  ui.setup()
 end
 
+M.completionSource = completionSource
+M.commands = commands
+M.ui = ui
+M.config = config
 M.setup = setup
 
 return M
