@@ -54,7 +54,9 @@ local function query_all(config)
     command = "forester",
     args = { "query", "all", config },
   }):sync()
-  return vim.json.decode(res[1])
+  if res ~= nil then
+    return vim.json.decode(res[1])
+  end
 end
 
 local function new(prefix, tree_dir, config)
