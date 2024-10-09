@@ -5,13 +5,11 @@ for writing mathematical hypertext
 
 # Features
 
-This plugin is pre-alpha, expect breaking changes.
-
 - Tree-sitter syntax highlighting
   Please report any issues with the grammar in the [relevant repository](https://github.com/kentookura/tree-sitter-forester)
 - following links and transclusions with `gf`
 - Searching for trees by title with [telescope](https://github.com/nvim-telescope/telescope.nvim)
-- Creating new trees without leaving your editor
+- Creating new trees via autocompletion menu
 - Displaying tree titles with virtual text
 - Address completion
 
@@ -76,6 +74,4 @@ require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon
 
 # Roadmap
 
-- Adding more telescope pickers and previewers, making use of the `forester query` commands
-- Link & transclude existing trees at cursor position.
-- ...
+- Find an ergonomic way to make use of forester's builtin templating feature
