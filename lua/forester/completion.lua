@@ -37,113 +37,11 @@ function source:get_trigger_characters()
 end
 
 local triggers_for_closing_brace = {
-  "\\transclude{",
-  "\\import{",
-  "\\export{",
-  "\\author{",
-  "\\contributor{",
-}
-
-local function any(table, pred)
-  for _, v in pairs(table) do
-    if pred(v) then
-      return true
-    else
-      do
-      end
-    end
-  end
-  return false
-end
-
-local function ends_with_one_of(table, str)
-  return any(table, function(i)
-    return vim.endswith(str, i)
-  end)
-end
-
--- Eventually this will be removed and become part of the LSP server
-local FORESTER_BUILTINS = {
-  { label = "verb", documentation = "" },
-  { label = "startverb", documentation = "" },
-  { label = "scope", documentation = "" },
-  { label = "put", documentation = "" },
-  { label = "put?", documentation = "" },
-  { label = "get", documentation = "" },
-  {
-    label = "import",
-    documentation = "\\import{xxx-NNNN} brings the functions exported by the tree xxx-NNNN into scope ",
-  },
-  {
-    label = "export",
-    documentation = "\\export{xxx-NNNN} brings the functions exported by the tree xxx-NNNN into scope, and exports them from the current tree ",
-  },
-  { label = "namespace", documentation = "" },
-  { label = "open", documentation = "" },
-  { label = "def", documentation = "" },
-  { label = "alloc", documentation = "" },
-  { label = "subtree", documentation = "" },
-  { label = "object", documentation = "" },
-  { label = "patch", documentation = "" },
-  { label = "call", documentation = "" },
-  {
-    label = "p",
-    documentation = "creates a paragraph; unlike Markdown, it is mandatory to annotate paragraphs explicitly",
-  },
-  { label = "em", documentation = "typesets the content in italics" },
-  { label = "strong", documentation = "typesets the content in boldface" },
-  { label = "li", documentation = "creates a list item" },
-  { label = "ol", documentation = "creates an ordered list" },
-  { label = "ul", documentation = "creates an unordered list" },
-  { label = "code", documentation = "typesets the content in monospace" },
-  { label = "blockquote", documentation = "blockquote" },
-  { label = "pre", documentation = "preformatted text" },
-  { label = "figure", documentation = "" },
-  { label = "figcaption", documentation = "" },
-  { label = "transclude", documentation = "transclude a tree as a subsection" },
-  { label = "tex", documentation = "" },
-  { label = "ref", documentation = "" },
-  { label = "title", documentation = "sets the title of the tree; can contain mainmatter markup" },
-  {
-    label = "taxon",
-    documentation = "sets the taxon of the tree; example taxa include lemma, theorem, person, reference; the latter two taxa are treated specially by Forester for tracking biographical and bibliographical trees respectively",
-  },
-  { label = "date", documentation = "sets the creation date of the tree" },
-  { label = "meta", documentation = "" },
-  {
-    label = "author",
-    documentation = "\\author{name} sets the author of the tree to be the biographical tree at address name",
-  },
-  { label = "author/literal", documentation = "" },
-  { label = "contributor", documentation = "" },
-  { label = "contributor/literal", documentation = "" },
-  { label = "parent", documentation = "" },
-  { label = "number", documentation = "" },
-  { label = "tag", documentation = "" },
-  { label = "query", documentation = "" },
-  { label = "query/rel", documentation = "" },
-  { label = "query/rel/literal", documentation = "" },
-  { label = "query/union", documentation = "" },
-  { label = "query/isect", documentation = "" },
-  { label = "query/isect-fam", documentation = "" },
-  { label = "query/union-fam", documentation = "" },
-  { label = "query/isect-fam-rel", documentation = "" },
-  { label = "query/union-fam-rel", documentation = "" },
-  { label = "query/compl", documentation = "" },
-  { label = "query/tag", documentation = "" },
-  { label = "query/taxon", documentation = "" },
-  { label = "query/author", documentation = "" },
-  { label = "query/author/literal", documentation = "" },
-  { label = "query/incoming", documentation = "" },
-  { label = "query/outgoing", documentation = "" },
-  { label = "query/edges", documentation = "" },
-  { label = "query/paths", documentation = "" },
-  { label = "rel/tags", documentation = "" },
-  { label = "rel/taxa", documentation = "" },
-  { label = "rel/authors", documentation = "" },
-  { label = "rel/contributors", documentation = "" },
-  { label = "rel/transclusion", documentation = "" },
-  { label = "rel/links", documentation = "" },
+  "transclude{",
+  "import{",
+  "export{",
+  "author{",
+  "contributor{",
 }
 
 local default_items = {}
@@ -186,13 +84,31 @@ function source:complete(params, callback)
         data = { isPrefix = true },
       }
     end)
-    local prefix_random_items = map(Config.all_prefixes(), function(pfx)
+    local function closing_delim()
+      local candidate = { -1, "" }
+      for _, v in pairs(triggers_for_closing_brace) do
+        local _, e = string.find(text_before_cursor, v)
+        if e ~= nil and candidate[1] < e then
+          candidate = { e, "}" }
+        end
+      end
+      local _, e = string.find(text_before_cursor, "%]%(")
+      if e ~= nil and candidate[1] < e then
+        candidate = { e, ")" }
+      end
+      local _, e = string.find(text_before_cursor, "%[%[")
+      if e ~= nil and candidate[1] < e then
+        candidate = { e, "]]" }
+      end
+      return candidate[2]
+    end
+    local prefix_random_items = map(config.all_prefixes(), function(pfx)
       return {
         label = pfx,
         filterText = pfx .. " " .. "random",
         documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
         labelDetails = { description = "random" },
-        data = { isPrefix = true, isRandom = true },
+        data = { isPrefix = true, isRandom = true, closingDelim = closing_delim() },
       }
     end)
     for _, v in pairs(prefix_items) do
@@ -202,13 +118,7 @@ function source:complete(params, callback)
       table.insert(items, v)
     end
     local function insert_text(addr)
-      if ends_with_one_of(triggers_for_closing_brace, text_before_cursor) then
-        return addr .. "}"
-      elseif vim.endswith(text_before_cursor, "](") then
-        return addr .. ")"
-      elseif vim.endswith(text_before_cursor, "[[") then
-        return addr .. "]]"
-      end
+      return addr .. closing_delim()
     end
     for addr, data in pairs(cache) do
       local title
@@ -222,7 +132,6 @@ function source:complete(params, callback)
         label = addr,
         insertText = insert_text(addr),
         documentation = title,
-        detail = addr,
         data = { isPrefix = false },
       })
     end
@@ -258,7 +167,8 @@ function source:execute(item, callback)
     local addr = util.filename(new_tree):match("(.+)%..+$")
     -- last 5 chars: -XXXX
     local id = string.sub(addr, -5)
-    vim.api.nvim_put({ id .. "}" }, "c", true, true)
+    local closing_delim = data.closingDelim or ""
+    vim.api.nvim_put({ id .. closing_delim }, "c", true, true)
     callback()
   else
     callback(item)
