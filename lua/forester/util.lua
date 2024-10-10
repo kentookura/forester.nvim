@@ -1,7 +1,7 @@
-local Scan = require("plenary.scandir")
-local Path = require("plenary.path")
+local scan = require("plenary.scandir")
+local path = require("plenary.path")
 
-local os_sep = Path.path.sep
+local os_sep = path.path.sep
 
 local M = {}
 
@@ -17,13 +17,13 @@ local function filename(url)
   return url:match("[^/]+$")
 end
 
-local split_path = function(path)
+local split_path = function(p)
   -- Returns the Path, Filename, and Extension as 3 values
-  return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
+  return string.match(p, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
 end
 
-local to_addr = function(path)
-  local _, addr, _ = split_path(path)
+local to_addr = function(p)
+  local _, addr, _ = split_path(p)
   return addr
 end
 
@@ -188,7 +188,7 @@ local extract_id = function(fname)
 end
 
 local highest_in_dir = function(pfx, dir)
-  local files = map(Scan.scan_dir(dir), function(file)
+  local files = map(scan.scan_dir(dir), function(file)
     local split = vim.split(file, os_sep)
     return split[#split]
   end)

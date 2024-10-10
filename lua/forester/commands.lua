@@ -6,6 +6,7 @@ local config = require("forester.config")
 local M = {}
 
 M.commands = {
+  -- Select the forester configuration file to use
   config = function()
     config.switch()
   end,

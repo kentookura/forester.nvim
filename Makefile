@@ -1,28 +1,20 @@
-.PHONY: test lint docs init
+# Run all test files
+test: deps/mini.nvim
+	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run()"
 
-TESTS_DIR := test/
-PLUGIN_DIR := lua/
+# Run test from file at `$FILE` environment variable
+test_file: deps/mini.nvim
+	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run_file('$(FILE)')"
 
-DOC_GEN_SCRIPT := ./scripts/docs.lua
-MINIMAL_INIT := ./scripts/minimal_init.lua
+# Download 'mini.nvim' to use its 'mini.test' testing module
+deps:
+	@mkdir -p deps
+	git clone --filter=blob:none https://github.com/echasnovski/mini.nvim $@/mini.nvim
+	git clone --filter=blob:none https://github.com/nvim-lua/plenary.nvim $@/plenary.nvim
 
-test:
-	nvim --headless --noplugin -u ${MINIMAL_INIT} \
-		-c "PlenaryBustedDirectory ${TESTS_DIR} { minimal_init = '${MINIMAL_INIT}' }"
+documentation:
+	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "luafile scripts/minidoc.lua" -c "qa!"
 
-lint:
-	luacheck ${PLUGIN_DIR}
+documentation-ci: deps documentation
 
-docs:
-	nvim --headless --noplugin -u ${MINIMAL_INIT} \
-		-c "luafile ${DOC_GEN_SCRIPT}" -c 'qa'
-
-init:
-	@nvim --headless --noplugin \
-	  -c "vimgrep /my_awesome_plugin/gj **/*.lua **/*.vim Makefile" \
-	  -c "cfdo %s/my_awesome_plugin/$(name)/ge | update" \
-	  -c "qa"
-	@find . -depth -type d -name '*my_awesome_plugin*' | \
-	  while read dir; do mv "$$dir" "$${dir//my_awesome_plugin/$(name)}"; done
-	@find . -type f -name '*my_awesome_plugin*' | \
-	  while read file; do mv "$$file" "$${file//my_awesome_plugin/$(name)}"; done
+test-ci: deps test

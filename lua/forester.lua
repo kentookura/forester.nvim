@@ -1,3 +1,25 @@
+--- *forester.nvim* Forester filetype plugin
+---
+--- =========================================================================
+---
+--- Supported features:
+--- - Autocomplete
+--- - following links via `gf`
+--- - fuzzy finding
+---
+--- # Setup ~
+---
+--- Initialize the plugin via `require("forester").setup()`
+---
+--- In your `forest.toml`, add the list of prefixes you wish to use:
+--- >toml
+--- prefixes = ["foo", "bar"]
+--- <
+--- This plugin currently does not support user configuration via lua.
+--- I think it is preferrable to use the forester configuration files and
+--- extracting the relevant keys via treesitter
+---
+
 local completionSource = require("forester.completion")
 local commands = require("forester.commands")
 local ui = require("forester.ui")

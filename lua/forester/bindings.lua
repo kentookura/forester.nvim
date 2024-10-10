@@ -11,13 +11,35 @@ local Job = require("plenary.job")
 
 local bindings = {}
 
+local function init(dir)
+  local d_arg
+  if dir then
+    d_arg = { "--dir", dir }
+  else
+    d_arg = {}
+  end
+  return Job:new({ command = "forester", args = { "init", table.unpack(d_arg) } })
+end
+
 local function watch(tree_dir, port)
   local _port = port or 1234
   return Job:new({ command = "forest", args = { "watch", _port, tree_dir } })
 end
 
-local function build(config)
-  local job = Job:new({ command = "forester", args = { "build", config } })
+local function build(config, opts)
+  opts = opts or {}
+  local args = { "build" }
+  if opts.no_assets ~= nil and opts.no_assets then
+    table.insert(args, "--no-assets=true")
+  end
+  if opts.no_theme ~= nil and opts.no_theme then
+    table.insert(args, "--no-theme=true")
+  end
+  if opts.render_only ~= nil then
+    table.insert(args, "--render-only=" .. opts.render_only)
+  end
+  table.insert(args, config)
+  local job = Job:new({ command = "forester", args = args })
   job:sync()
   return job:result()
 end
@@ -119,6 +141,7 @@ local function template(pfx, tmpl_addr, dest, config)
 end
 
 bindings.watch = watch
+bindings.init = init
 bindings.build = build
 bindings.query = query
 bindings.query_all = query_all
