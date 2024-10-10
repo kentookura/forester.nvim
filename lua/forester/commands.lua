@@ -2,12 +2,12 @@ local util = require("forester.util")
 local Forester = require("forester.bindings")
 local Job = require("plenary.job")
 local pickers = require("forester.pickers")
-local Config = require("forester.config")
+local config = require("forester.config")
 local M = {}
 
 M.commands = {
   config = function()
-    Config.switch_config()
+    config.switch()
   end,
 
   build = function()
@@ -31,7 +31,7 @@ M.commands = {
   end,
 
   new_random = function()
-    local prefixes = Config.all_prefixes()
+    local prefixes = config.all_prefixes()
     vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
       format_item = function(item)
         return item
@@ -43,7 +43,7 @@ M.commands = {
         end
       else
         do
-          local path = Config.dir_of_latest_tree_of_prefix(choice)
+          local path = config.dir_of_latest_tree_of_prefix(choice)
           local new_tree = Forester.new_random(choice, path, vim.g.forester_current_config)[1]
           vim.cmd("edit " .. new_tree)
         end
@@ -52,7 +52,7 @@ M.commands = {
   end,
 
   new = function()
-    local prefixes = Config.all_prefixes()
+    local prefixes = config.all_prefixes()
     vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
       format_item = function(item)
         return item
@@ -64,7 +64,7 @@ M.commands = {
         end
       else
         do
-          local path = Config.dir_of_latest_tree_of_prefix(choice)
+          local path = config.dir_of_latest_tree_of_prefix(choice)
           local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
           vim.cmd("edit " .. new_tree)
         end
@@ -73,7 +73,7 @@ M.commands = {
   end,
 
   transclude_new = function()
-    local prefixes = Config.all_prefixes()
+    local prefixes = config.all_prefixes()
     vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
       format_item = function(item)
         return item
@@ -85,7 +85,7 @@ M.commands = {
         end
       else
         do
-          local path = Config.dir_of_latest_tree_of_prefix(choice)
+          local path = config.dir_of_latest_tree_of_prefix(choice)
           local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
           local addr = util.filename(new_tree):match("(.+)%..+$")
           local content = { "\\transclude{" .. addr .. "}" }
@@ -96,7 +96,7 @@ M.commands = {
   end,
 
   link_new = function()
-    local prefixes = Config.all_prefixes()
+    local prefixes = config.all_prefixes()
     vim.ui.select(prefixes, {
       format_item = function(item)
         return item
@@ -108,7 +108,7 @@ M.commands = {
         end
       else
         do
-          local path = Config.dir_of_latest_tree_of_prefix(choice)
+          local path = config.dir_of_latest_tree_of_prefix(choice)
           local new_tree = Forester.new(choice, path)[1]
           local addr = util.filename(new_tree):match("(.+)%..+$")
           local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar

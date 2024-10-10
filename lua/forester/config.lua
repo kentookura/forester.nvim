@@ -103,13 +103,14 @@ local function all_prefixes()
   return pfxs
 end
 
-local function switch_config()
+local function switch()
   local configs = all_configs()
   pickers.pick_config(configs)
+  vim.api.nvim_exec_autocmds("User", { pattern = "SwitchedForesterConfig" })
 end
 
 M.all_prefixes = all_prefixes
 M.tree_dirs = tree_dirs
-M.switch_config = switch_config
+M.switch_config = switch
 
 return M
