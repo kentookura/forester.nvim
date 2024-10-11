@@ -27,7 +27,7 @@ local config = require("forester.config")
 
 local M = {}
 
-local function add_treesitter_config()
+local function register_treesitter_parser()
   local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
   parser_config.forester = {
     install_info = {
@@ -91,7 +91,7 @@ local function setup()
   cmp.register_source("forester", completionSource)
   cmp.setup.filetype("forester", { sources = { { name = "forester", dup = 0 } } })
 
-  add_treesitter_config()
+  register_treesitter_parser()
 
   vim.opt.suffixesadd:prepend(".tree")
 
