@@ -94,6 +94,10 @@ jobs:
       - name: run tests
         run: make test-ci
 
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+
   tests-nightly:
     needs:
       - lint
@@ -140,28 +144,6 @@ jobs:
       - name: run tests
         run: make test-ci
 
-  release:
-    name: release
-    if: ${{ github.ref == 'refs/heads/main' }}
-    needs:
-      - tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          release-type: simple
-          package-name: forester.nvim
-
-      - name: tag stable versions
-        if: ${{ steps.release.outputs.release_created }}
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN }}@github.com/google-github-actions/release-please-action.git"
-          git tag -d stable || true
-          git push origin :stable || true
-          git tag -a stable -m "Last Stable Release"
-          git push origin stable
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
