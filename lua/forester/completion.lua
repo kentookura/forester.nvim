@@ -1,3 +1,4 @@
+--- Autocomplete for builtin functions and tree addresses
 local forester = require("forester.bindings")
 local config = require("forester.config")
 local util = require("forester.util")

@@ -1,0 +1,149 @@
+name: main
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+
+env:
+  LUA_LS_VERSION: 3.7.4
+
+concurrency:
+  group: github.head_ref
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check . -g '*.lua' -g '!deps/'
+
+  documentation:
+    runs-on: ubuntu-latest
+    name: documentation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: v0.10.1
+
+      - name: generate documentation
+        run: make documentation-ci
+
+      - name: check docs diff
+        run: exit $(git status --porcelain doc | wc -l | tr -d " ")
+
+  tests:
+    needs:
+      - lint
+      - documentation
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        neovim_version: ['v0.9.5', 'v0.10.1']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: date +%F > todays-date
+
+      - name: restore cache for today's nightly.
+        uses: actions/cache@v4
+        with:
+          path: _neovim
+          key: ${{ runner.os }}-x64-${{ hashFiles('todays-date') }}
+
+      - name: restore luals cache
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: .ci/lua-ls
+          key: ${{ env.LUA_LS_VERSION }}
+
+      - name: setup luals
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: mkdir -p .ci/lua-ls && curl -sL "https://github.com/LuaLS/lua-language-server/releases/download/${{ env.LUA_LS_VERSION }}/lua-language-server-${{ env.LUA_LS_VERSION }}-linux-x64.tar.gz" | tar xzf - -C "${PWD}/.ci/lua-ls"
+
+      - name: setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim_version }}
+
+      - uses: cachix/install-nix-action@v25
+      - uses: cachix/cachix-action@v14
+        with:
+          name: forester
+          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
+      - run: nix profile install sourcehut:~jonsterling/ocaml-forester
+
+      - name: run tests
+        run: make test-ci
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+
+  tests-nightly:
+    needs:
+      - lint
+      - documentation
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: date +%F > todays-date
+
+      - name: restore cache for today's nightly.
+        uses: actions/cache@v4
+        with:
+          path: _neovim
+          key: ${{ runner.os }}-x64-${{ hashFiles('todays-date') }}
+
+      - name: restore luals cache
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: .ci/lua-ls
+          key: ${{ env.LUA_LS_VERSION }}
+
+      - name: setup luals
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        run: mkdir -p .ci/lua-ls && curl -sL "https://github.com/LuaLS/lua-language-server/releases/download/${{ env.LUA_LS_VERSION }}/lua-language-server-${{ env.LUA_LS_VERSION }}-linux-x64.tar.gz" | tar xzf - -C "${PWD}/.ci/lua-ls"
+
+      - name: setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: nightly
+
+      - uses: cachix/install-nix-action@v25
+      - uses: cachix/cachix-action@v14
+        with:
+          name: forester
+          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
+      - run: nix profile install sourcehut:~jonsterling/ocaml-forester
+
+      - name: run tests
+        run: make test-ci
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')

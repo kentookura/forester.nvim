@@ -1,7 +1,0 @@
-\title{templating}
-\tag{bug}
-\tag{todo}
-
-\p{
-  strip leading whitespace and otherwise verify user inputh
-}

@@ -1,3 +1,25 @@
+--- *forester.nvim* Forester filetype plugin
+---
+--- =========================================================================
+---
+--- Supported features:
+--- - Autocomplete
+--- - following links via `gf`
+--- - fuzzy finding
+---
+--- # Setup ~
+---
+--- Initialize the plugin via `require("forester").setup()`
+---
+--- In your `forest.toml`, add the list of prefixes you wish to use:
+--- >toml
+--- prefixes = ["foo", "bar"]
+--- <
+--- This plugin currently does not support user configuration via lua.
+--- I think it is preferrable to use the forester configuration files and
+--- extracting the relevant keys via treesitter
+---
+
 local completionSource = require("forester.completion")
 local commands = require("forester.commands")
 local ui = require("forester.ui")
@@ -22,6 +44,7 @@ end
 
 local function setup()
   vim.filetype.add({ extension = { tree = "forester" } })
+  local forester_group = vim.api.nvim_create_augroup("ForesterGroup", { clear = true })
 
   local cfg = config.find_default_config()
   if cfg ~= "" then
@@ -45,6 +68,24 @@ local function setup()
     })
   end
 
+  -- Make links followable with `gf`
+  local add_treedirs_to_path = function()
+    pcall(function()
+      local dirs = config.tree_dirs()
+      for _, v in pairs(dirs) do
+        vim.opt.path:append(v)
+      end
+    end)
+  end
+
+  vim.api.nvim_create_autocmd("User", {
+    group = forester_group,
+    pattern = "SwitchedForesterConfig",
+    callback = function()
+      add_treedirs_to_path()
+    end,
+  })
+
   local cmp = require("cmp")
 
   cmp.register_source("forester", completionSource)
@@ -52,15 +93,9 @@ local function setup()
 
   add_treesitter_config()
 
-  -- Make links followable with `gf`
-
-  local _ = pcall(function()
-    local dirs = config.tree_dirs()
-    for _, v in pairs(dirs) do
-      vim.opt.path:append(v)
-    end
-  end)
   vim.opt.suffixesadd:prepend(".tree")
+
+  add_treedirs_to_path()
   ui.setup()
 end
 

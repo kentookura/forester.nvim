@@ -1,122 +1,19 @@
-vim.g.mapleader = " "
+-- Add current directory to 'runtimepath' to be able to use 'lua' files
+vim.cmd([[let &rtp.=','.getcwd()]])
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(lazypath)
+-- Set up 'mini.test' only when calling headless Neovim (like with `make test`)
+-- if #vim.api.nvim_list_uis() == 0 then
+-- Add 'mini.nvim' to 'runtimepath' to be able to use 'mini.test'
+-- Assumed that 'mini.nvim' is stored in 'deps/mini.nvim'
+vim.cmd("set rtp+=deps/plenary.nvim")
+vim.cmd("set rtp+=deps/mini.nvim")
+vim.cmd("set rtp+=deps/telescope.nvim")
+vim.cmd("set rtp+=deps/nvim-treesitter")
+vim.cmd("set rtp+=scripts/minidoc")
 
-require("lazy").setup({
+require("nvim-treesitter.configs").setup({ ensure_installed = { "toml" }, auto_install = true, sync_install = true })
 
-  { "L3MON4D3/LuaSnip" },
-  { "hrsh7th/nvim-cmp" },
-  {
-    dir = "./.", -- change this to line to: "kentookura/neovim",
-    name = "forester.nvim",
-    opts = {
-      forests = { "~/glade/notes", "~/forest" }, -- global forest config
-      tree_dirs = { "trees" }, -- plugin will check if current directory contains these
-      preview = { port = "1234" },
-      conceal = true,
-    },
-    config = function(opts)
-      local forester = require("forester").setup()
-
-      -- vim.keymap.set("n", "<leader>k", require("hover").hover, { desc = "hover.nvim" })
-      vim.keymap.set("n", "<leader>n.", "<cmd>Forester browse<CR>", { silent = true })
-      -- vim.keymap.set("n", "<leader>nn", "<cmd>Forester new<CR>", { silent = true })
-      -- vim.keymap.set("i", "<C-t>", "<cmd>Forester transclude<CR>", { silent = true })
-      -- vim.keymap.set("i", "<C-l>", "<cmd>Forester link<CR>", { silent = true })
-    end,
-    dependencies = {
-      { "nvim-telescope/telescope.nvim" },
-      { "nvim-treesitter/nvim-treesitter" },
-      { "nvim-lua/plenary.nvim" },
-      { "hrsh7th/nvim-cmp" },
-      { "MunifTanjim/nui.nvim" },
-      -- { "lewis6991/hover.nvim" },
-    },
-  },
-  { "nvim-treesitter/nvim-treesitter" },
-  { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    config = function()
-      require("neo-tree").setup({
-        sources = { "filesystem"},
-        forest = {
-          window = {
-            mappings = {
-              --
-            },
-          },
-        },
-      })
-      vim.keymap.set("n", "<leader>f", ":Neotree forest<CR>")
-      vim.keymap.set("n", "\\", ":Neotree toggle<CR>")
-    end,
-  },
-  {
-    "navarasu/onedark.nvim",
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme("onedark")
-    end,
-  },
-})
-
-local cmp = require("cmp")
-local luasnip = require("luasnip")
-luasnip.config.setup({})
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  completion = { completeopt = "menu,menuone,noinsert" },
-
-  mapping = cmp.mapping.preset.insert({
-    ["<C-n>"] = cmp.mapping.select_next_item(),
-    ["<C-p>"] = cmp.mapping.select_prev_item(),
-    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete({}),
-    ["<CR>"] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-  }),
-})
-
-require("nvim-web-devicons").setup({ override_by_extension = { ["tree"] = { icon = "🌲" } } })
-require("lualine").setup()
-
-vim.keymap.set("n", "<leader>t", "<Plug>PlenaryTestFile %")
-vim.keymap.set("n", "<leader>r", "<Plug>Lazy reload forester.nvim")
-vim.opt.termguicolors = true
+require("mini.test").setup()
+require("mini.doc").setup()
+-- require("mini.doc").setup()
+-- end
