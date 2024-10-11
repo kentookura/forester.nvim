@@ -7,7 +7,11 @@ vim.cmd([[let &rtp.=','.getcwd()]])
 -- Assumed that 'mini.nvim' is stored in 'deps/mini.nvim'
 vim.cmd("set rtp+=deps/plenary.nvim")
 vim.cmd("set rtp+=deps/mini.nvim")
+vim.cmd("set rtp+=deps/telescope.nvim")
+vim.cmd("set rtp+=deps/nvim-treesitter")
 vim.cmd("set rtp+=scripts/minidoc")
+
+require("nvim-treesitter.configs").setup({ ensure_installed = { "toml" }, auto_install = true, sync_install = true })
 
 require("mini.test").setup()
 require("mini.doc").setup()
