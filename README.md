@@ -1,11 +1,13 @@
 # 🌲 forester.nvim 🌲
 
+[![main](https://github.com/kentookura/forester.nvim/actions/workflows/main.yml/badge.svg)](https://github.com/kentookura/forester.nvim/actions/workflows/main.yml)
+
 Filetype plugin for [forester](https://sr.ht/~jonsterling/forester/), a tool
 for writing mathematical hypertext
 
 # Features
 
-- Tree-sitter syntax highlighting
+- Tree-sitter syntax highlighting.
   Please report any issues with the grammar in the [relevant repository](https://github.com/kentookura/tree-sitter-forester)
 - following links and transclusions with `gf`
 - Searching for trees by title with [telescope](https://github.com/nvim-telescope/telescope.nvim)
