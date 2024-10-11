@@ -2,7 +2,6 @@ local pickers = require("forester.pickers")
 local Scan = require("plenary.scandir")
 local Path = require("plenary.path")
 local util = require("forester.util")
---local Config = require("forester.config")
 
 local M = {}
 

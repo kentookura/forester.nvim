@@ -1,6 +1,7 @@
 local forester = require("forester.bindings")
 local config = require("forester.config")
 local path = require("plenary.path")
+local map = require("forester.util").map
 local expect, eq = MiniTest.expect, MiniTest.expect.equality
 local T = MiniTest.new_set()
 
@@ -28,8 +29,12 @@ end
 T["bindings"] = MiniTest.new_set({ hooks = { pre_once = setup_test_forest, post_once = clean_test_forest } })
 
 T["bindings"]["config"] = function()
+  local expected_tree_dirs = { "trees", "foo", "bar" }
+  local cwd = map(expected_tree_dirs, function(p)
+    return path:new(p):absolute()
+  end)
   eq(config.all_prefixes(), { "test", "pfx" })
-  eq(config.tree_dirs(), {"trees", "foo", "bar"})
+  eq(config.tree_dirs(), cwd)
 end
 
 T["bindings"]["build"] = function()
