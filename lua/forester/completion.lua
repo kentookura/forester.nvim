@@ -110,7 +110,7 @@ function source:complete(params, callback)
         filterText = pfx .. " " .. "random",
         documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
         labelDetails = { description = "random" },
-        data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim() },
+        data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim(text_before_cursor) },
       }
     end)
     for _, v in pairs(prefix_items) do
@@ -120,7 +120,7 @@ function source:complete(params, callback)
       table.insert(items, v)
     end
     local function insert_text(addr)
-      return addr .. source:closing_delim()
+      return addr .. source:closing_delim(text_before_cursor)
     end
     for addr, data in pairs(cache) do
       local title
