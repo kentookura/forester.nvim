@@ -24,6 +24,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             act
+            watchexec
             teseq
             forester.packages.${system}.default
             tree-sitter

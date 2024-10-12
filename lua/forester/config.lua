@@ -1,4 +1,3 @@
-local pickers = require("forester.pickers")
 local Scan = require("plenary.scandir")
 local Path = require("plenary.path")
 local util = require("forester.util")
@@ -9,27 +8,124 @@ local function all_configs()
   return Scan.scan_dir(".", { search_pattern = "toml" })
 end
 
---local function find_config(filename)
---  return vim.fn.findfile(filename, ".;") -- .; searches up. :h file-searching for more info
---end
+local function get_file_contents(filename)
+  return table.concat(vim.fn.readfile(filename), "\n")
+end
 
-M.find_default_config = function()
+local function find_default_config()
   return vim.fn.findfile("forest.toml", ".;")
 end
 
-local function get_file_contents(filename)
-  return table.concat(vim.fn.readfile(filename), "\n")
+---@param filename string
+local function parse(filename)
+  local content = table.concat(vim.fn.readfile(filename), "\n")
+  local parser = vim.treesitter.get_string_parser(content, "toml")
+
+  local tree_dir_query = vim.treesitter.query.parse(
+    "toml",
+    [[
+  (document
+    (table
+      (pair
+        (bare_key) @key (#eq? @key "trees")
+        (array (string) @trees))))
+  ]]
+  )
+
+  local prefix_query = vim.treesitter.query.parse(
+    "toml",
+    [[
+  (document
+    (table
+      (pair
+        (bare_key) @key (#eq? @key "prefixes")
+        (array (string) @prefixes))))
+      ]]
+  )
+
+  local assets_query = vim.treesitter.query.parse(
+    "toml",
+    [[
+  (document
+    (table
+      (pair
+        (bare_key) @key (#eq? @key "assets")
+        (array (string) @assets))))
+              ]]
+  )
+  local home_query = vim.treesitter.query.parse(
+    "toml",
+    [[
+  (document
+    (table
+      (pair
+        (bare_key) @key (#eq? @key "home")
+        (string) @home)))
+  ]]
+  )
+  local base_url_query = vim.treesitter.query.parse(
+    "toml",
+    [[
+  (document
+    (table
+      (pair
+        (bare_key) @key (#eq? @key "base_url")
+        (string) @base_url)))
+        ]]
+  )
+
+  local theme_query = vim.treesitter.query.parse(
+    "toml",
+    [[
+  (document
+    (table
+      (pair
+        (bare_key) @key (#eq? @key "theme")
+        (string) @theme)))
+        ]]
+  )
+
+  local queries = { tree_dir_query, prefix_query, assets_query, home_query, base_url_query, theme_query }
+
+  local config = {}
+  for _, query in pairs(queries) do
+    for id, node in query:iter_captures(parser:parse()[1]:root(), content) do
+      local name = query.captures[id]
+      if name ~= "key" then
+        local v = vim.treesitter.get_node_text(node, content)
+
+        local str = v:gsub('^"(.*)"$', "%1")
+        if config[name] == nil then
+          config[name] = { str }
+        else
+          table.insert(config[name], str)
+        end
+      end
+    end
+  end
+  return config
+end
+
+local function set_default_config()
+  local f = find_default_config()
+  if f == "" then
+    return
+  else
+    local parsed = parse(f)
+    vim.g.forester_current_config = parsed
+  end
 end
 
 local tree_dirs = function()
   local config = vim.g.forester_current_config
   local text = get_file_contents(config)
   local parser = vim.treesitter.get_string_parser(text, "toml")
-  local root_dir = Path:new(config):parents()[1]
 
-  local query = vim.treesitter.query.parse(
+  local tree_dir_query = vim.treesitter.query.parse(
     "toml",
-    [[(document
+    [[
+
+    (document
         (table
           (pair
             (bare_key) @key (#eq? @key "trees")
@@ -38,8 +134,9 @@ local tree_dirs = function()
   )
 
   local dirs = {}
-  for id, node in query:iter_captures(parser:parse()[1]:root(), text) do
-    local name = query.captures[id]
+  local root_dir = Path:new(config):parents()[1]
+  for id, node in tree_dir_query:iter_captures(parser:parse()[1]:root(), text) do
+    local name = tree_dir_query.captures[id]
     if name == "dir" then
       local dir = vim.treesitter.get_node_text(node, text)
       local str = dir:gsub('^"(.*)"$', "%1")
@@ -75,41 +172,8 @@ M.dir_of_latest_tree_of_prefix = function(pfx)
   end
 end
 
-local function all_prefixes()
-  local config = vim.g.forester_current_config
-  local text = table.concat(vim.fn.readfile(config), "\n")
-  local parser = vim.treesitter.get_string_parser(text, "toml")
-
-  local query = vim.treesitter.query.parse(
-    "toml",
-    [[(document
-        (table
-          (pair
-            (bare_key) @key (#eq? @key "prefixes")
-            (array (string) @prefix))))
-    ]]
-  )
-
-  local pfxs = {}
-  for id, node in query:iter_captures(parser:parse()[1]:root(), text) do
-    local name = query.captures[id]
-    if name == "prefix" then
-      local pfx = vim.treesitter.get_node_text(node, text):gsub('^"(.*)"$', "%1")
-      local str = pfx:gsub('^"(.*)"$', "%1")
-      table.insert(pfxs, str)
-    end
-  end
-  return pfxs
-end
-
-local function switch()
-  local configs = all_configs()
-  pickers.pick_config(configs)
-  vim.api.nvim_exec_autocmds("User", { pattern = "SwitchedForesterConfig" })
-end
-
-M.all_prefixes = all_prefixes
-M.tree_dirs = tree_dirs
-M.switch_config = switch
+M.parse = parse
+M.set_default_config = set_default_config
+M.switch = switch
 
 return M
