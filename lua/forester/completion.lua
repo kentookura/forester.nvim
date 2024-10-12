@@ -5,6 +5,7 @@ local util = require("forester.util")
 local FORESTER_BUILTINS = require("forester.consts").FORESTER_BUILTINS
 local map = util.map
 local source = {}
+local cache
 
 ---Return whether this source is available in the current context or not (optional).
 ---@return boolean
@@ -53,8 +54,6 @@ for _, v in pairs(FORESTER_BUILTINS) do
   )
 end
 
-local cache
-
 local function refresh_cache()
   local success, res = pcall(forester.query_all, vim.g.forester_current_config)
   if success then
@@ -71,6 +70,25 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   end,
 })
 
+function source:closing_delim(text_before_cursor)
+  local candidate = { -1, "" }
+  for _, v in pairs(triggers_for_closing_brace) do
+    local _, e = string.find(text_before_cursor, v)
+    if e ~= nil and candidate[1] < e then
+      candidate = { e, "}" }
+    end
+  end
+  local _, e = string.find(text_before_cursor, "%]%(")
+  if e ~= nil and candidate[1] < e then
+    candidate = { e, ")" }
+  end
+  local _, e = string.find(text_before_cursor, "%[%[")
+  if e ~= nil and candidate[1] < e then
+    candidate = { e, "]]" }
+  end
+  return candidate[2]
+end
+
 function source:complete(params, callback)
   local input = string.sub(params.context.cursor_before_line, params.offset - 1)
   local text_before_cursor = params.context.cursor_before_line
@@ -78,38 +96,21 @@ function source:complete(params, callback)
     callback(default_items)
   else
     local items = {}
-    local prefix_items = map(config.all_prefixes(), function(pfx)
+    local prefix_items = map(vim.g.forester_current_config.prefixes, function(pfx)
       return {
         label = pfx,
         documentation = "create a new tree with prefix `" .. pfx .. "`",
         data = { isPrefix = true },
       }
     end)
-    local function closing_delim()
-      local candidate = { -1, "" }
-      for _, v in pairs(triggers_for_closing_brace) do
-        local _, e = string.find(text_before_cursor, v)
-        if e ~= nil and candidate[1] < e then
-          candidate = { e, "}" }
-        end
-      end
-      local _, e = string.find(text_before_cursor, "%]%(")
-      if e ~= nil and candidate[1] < e then
-        candidate = { e, ")" }
-      end
-      local _, e = string.find(text_before_cursor, "%[%[")
-      if e ~= nil and candidate[1] < e then
-        candidate = { e, "]]" }
-      end
-      return candidate[2]
-    end
-    local prefix_random_items = map(config.all_prefixes(), function(pfx)
+
+    local prefix_random_items = map(vim.g.forester_current_config.prefixes, function(pfx)
       return {
         label = pfx,
         filterText = pfx .. " " .. "random",
         documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
         labelDetails = { description = "random" },
-        data = { isPrefix = true, isRandom = true, closingDelim = closing_delim() },
+        data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim(text_before_cursor) },
       }
     end)
     for _, v in pairs(prefix_items) do
@@ -119,7 +120,7 @@ function source:complete(params, callback)
       table.insert(items, v)
     end
     local function insert_text(addr)
-      return addr .. closing_delim()
+      return addr .. source:closing_delim(text_before_cursor)
     end
     for addr, data in pairs(cache) do
       local title

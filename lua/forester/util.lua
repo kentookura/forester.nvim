@@ -5,14 +5,6 @@ local os_sep = path.path.sep
 
 local M = {}
 
---local addr = item:match("[^, ]*$")
---local title = item:match("[^,]+$")
-local function add_tree_dirs_to_path(dirs)
-  for _, v in pairs(dirs) do
-    vim.opt.path:append(v)
-  end
-end
-
 local function filename(url)
   return url:match("[^/]+$")
 end
@@ -223,7 +215,6 @@ M.filter = filter
 M.filter_map = filter_map
 M.fold = fold
 M.compare_addr = compare_addr
-M.add_tree_dirs_to_path = add_tree_dirs_to_path
 M.filename = filename
 M.highest_in_dir = highest_in_dir
 

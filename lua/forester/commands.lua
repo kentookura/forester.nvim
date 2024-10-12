@@ -8,7 +8,14 @@ local M = {}
 M.commands = {
   -- Select the forester configuration file to use
   config = function()
-    config.switch()
+    local configs = config.all_configs()
+    if #configs == 0 then
+      vim.notify("No forester configs available in the current directory!", vim.log.levels.WARN)
+    else
+      pickers.pick_config(configs)
+      vim.api.nvim_exec_autocmds("User", { pattern = "SwitchedForesterConfig" })
+    end
+    -- config.switch()
   end,
 
   build = function()
@@ -32,8 +39,7 @@ M.commands = {
   end,
 
   new_random = function()
-    local prefixes = config.all_prefixes()
-    vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
+    vim.ui.select(vim.g.forester_current_config.prefixes, { -- TODO: Don't select when #prefixes == 1
       format_item = function(item)
         return item
       end,
@@ -53,8 +59,7 @@ M.commands = {
   end,
 
   new = function()
-    local prefixes = config.all_prefixes()
-    vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
+    vim.ui.select(vim.g.forester_current_config.prefixes, { -- TODO: Don't select when #prefixes == 1
       format_item = function(item)
         return item
       end,
@@ -74,8 +79,7 @@ M.commands = {
   end,
 
   transclude_new = function()
-    local prefixes = config.all_prefixes()
-    vim.ui.select(prefixes, { -- TODO: Don't select when #all_prefixes == 1
+    vim.ui.select(vim.g.forester_current_config.prefixes, { -- TODO: Don't select when #prefiexes == 1
       format_item = function(item)
         return item
       end,
@@ -97,8 +101,7 @@ M.commands = {
   end,
 
   link_new = function()
-    local prefixes = config.all_prefixes()
-    vim.ui.select(prefixes, {
+    vim.ui.select(vim.g.forester_current_config.prefixes, {
       format_item = function(item)
         return item
       end,
@@ -136,8 +139,17 @@ function M.cmd(cmd)
   local command = M.commands[cmd]
   if command == nil then
     vim.print("Invalid forester command '" .. cmd .. "'")
-  else
+  elseif cmd == "config" then
     command()
+  else
+    local current_cfg = vim.g.forester_current_config
+    if current_cfg == "" or current_cfg == vim.NIL or current_cfg == nil then
+      vim.notify("No forester config file is set! Use `:Forester config` to select one", vim.log.levels.WARN)
+    elseif vim.fn.executable("forester") ~= 1 then
+      vim.notify("The `forester` command is not available!", vim.log.levels.WARN)
+    else
+      command()
+    end
   end
 end
 

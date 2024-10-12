@@ -1,15 +1,23 @@
+package.path = package.path .. ";./?.lua"
+
+local hooks = require("tests.hooks")
 local new_set = MiniTest.new_set
 local expect, eq = MiniTest.expect, MiniTest.expect.equality
 
-local T = new_set()
+local forester = require("forester")
 
--- Actual tests definitions will go here
+local T = MiniTest.new_set({ hooks = { pre_once = hooks.setup_test_forest, post_once = hooks.clean_test_forest } })
 
-T["works"] = function()
-  local x = 1 + 1
-  if x ~= 2 then
-    error("`x` is not equal to 2")
-  end
+T["setup"] = function()
+  expect.no_error(function()
+    forester.setup()
+  end)
+end
+
+T["treesitter"] = function()
+  expect.no_error(function()
+    forester.register_treesitter_parser()
+  end)
 end
 
 return T

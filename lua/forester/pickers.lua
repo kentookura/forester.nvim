@@ -1,3 +1,4 @@
+local config = require("forester.config")
 local strings = require("plenary.strings")
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
@@ -25,7 +26,7 @@ local pick_config = function(config_files, opts)
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()
-          vim.g.forester_current_config = selection[1]
+          vim.g.forester_current_config = config.parse(selection[1])
         end)
         return true
       end,

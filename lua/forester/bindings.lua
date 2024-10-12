@@ -53,12 +53,17 @@ local function titles(config)
   job:sync()
   --local result = job:result()
   local out = {}
-  local result = util.map(job:result(), function(r)
+  local result = util.filter_map(job:result(), function(r)
     local addr, title = r:match("([^,]+), ([^,]+)")
-    return { addr = addr, title = title }
+    if addr == nil or title == nil then
+      return { false }
+    else
+      return { true, { addr = addr, title = title } }
+    end
   end)
-  for k, v in pairs(result) do
-    out[k] = { addr = v.addr, title = v.title }
+  for _, v in pairs(result) do
+    out[v.addr] = v.title
+    -- { addr = v.addr, title = v.title }
   end
   return out
 end
