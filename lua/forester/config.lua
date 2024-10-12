@@ -174,6 +174,6 @@ end
 
 M.parse = parse
 M.set_default_config = set_default_config
-M.switch = switch
+M.all_configs = all_configs
 
 return M

@@ -101,8 +101,7 @@ M.commands = {
   end,
 
   link_new = function()
-    local prefixes = config.all_prefixes()
-    vim.ui.select(prefixes, {
+    vim.ui.select(vim.g.forester_current_config.prefixes, {
       format_item = function(item)
         return item
       end,
