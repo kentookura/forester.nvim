@@ -13,7 +13,11 @@ local T = MiniTest.new_set({ hooks = { pre_once = hooks.setup_test_forest, post_
 T["config"] = function()
   local parsed = config.parse("forest.toml")
 
-  eq(parsed, { trees = { "trees", "foo", "bar" }, prefixes = { "test", "pfx" } })
+  eq(parsed, {
+    path = "forest.toml",
+    trees = { "trees", "foo", "bar" },
+    prefixes = { "test", "pfx" },
+  })
 end
 
 return T

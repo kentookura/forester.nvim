@@ -103,6 +103,7 @@ local function parse(filename)
       end
     end
   end
+  config["path"] = filename
   return config
 end
 
