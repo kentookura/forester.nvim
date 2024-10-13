@@ -5,6 +5,18 @@ local pickers = require("forester.pickers")
 local config = require("forester.config")
 local M = {}
 
+local select = function(items, callback)
+  if #items == 1 then
+    do
+      callback(items[1])
+    end
+  else
+    do
+      vim.ui.select(items, callback)
+    end
+  end
+end
+
 M.commands = {
   -- Select the forester configuration file to use
   config = function()
@@ -39,86 +51,42 @@ M.commands = {
   end,
 
   new_random = function()
-    vim.ui.select(vim.g.forester_current_config.prefixes, { -- TODO: Don't select when #prefixes == 1
-      format_item = function(item)
-        return item
-      end,
-    }, function(choice)
-      if choice == nil then
-        do
-          return
-        end
-      else
-        do
-          local path = config.dir_of_latest_tree_of_prefix(choice)
-          local new_tree = Forester.new_random(choice, path, vim.g.forester_current_config)[1]
-          vim.cmd("edit " .. new_tree)
-        end
-      end
+    select(vim.g.forester_current_config.prefixes, function(choice)
+      local path = config.dir_of_latest_tree_of_prefix(choice)
+      local new_tree = Forester.new_random(choice, path, vim.g.forester_current_config)[1]
+      vim.cmd("edit " .. new_tree)
     end)
   end,
 
   new = function()
-    vim.ui.select(vim.g.forester_current_config.prefixes, { -- TODO: Don't select when #prefixes == 1
-      format_item = function(item)
-        return item
-      end,
-    }, function(choice)
-      if choice == nil then
-        do
-          return
-        end
-      else
-        do
-          local path = config.dir_of_latest_tree_of_prefix(choice)
-          local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
-          vim.cmd("edit " .. new_tree)
-        end
+    select(vim.forester_current_config.prefixes, function(choice)
+      do
+        local path = config.dir_of_latest_tree_of_prefix(choice)
+        local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
+        vim.cmd("edit " .. new_tree)
       end
     end)
   end,
 
   transclude_new = function()
-    vim.ui.select(vim.g.forester_current_config.prefixes, { -- TODO: Don't select when #prefiexes == 1
-      format_item = function(item)
-        return item
-      end,
-    }, function(choice)
-      if choice == nil then
-        do
-          return
-        end
-      else
-        do
-          local path = config.dir_of_latest_tree_of_prefix(choice)
-          local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
-          local addr = util.filename(new_tree):match("(.+)%..+$")
-          local content = { "\\transclude{" .. addr .. "}" }
-          vim.api.nvim_put(content, "c", true, true)
-        end
+    select(vim.forester_current_config.prefixes, function(choice)
+      do
+        local path = config.dir_of_latest_tree_of_prefix(choice)
+        local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
+        local addr = util.filename(new_tree):match("(.+)%..+$")
+        local content = { "\\transclude{" .. addr .. "}" }
+        vim.api.nvim_put(content, "c", true, true)
       end
     end)
   end,
 
   link_new = function()
-    vim.ui.select(vim.g.forester_current_config.prefixes, {
-      format_item = function(item)
-        return item
-      end,
-    }, function(choice)
-      if choice == nil then
-        do
-          return
-        end
-      else
-        do
-          local path = config.dir_of_latest_tree_of_prefix(choice)
-          local new_tree = Forester.new(choice, path)[1]
-          local addr = util.filename(new_tree):match("(.+)%..+$")
-          local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar
-          vim.api.nvim_put(content, "c", true, true)
-        end
-      end
+    select(vim.g.forester_current_config.prefixes, function(choice)
+      local path = config.dir_of_latest_tree_of_prefix(choice)
+      local new_tree = Forester.new(choice, path)[1]
+      local addr = util.filename(new_tree):match("(.+)%..+$")
+      local content = { "[](" .. addr .. ")" } --  NOTE: We should improve the workflow with snippets or something similar
+      vim.api.nvim_put(content, "c", true, true)
     end)
   end,
 }
