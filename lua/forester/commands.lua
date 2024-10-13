@@ -1,7 +1,6 @@
 local util = require("forester.util")
 local Forester = require("forester.bindings")
 local Job = require("plenary.job")
-local pickers = require("forester.pickers")
 local config = require("forester.config")
 local M = {}
 
@@ -12,7 +11,17 @@ local select = function(items, callback)
     end
   else
     do
-      vim.ui.select(items, callback)
+      vim.ui.select(items, {}, function(choice)
+        if choice == nil then
+          do
+            return
+          end
+        else
+          do
+            callback(choice)
+          end
+        end
+      end)
     end
   end
 end
@@ -24,7 +33,7 @@ M.commands = {
     if #configs == 0 then
       vim.notify("No forester configs available in the current directory!", vim.log.levels.WARN)
     else
-      pickers.pick_config(configs)
+      -- pickers.pick_config(configs)
       vim.api.nvim_exec_autocmds("User", { pattern = "SwitchedForesterConfig" })
     end
     -- config.switch()
@@ -47,7 +56,7 @@ M.commands = {
         vim.print("No trees found!")
       end
     end
-    pickers.pick_by_title(t, {})
+    -- pickers.pick_by_title(t, {})
   end,
 
   new_random = function()
