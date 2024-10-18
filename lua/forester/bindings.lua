@@ -44,6 +44,8 @@ local function build(config, opts)
   return job:result()
 end
 
+---@param config string
+---@return table
 local function titles(config)
   local job = Job:new({
     command = "forester",
@@ -68,6 +70,9 @@ local function titles(config)
   return out
 end
 
+---@param arg string
+---@param config string
+---@return table|nil
 local function query(arg, config)
   local res = Job:new({
     command = "forester",
@@ -76,6 +81,8 @@ local function query(arg, config)
   return res
 end
 
+---@param config string
+---@return table | nil
 local function query_all(config)
   local res = Job:new({
     command = "forester",

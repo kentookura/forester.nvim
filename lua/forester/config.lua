@@ -8,10 +8,6 @@ local function all_configs()
   return Scan.scan_dir(".", { search_pattern = "toml" })
 end
 
-local function get_file_contents(filename)
-  return table.concat(vim.fn.readfile(filename), "\n")
-end
-
 local function find_default_config()
   return vim.fn.findfile("forest.toml", ".;")
 end
@@ -153,7 +149,7 @@ end
 -- maximum id.
 --
 M.dir_of_latest_tree_of_prefix = function(pfx)
-  local dirs = tree_dirs()
+  local dirs = vim.g.forester_current_config.trees
   if #dirs == 1 then
     return dirs[1]
   else
