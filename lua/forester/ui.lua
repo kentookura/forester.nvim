@@ -1,4 +1,3 @@
--- This is code is WIP and does not get used yet.
 local api = vim.api
 local forester = require("forester.bindings")
 
@@ -47,13 +46,9 @@ local draw_inline_hints = function(bufnr)
   end
 end
 
-local function update_extmarks(bufnr)
-  draw_inline_hints(bufnr)
-end
-
 local function get_extmarks_autocmd_callback()
   local callback = function(ev)
-    update_extmarks(ev.buf)
+    draw_inline_hints(ev.buf)
   end
   return callback
 end
