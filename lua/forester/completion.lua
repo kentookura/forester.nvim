@@ -99,13 +99,16 @@ function source:complete(params, callback)
       callback(default_items)
     else
       local items = {}
-      local prefix_items = map(vim.g.forester_current_config.prefixes, function(pfx)
-        return {
-          label = pfx,
-          documentation = "create a new tree with prefix `" .. pfx .. "`",
-          data = { isPrefix = true },
-        }
-      end)
+      local prefix_items = {}
+      if vim.g.forester_current_config.prefixes ~= nil then
+        prefix_items = map(vim.g.forester_current_config.prefixes, function(pfx)
+          return {
+            label = pfx,
+            documentation = "create a new tree with prefix `" .. pfx .. "`",
+            data = { isPrefix = true },
+          }
+        end)
+      end
 
       local prefix_random_items = map(vim.g.forester_current_config.prefixes, function(pfx)
         return {
