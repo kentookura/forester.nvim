@@ -92,52 +92,56 @@ end
 function source:complete(params, callback)
   local input = string.sub(params.context.cursor_before_line, params.offset - 1)
   local text_before_cursor = params.context.cursor_before_line
-  if vim.startswith(input, "\\") then
-    callback(default_items)
+  if vim.g.forester_current_config == nil then
+    return
   else
-    local items = {}
-    local prefix_items = map(vim.g.forester_current_config.prefixes, function(pfx)
-      return {
-        label = pfx,
-        documentation = "create a new tree with prefix `" .. pfx .. "`",
-        data = { isPrefix = true },
-      }
-    end)
+    if vim.startswith(input, "\\") then
+      callback(default_items)
+    else
+      local items = {}
+      local prefix_items = map(vim.g.forester_current_config.prefixes, function(pfx)
+        return {
+          label = pfx,
+          documentation = "create a new tree with prefix `" .. pfx .. "`",
+          data = { isPrefix = true },
+        }
+      end)
 
-    local prefix_random_items = map(vim.g.forester_current_config.prefixes, function(pfx)
-      return {
-        label = pfx,
-        filterText = pfx .. " " .. "random",
-        documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
-        labelDetails = { description = "random" },
-        data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim(text_before_cursor) },
-      }
-    end)
-    for _, v in pairs(prefix_items) do
-      table.insert(items, v)
-    end
-    for _, v in pairs(prefix_random_items) do
-      table.insert(items, v)
-    end
-    local function insert_text(addr)
-      return addr .. source:closing_delim(text_before_cursor)
-    end
-    for addr, data in pairs(cache) do
-      local title
-      if data.title == vim.NIL then
-        title = "<untitled>"
-      else
-        title = data.title
+      local prefix_random_items = map(vim.g.forester_current_config.prefixes, function(pfx)
+        return {
+          label = pfx,
+          filterText = pfx .. " " .. "random",
+          documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
+          labelDetails = { description = "random" },
+          data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim(text_before_cursor) },
+        }
+      end)
+      for _, v in pairs(prefix_items) do
+        table.insert(items, v)
       end
-      table.insert(items, {
-        filterText = addr .. " " .. title,
-        label = addr,
-        insertText = insert_text(addr),
-        documentation = title,
-        data = { isPrefix = false },
-      })
+      for _, v in pairs(prefix_random_items) do
+        table.insert(items, v)
+      end
+      local function insert_text(addr)
+        return addr .. source:closing_delim(text_before_cursor)
+      end
+      for addr, data in pairs(cache) do
+        local title
+        if data.title == vim.NIL then
+          title = "<untitled>"
+        else
+          title = data.title
+        end
+        table.insert(items, {
+          filterText = addr .. " " .. title,
+          label = addr,
+          insertText = insert_text(addr),
+          documentation = title,
+          data = { isPrefix = false },
+        })
+      end
+      callback({ items = items, isIncomplete = true })
     end
-    callback({ items = items, isIncomplete = true })
   end
 end
 
