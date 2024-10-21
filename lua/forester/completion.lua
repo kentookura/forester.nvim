@@ -100,6 +100,7 @@ function source:complete(params, callback)
     else
       local items = {}
       local prefix_items = {}
+      local prefix_random_items = {}
       if vim.g.forester_current_config.prefixes ~= nil then
         prefix_items = map(vim.g.forester_current_config.prefixes, function(pfx)
           return {
@@ -108,17 +109,17 @@ function source:complete(params, callback)
             data = { isPrefix = true },
           }
         end)
-      end
 
-      local prefix_random_items = map(vim.g.forester_current_config.prefixes, function(pfx)
-        return {
-          label = pfx,
-          filterText = pfx .. " " .. "random",
-          documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
-          labelDetails = { description = "random" },
-          data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim(text_before_cursor) },
-        }
-      end)
+        prefix_random_items = map(vim.g.forester_current_config.prefixes, function(pfx)
+          return {
+            label = pfx,
+            filterText = pfx .. " " .. "random",
+            documentation = "create a new tree with prefix `" .. pfx .. "` (randomized id)",
+            labelDetails = { description = "random" },
+            data = { isPrefix = true, isRandom = true, closingDelim = source:closing_delim(text_before_cursor) },
+          }
+        end)
+      end
       for _, v in pairs(prefix_items) do
         table.insert(items, v)
       end
