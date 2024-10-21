@@ -57,7 +57,7 @@ M.commands = {
         vim.print("No trees found!")
       end
     end
-    -- pickers.pick_by_title(t, {})
+    pickers.pick_by_title(t, {})
   end,
 
   new_random = function()
