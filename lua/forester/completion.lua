@@ -5,7 +5,7 @@ local util = require("forester.util")
 local FORESTER_BUILTINS = require("forester.consts").FORESTER_BUILTINS
 local map = util.map
 local source = {}
-local cache
+local cache = {}
 
 ---Return whether this source is available in the current context or not (optional).
 ---@return boolean

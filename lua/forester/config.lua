@@ -1,5 +1,4 @@
 local Scan = require("plenary.scandir")
-local Path = require("plenary.path")
 local util = require("forester.util")
 
 local M = {}
@@ -111,36 +110,6 @@ local function set_default_config()
     local parsed = parse(f)
     vim.g.forester_current_config = parsed
   end
-end
-
-local tree_dirs = function()
-  local config = vim.g.forester_current_config
-  local text = get_file_contents(config)
-  local parser = vim.treesitter.get_string_parser(text, "toml")
-
-  local tree_dir_query = vim.treesitter.query.parse(
-    "toml",
-    [[
-
-    (document
-        (table
-          (pair
-            (bare_key) @key (#eq? @key "trees")
-            (array (string) @dir))))
-    ]]
-  )
-
-  local dirs = {}
-  local root_dir = Path:new(config):parents()[1]
-  for id, node in tree_dir_query:iter_captures(parser:parse()[1]:root(), text) do
-    local name = tree_dir_query.captures[id]
-    if name == "dir" then
-      local dir = vim.treesitter.get_node_text(node, text)
-      local str = dir:gsub('^"(.*)"$', "%1")
-      table.insert(dirs, root_dir .. "/" .. str)
-    end
-  end
-  return dirs
 end
 
 -- NOTE: This function computes the `dest_dir` argument of `forester new`
