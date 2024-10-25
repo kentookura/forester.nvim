@@ -60,7 +60,7 @@ M.commands = {
   end,
 
   browse = function()
-    local trees = Forester.query_all(vim.g.forester_current_config)
+    local trees = Forester.query_all(vim.g.forester_current_config.path)
     local t = {}
     for k, v in pairs(trees) do
       v.addr = k
