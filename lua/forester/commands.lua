@@ -69,7 +69,7 @@ M.commands = {
   end,
 
   new = function()
-    select(vim.forester_current_config.prefixes, function(choice)
+    select(vim.g.forester_current_config.prefixes, function(choice)
       do
         local path = config.dir_of_latest_tree_of_prefix(choice)
         local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
@@ -79,7 +79,7 @@ M.commands = {
   end,
 
   transclude_new = function()
-    select(vim.forester_current_config.prefixes, function(choice)
+    select(vim.g.forester_current_config.prefixes, function(choice)
       do
         local path = config.dir_of_latest_tree_of_prefix(choice)
         local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
