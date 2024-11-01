@@ -27,6 +27,20 @@ local select = function(items, callback)
   end
 end
 
+local select_prefix = function(callback)
+  if vim.g.forester_current_config.prefixes == nil then
+    do
+      vim.notify(
+        "Prefixes are not configured in "
+          .. vim.g.forester_current_config["path"]
+          .. '. Add them like this: \nprefixes = ["foo"]'
+      )
+    end
+  else
+    select(vim.g.forester_current_config.prefixes, callback)
+  end
+end
+
 M.commands = {
   -- Select the forester configuration file to use
   config = function()
@@ -46,7 +60,7 @@ M.commands = {
   end,
 
   browse = function()
-    local trees = Forester.query_all(vim.g.forester_current_config)
+    local trees = Forester.query_all(vim.g.forester_current_config.path)
     local t = {}
     for k, v in pairs(trees) do
       v.addr = k
@@ -61,7 +75,7 @@ M.commands = {
   end,
 
   new_random = function()
-    select(vim.g.forester_current_config.prefixes, function(choice)
+    select_prefix(function(choice)
       local path = config.dir_of_latest_tree_of_prefix(choice)
       local new_tree = Forester.new_random(choice, path, vim.g.forester_current_config)[1]
       vim.cmd("edit " .. new_tree)
@@ -69,7 +83,7 @@ M.commands = {
   end,
 
   new = function()
-    select(vim.forester_current_config.prefixes, function(choice)
+    select_prefix(function(choice)
       do
         local path = config.dir_of_latest_tree_of_prefix(choice)
         local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
@@ -79,7 +93,7 @@ M.commands = {
   end,
 
   transclude_new = function()
-    select(vim.forester_current_config.prefixes, function(choice)
+    select(vim.g.forester_current_config.prefixes, function(choice)
       do
         local path = config.dir_of_latest_tree_of_prefix(choice)
         local new_tree = Forester.new(choice, path, vim.g.forester_current_config)[1]
