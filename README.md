@@ -5,6 +5,9 @@
 Filetype plugin for [forester](https://sr.ht/~jonsterling/forester/), a tool
 for writing mathematical hypertext
 
+> [!IMPORTANT]
+> I am currently focusing my efforts on developing the language server for forester. The language server will subsume the vast majority of features of this plugin. After the LSP ships, this plugin will be deprecated/rewritten from scratch.
+
 # Features
 
 - Tree-sitter syntax highlighting.
